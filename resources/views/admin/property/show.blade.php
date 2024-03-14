@@ -80,11 +80,11 @@
                   </tr>
                   <tr>
                     <th><b>{{ __('mediator1')}}</b></th>
-                    <td colspan="3">{{ $property->mediator1}}  and phone {{$property->phone1}}</td>
+                    <td colspan="3">{{ $property->mediator1}}  {{ __('phone')}}  {{$property->phone1}}</td>
                 </tr>
                 <tr>
                   <th><b>{{ __('mediator2')}} </b></th>
-                  <td colspan="3">{{ $property->mediator2}}  and {{ __('phone')}} {{$property->phone2}}</td>
+                  <td colspan="3">{{ $property->mediator2}}   {{ __('phone')}} {{$property->phone2}}</td>
               </tr>
                 <tr>
                   <th><b>{{ __('Owner Name')}}</b></th>

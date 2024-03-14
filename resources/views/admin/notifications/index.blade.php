@@ -18,15 +18,27 @@ $reminders = \App\Models\RequestProperty::whereDate('contact_datetime', '<=', $t
 
     
     function formatTime($contactDatetime) {
-    $contactTime = Carbon::parse($contactDatetime);
+        $contactTime = Carbon::parse($contactDatetime)->locale('ar'); // تعيين اللغة للعربية
 
-    if ($contactTime->isToday()) {
-        return 'today at ' . $contactTime->format('h:i A');
-    } elseif ($contactTime->isYesterday()) {
-        return 'yesterday at ' . $contactTime->format('h:i A');
+if ($contactTime->isToday()) {
+    if ($contactTime->hour < 12) { // التحقق من أن الوقت قبل الظهر
+        return 'اليوم في ' . $contactTime->format('h:i صباحًا');
     } else {
-        return $contactTime->format('Y-m-d h:i A');
+        return 'اليوم في ' . $contactTime->format('h:i مساءً');
     }
+} elseif ($contactTime->isYesterday()) {
+    if ($contactTime->hour < 12) { // التحقق من أن الوقت قبل الظهر
+        return 'أمس في ' . $contactTime->format('h:i صباحًا');
+    } else {
+        return 'أمس في ' . $contactTime->format('h:i مساءً');
+    }
+} else {
+    if ($contactTime->hour < 12) { // التحقق من أن الوقت قبل الظهر
+        return $contactTime->format('Y-m-d h:i صباحًا');
+    } else {
+        return $contactTime->format('Y-m-d h:i مساءً');
+    }
+}
     }
 
          @endphp
@@ -43,7 +55,7 @@ $reminders = \App\Models\RequestProperty::whereDate('contact_datetime', '<=', $t
                         </button>
                     </form>
                     <a href="" class="list-group-item list-group-item-action">
-                        <i class="far fa-bell"></i>   You have a meeting with {{ $reminder->client_name }} {{ formatTime($reminder->contact_datetime) }}        
+                        <i class="far fa-bell"></i>   لديك اجتماع مع {{ $reminder->client_name }} {{ formatTime($reminder->contact_datetime) }}        
 
 
                         <span class="float-right text-muted text-sm">{{ $reminder->time }}</span>

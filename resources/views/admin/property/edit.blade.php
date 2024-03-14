@@ -4,7 +4,7 @@
 <div class="col-md-12">
     <div class="card card-success">
         <div class="card-header" style="background: rgb(122, 165, 122)">
-            <h3 class="card-title">{{ __('Edit Offer')}}</h3>
+            <h3 class="card-title" style="float:right;">{{ __('Edit Offer')}}</h3>
         </div>
         <!-- /.card-header -->
         <!-- form start -->

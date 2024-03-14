@@ -11,18 +11,33 @@ $reminders = \App\Models\RequestProperty::whereDate('contact_datetime', '<=', $t
     ->get();
 
 
-
-    function fTime($contactDatetime) {
-    $contactTime = Carbon::parse($contactDatetime);
+        function fTime($contactDatetime) {
+    $contactTime = Carbon::parse($contactDatetime)->locale('ar'); // تعيين اللغة للعربية
 
     if ($contactTime->isToday()) {
-        return 'today at ' . $contactTime->format('h:i A');
+        if ($contactTime->hour < 12) { // التحقق من أن الوقت قبل الظهر
+            return 'اليوم في ' . $contactTime->format('h:i صباحًا');
+        } else {
+            return 'اليوم في ' . $contactTime->format('h:i مساءً');
+        }
     } elseif ($contactTime->isYesterday()) {
-        return 'yesterday at ' . $contactTime->format('h:i A');
+        if ($contactTime->hour < 12) { // التحقق من أن الوقت قبل الظهر
+            return 'أمس في ' . $contactTime->format('h:i صباحًا');
+        } else {
+            return 'أمس في ' . $contactTime->format('h:i مساءً');
+        }
     } else {
-        return $contactTime->format('Y-m-d h:i A');
+        if ($contactTime->hour < 12) { // التحقق من أن الوقت قبل الظهر
+            return $contactTime->format('Y-m-d h:i صباحًا');
+        } else {
+            return $contactTime->format('Y-m-d h:i مساءً');
+        }
     }
 }
+
+
+
+
 
 
 
@@ -63,14 +78,15 @@ $reminders = \App\Models\RequestProperty::whereDate('contact_datetime', '<=', $t
                 <button type="submit" class="dropdown-item">
                     <i class="far fa-bell"></i> 
                     <div class="notification-content">
-                        <span>You have a meeting with {{ $reminder->client_name }}</span>
+                        <span>لديك اجتماع مع {{ $reminder->client_name }}</span>
                         <span>{{ fTime($reminder->contact_datetime) }}</span>
                         <span>{{ $reminder->time }}</span>
                     </div>
                 </button>
             </form>
             <div class="dropdown-divider"></div>
-            @endforeach
+        @endforeach
+        
     
             <div class="dropdown-divider"></div>
             <a href="{{ route('notification.page') }}" class="dropdown-item dropdown-footer">عرض جميع الاشعارات</a>
