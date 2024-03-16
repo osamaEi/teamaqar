@@ -27,7 +27,7 @@ Route::get('/', function () {
     return view('auth.login');
 });
 
-Route::get('/dashboard', function () {
+Route::get('/view', function () {
     return view('admin.calender.index');
 })->middleware(['auth', 'verified'])->name('dashboard');
 

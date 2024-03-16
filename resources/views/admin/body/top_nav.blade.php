@@ -1,18 +1,18 @@
 
 
     @php 
-
+/*
 use Carbon\Carbon;
 
 $today = Carbon::now()->startOfDay(); // Get the start of the current day
 
-$reminders = \App\Models\RequestProperty::whereDate('contact_datetime', '<=', $today)
-    ->where('read', false)
-    ->get();
+//$reminders = \App\Models\RequestProperty::whereDate('contact_datetime', '<=', $today)
+    //->where('read', false)
+   // ->get();
 
 
-        function fTimess($contactDatetime) {
-    $contactTime = Carbon::parse($contactDatetime)->locale('ar'); // تعيين اللغة للعربية
+      //  function fTimess($contactDatetime) {
+   // $contactTime = Carbon::parse($contactDatetime)->locale('ar'); // تعيين اللغة للعربية
 
     if ($contactTime->isToday()) {
         if ($contactTime->hour < 12) { // التحقق من أن الوقت قبل الظهر
@@ -35,7 +35,7 @@ $reminders = \App\Models\RequestProperty::whereDate('contact_datetime', '<=', $t
     }
 }
 
-
+*/
 
 
 
@@ -63,27 +63,23 @@ $reminders = \App\Models\RequestProperty::whereDate('contact_datetime', '<=', $t
     <li class="nav-item dropdown">
         <a class="nav-link" data-toggle="dropdown" href="#">
             <i class="fa fa-bell"></i>
-            <span class="badge badge-success navbar-badge">{{ $reminders->where('read', false)->count() }}</span>
+            <span class="badge badge-success navbar-badge"></span>
         </a>
         <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right" style="  margin-left: -102px;
         min-width: 23rem;">
-            <span class="dropdown-item dropdown-header">{{ $reminders->where('read', false)->count() }} اشعار</span>
+            <span class="dropdown-item dropdown-header"></span>
     
-            @foreach($reminders as $reminder)
-            <form action="{{ route('notification.markAsRead',$reminder->id) }}" method="POST">
+            <form action="" method="POST">
                 @csrf
                 <button type="submit" class="dropdown-item">
                     <div class="notification-content">
                         <i class="far fa-bell"></i> 
 
-                        <span>لديك اجتماع مع {{ $reminder->client_name }}</span>
-                        <span>{{($reminder->contact_datetime) }}</span>
-                        <span>{{ $reminder->time }}</span>
+                     
                     </div>
                 </button>
             </form>
             <div class="dropdown-divider"></div>
-            @endforeach
 
             <a href="#" class="dropdown-item">
                 <i class="fas fa-file mr-2"></i> 3 new reports

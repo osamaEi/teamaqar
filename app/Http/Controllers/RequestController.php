@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use session;
+use Carbon\Carbon;
+use App\Models\Event;
 use App\Models\Property;
 use Illuminate\Http\Request;
 use App\Models\RequestProperty;
@@ -132,14 +134,27 @@ class RequestController extends Controller
     
         // Validate input if needed
     
-        // Update or create the datetime field for the selected IDs
-        RequestProperty::whereIn('id', $selectedIds)->update([
-            
-            'contact_datetime' => $contactDatetime,
-            'read' => false,
-    
-    ]);
-    
+       foreach ($selectedIds as $requestId) {
+        $requestProperty = RequestProperty::find($requestId);
+
+        if ($requestProperty) {
+            $clientName = $requestProperty->client_name;
+
+            // Set the start date
+            $start = Carbon::parse($contactDatetime);
+
+            // Set the end date to be the day after the start date
+            $end = $start->copy()->addDay();
+
+            Event::create([
+                'title' => $clientName,  // Set the event title to the client name
+                'start' => $start,        // Set the start time
+                'end' => $end,            // Set the end time
+                
+            ]);
+        }
+    }
+
         return redirect()->back()->with('success', 'Datetime applied successfully!');
     }  
 

@@ -6,7 +6,7 @@
         <hr>
 
         @php 
-
+/*
 use Carbon\Carbon;
 
 $today = Carbon::now()->startOfDay(); // Get the start of the current day
@@ -78,3 +78,4 @@ if ($contactTime->isToday()) {
     
 
 @endsection
+*/

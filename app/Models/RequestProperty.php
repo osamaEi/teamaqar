@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Event;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class RequestProperty extends Model
 {
@@ -15,4 +16,10 @@ class RequestProperty extends Model
     protected $casts = [
         'contact_datetime' => 'datetime',
     ];
+
+
+    public function event()
+    {
+        return $this->hasOne(Event::class);
+    }
 }
