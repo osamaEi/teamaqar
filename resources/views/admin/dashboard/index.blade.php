@@ -12,12 +12,12 @@ $requestCount = \App\Models\RequestProperty::count();
 use Carbon\Carbon;
 
 $today = Carbon::now()->startOfDay();
-$remindersTodayCount = \App\Models\RequestProperty::whereDate('contact_datetime', '=', $today)
+$remindersTodayCount = \App\Models\Event::whereDate('start', '=', $today)
     ->where('read', false)
     ->count();
 
 
-$allreminders =\App\Models\RequestProperty::where('read', false)
+$allreminders =\App\Models\Event::where('read', false)
     ->count();
 
 

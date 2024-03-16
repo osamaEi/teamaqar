@@ -6,12 +6,12 @@
         <hr>
 
         @php 
-/*
+
 use Carbon\Carbon;
 
 $today = Carbon::now()->startOfDay(); // Get the start of the current day
 
-$reminders = \App\Models\RequestProperty::whereDate('contact_datetime', '<=', $today)
+$reminders = \App\Models\Event::whereDate('start', '<=', $today)
     ->where('read', false)
     ->get();
 
@@ -78,4 +78,3 @@ if ($contactTime->isToday()) {
     
 
 @endsection
-*/

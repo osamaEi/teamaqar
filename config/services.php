@@ -14,6 +14,12 @@ return [
     |
     */
 
+    'database' => [
+        'driver' => 'database',
+        'table' => 'notifications',
+    ],
+    
+
     'mailgun' => [
         'domain' => env('MAILGUN_DOMAIN'),
         'secret' => env('MAILGUN_SECRET'),

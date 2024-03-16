@@ -1,49 +1,5 @@
 
 
-    @php 
-/*
-use Carbon\Carbon;
-
-$today = Carbon::now()->startOfDay(); // Get the start of the current day
-
-//$reminders = \App\Models\RequestProperty::whereDate('contact_datetime', '<=', $today)
-    //->where('read', false)
-   // ->get();
-
-
-      //  function fTimess($contactDatetime) {
-   // $contactTime = Carbon::parse($contactDatetime)->locale('ar'); // تعيين اللغة للعربية
-
-    if ($contactTime->isToday()) {
-        if ($contactTime->hour < 12) { // التحقق من أن الوقت قبل الظهر
-            return 'اليوم في ' . $contactTime->format('h:i صباحًا');
-        } else {
-            return 'اليوم في ' . $contactTime->format('h:i مساءً');
-        }
-    } elseif ($contactTime->isYesterday()) {
-        if ($contactTime->hour < 12) { // التحقق من أن الوقت قبل الظهر
-            return 'أمس في ' . $contactTime->format('h:i صباحًا');
-        } else {
-            return 'أمس في ' . $contactTime->format('h:i مساءً');
-        }
-    } else {
-        if ($contactTime->hour < 12) { // التحقق من أن الوقت قبل الظهر
-            return $contactTime->format('Y-m-d h:i صباحًا');
-        } else {
-            return $contactTime->format('Y-m-d h:i مساءً');
-        }
-    }
-}
-
-*/
-
-
-
-
-
-    @endphp
-
-
 <nav class="main-header navbar navbar-expand navbar-white navbar-light">
     <!-- Left navbar links -->
     <ul class="navbar-nav">
@@ -58,28 +14,33 @@ $today = Carbon::now()->startOfDay(); // Get the start of the current day
 <ul class="navbar-nav mr-auto-navbav">
  
    
+    @php
+    $notificationsController = new \App\Http\Controllers\NotificationController;
+    $reminders = $notificationsController->getReminders();
+@endphp
 
       
     <li class="nav-item dropdown">
         <a class="nav-link" data-toggle="dropdown" href="#">
             <i class="fa fa-bell"></i>
-            <span class="badge badge-success navbar-badge"></span>
+            <span class="badge badge-success navbar-badge">{{ $reminders->where('read', false)->count() }}</span>
         </a>
         <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right" style="  margin-left: -102px;
         min-width: 23rem;">
-            <span class="dropdown-item dropdown-header"></span>
+            <span class="dropdown-item dropdown-header">{{ $reminders->where('read', false)->count() }} اشعار</span>
     
-            <form action="" method="POST">
-                @csrf
+            @foreach($reminders as $reminder)
+            <form action="" method="">
                 <button type="submit" class="dropdown-item">
                     <div class="notification-content">
                         <i class="far fa-bell"></i> 
 
-                     
+                        <span>لديك اجتماع اليوم مع   {{ $reminder->title }}</span>
                     </div>
                 </button>
             </form>
             <div class="dropdown-divider"></div>
+            @endforeach
 
             <a href="#" class="dropdown-item">
                 <i class="fas fa-file mr-2"></i> 3 new reports
@@ -93,11 +54,7 @@ $today = Carbon::now()->startOfDay(); // Get the start of the current day
             <a href="{{ route('notification.page') }}" class="dropdown-item dropdown-footer">عرض جميع الاشعارات</a>
         </div>
     </li>
-    <li class="nav-item">
-        <a class="nav-link" data-widget="fullscreen" href="#" role="button">
-          <i class="fas fa-expand-arrows-alt"></i>
-        </a>
-      </li>
+  
 
       
               <li class="nav-item dropdown">

@@ -24,11 +24,15 @@ use App\Http\Controllers\NotificationController;
 */
 
 Route::get('/', function () {
+
+    
+
     return view('auth.login');
 });
 
 Route::get('/view', function () {
-    return view('admin.calender.index');
+
+    return view('admin.dashboard.index');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {

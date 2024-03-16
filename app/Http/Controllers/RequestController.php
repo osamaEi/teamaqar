@@ -120,7 +120,10 @@ class RequestController extends Controller
             'alert-type' => 'success'
         );
 
-        return redirect()->back()->with($notification);
+        notify()->success('Welcome to Laravel Notify ⚡️');
+
+
+        return redirect()->back();
     
     } 
 
