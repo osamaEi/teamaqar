@@ -3,11 +3,11 @@
 This is a starter template page. Use this page to start your new project from
 scratch. This page gets rid of all links and provides the needed markup only.
 -->
-<html lang="en">
+<html lang="ar">
 
 <head>
 
-    <title>Laravel Fullcalender Tutorial Tutorial - ItSolutionStuff.com</title>
+    <title>دورة Laravel Fullcalender - ItSolutionStuff.com</title>
 
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
@@ -18,6 +18,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.css" />
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+
+    <!-- Include Arabic locale file -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/locale/ar.js"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.js"></script>
 
@@ -51,7 +54,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
 </head>
 
-<body class="hold-transition sidebar-mini">
+<body class="hold-transition sidebar-mini" dir="rtl">
 
 <div class="wrapper">
     <!-- Navbar -->
@@ -99,7 +102,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 selectable: true,
                 selectHelper: true,
                 select: function (start, end, allDay) {
-                    var title = prompt('Event Title:');
+                    var title = prompt('عنوان الحدث:');
                     if (title) {
                         var start = $.fullCalendar.formatDate(start, "Y-MM-DD");
                         var end = $.fullCalendar.formatDate(end, "Y-MM-DD");
@@ -113,7 +116,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                             },
                             type: "POST",
                             success: function (data) {
-                                displayMessage("Event Created Successfully");
+                                displayMessage("تم إنشاء الحدث بنجاح");
                                 calendar.fullCalendar('renderEvent', {
                                     id: data.id,
                                     title: title,
@@ -140,12 +143,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         },
                         type: "POST",
                         success: function (response) {
-                            displayMessage("Event Updated Successfully");
+                            displayMessage("تم تحديث الحدث بنجاح");
                         }
                     });
                 },
                 eventClick: function (event) {
-                    var deleteMsg = confirm("Do you really want to delete?");
+                    var deleteMsg = confirm("هل تريد مسح الموعد ؟");
                     if (deleteMsg) {
                         $.ajax({
                             type: "POST",
@@ -156,16 +159,18 @@ scratch. This page gets rid of all links and provides the needed markup only.
                             },
                             success: function (response) {
                                 calendar.fullCalendar('removeEvents', event.id);
-                                displayMessage("Event Deleted Successfully");
+                                displayMessage("تم حذف الحدث بنجاح");
                             }
                         });
                     }
-                }
+                },
+                // Set locale to Arabic
+                locale: 'ar'
             });
         });
 
         function displayMessage(message) {
-            toastr.success(message, 'Event');
+            toastr.success(message, 'حدث');
         }
     </script>
                 </div>
