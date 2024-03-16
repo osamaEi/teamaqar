@@ -84,9 +84,13 @@
                   </div>
                 </div>
                     <div class="form-group">
+
                       <label for="exampleInputEmail1">{{ __('Location')}}</label>
-                      <input type="text" name="Location" class="form-control">
+                      <input id="address" name="address" class="form-control" >
                     </div>
+
+                    
+                    <!-- In your view -->
 
 
 
@@ -225,6 +229,25 @@
   
 
                 </div> 
+
+
+
+
+
+
+
+               
+
+
+
+
+
+
+
+
+
+
+
 
 
                 <!-- /.card-body -->

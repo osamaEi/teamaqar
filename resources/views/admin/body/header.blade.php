@@ -26,6 +26,15 @@
   <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
   <!-- Bootstrap 4 RTL -->
   <link rel="stylesheet" href="https://cdn.rtlcss.com/bootstrap/v4.2.1/css/bootstrap.min.css">
+
+
   <!-- Custom style for RTL -->
   <link rel="stylesheet" href="{{ asset('dist/css/custom.css') }}">
+
+
+
+ 
+
+
+
 </head>

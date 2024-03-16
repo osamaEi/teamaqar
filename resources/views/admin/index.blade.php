@@ -7,6 +7,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
 @include('admin.body.header')
 <body class="hold-transition sidebar-mini">
+
+
+
+ 
+
+
+
+
     <div class="wrapper">
         <!-- Navbar -->
       @include('admin.body.top_nav')

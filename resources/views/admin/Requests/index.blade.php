@@ -43,7 +43,7 @@
     </select>
     
     
-      <button class="btn-info btn btn-icon dungdt-apply-form-btn" type="submit" >تغيير اجراء</button>
+      <button class="btn-info btn btn-icon dungdt-apply-form-btn" type="submit"   style="margin-right: 21px;">تغيير اجراء</button>
     </form>
   </div>
 </div>
@@ -117,7 +117,7 @@
                 <input type="checkbox" class="check-item" name="selectedIds[]" value="{{ $request->id }}">
               </td>
               <td class="title">
-                <a href="">{{ $request->client_name }}</a>
+                <a href="{{ route('requests.show',$request->id)}}">{{ $request->client_name }}</a>
               </td>
               <td>{{ $request->client_phone }}</td>
               <td>{{ $request->client_type }}</td>
@@ -184,6 +184,18 @@
       checkbox.checked = checkAllCheckbox.checked;
     });
   }
+
+
+
+  function displayMessage(message) {
+                
+                toastr.success(message, 'Event');
+            
+  } 
+            
+
 </script>
+
+
 
 @endsection

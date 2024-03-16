@@ -2,8 +2,10 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SmsController;
+use App\Http\Controllers\EventController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RequestController;
+use App\Http\Controllers\CalenderController;
 use App\Http\Controllers\languageController;
 use App\Http\Controllers\PropertyController;
 use App\Http\Controllers\RedirectController;
@@ -22,7 +24,7 @@ use App\Http\Controllers\NotificationController;
 */
 
 Route::get('/', function () {
-    return view('admin.dashboard.index');
+    return view('auth.login');
 });
 
 Route::get('/dashboard', function () {
@@ -36,6 +38,12 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__.'/auth.php';
+
+
+Route::middleware('auth')->group(function () {
+//logout  
+
+Route::get('/employee/logout',[RedirectController::class ,'Logout'])->name('employee.logout');
 
 //properties
 Route::get('/create',[PropertyController::class ,'create'])->name('property.create.page');
@@ -58,6 +66,7 @@ Route::get('/list/properties',[RedirectController::class ,'properties'])->name('
 
 Route::resource('requests', RequestController::class);
 
+Route::get('/clients/apply-action', [RequestController::class, 'thank_you'])->name('requests.thank_you');
 Route::post('/clients/apply-action', [RequestController::class, 'applyAction'])->name('requests.applyAction');
 Route::post('/clients/apply-time', [RequestController::class, 'applyTime'])->name('requests.applyTime');
 
@@ -78,4 +87,16 @@ Route::get('lang/{locale}', [LanguageController::class, 'swap'])->name('language
 Route::get('/properties/{id}/edit', [PropertyController::class, 'edit'])->name('property.edit');
 
 Route::put('/properties/{property}', [PropertyController::class, 'update'])->name('properties.update');
+
+
+
+Route::get('fullcalender', [EventController::class, 'index']);
+
+Route::post('fullcalenderAjax', [EventController::class, 'ajax']);
+
+
+
+
+});
+
 

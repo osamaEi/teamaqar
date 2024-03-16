@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use session;
 use App\Models\Property;
-use App\Models\RequestProperty;
 use Illuminate\Http\Request;
+use App\Models\RequestProperty;
 
 class RequestController extends Controller
 {
@@ -61,7 +62,7 @@ class RequestController extends Controller
     $request_property->save();
 
     // Redirect to a specific route or page after successful submission
-    return redirect()->route('requests.index');
+    return redirect()->route('requests.thank_you');
     }
 
     /**
@@ -69,7 +70,9 @@ class RequestController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $request= RequestProperty::find($id); 
+
+        return view('admin.Requests.show',compact('request'));
     }
 
     /**
@@ -110,7 +113,13 @@ class RequestController extends Controller
        
         RequestProperty::whereIn('id', $selectedIds)->update(['traking_client' => $request->input('traking_client')]);
 
-        return redirect()->back()->with('success', 'Action applied successfully!');
+        $notification = array(
+            'message' => 'Successfully Done',
+            'alert-type' => 'success'
+        );
+
+        return redirect()->back()->with($notification);
+    
     } 
 
     public function applyTime(Request $request)
@@ -148,6 +157,13 @@ class RequestController extends Controller
         $notification->update(['read' => true]);
     
         return redirect()->back()->with('success', 'Notification marked as read successfully');
+    } 
+
+
+    public function thank_you() {
+
+
+        return view('admin.Requests.thank_you');
     }
     
 }
