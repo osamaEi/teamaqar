@@ -71,34 +71,20 @@
                       <th><b>{{ __('Area')}}</b></th>
                       <td colspan="3">{{ $property->area}}</td>
                   </tr>
+
+                  <tr>
+                    <th><b>{{ __('رقم العقار / الارض')}}</b></th>
+                    <td colspan="3">{{ $property->number}}</td>
+                </tr>
                   <tr>
                       <th><b>{{ __('Status')}}</b></th>
                       <td colspan="3">{{ $property->propery_cat}}</td>
                   </tr>
-                  <tr>
-                      <th><b>{{ __('Owner Name')}}</b></th>
-                      <td colspan="3">{{ $property->owner}}</td>
-                  </tr>
-                  <tr>
-                    <th><b>{{ __('mediator1')}}</b></th>
-                    <td colspan="3">{{ $property->mediator1}}  {{ __('phone')}}  {{$property->phone1}}</td>
-                </tr>
-                <tr>
-                  <th><b>{{ __('mediator2')}} </b></th>
-                  <td colspan="3">{{ $property->mediator2}}   {{ __('phone')}} {{$property->phone2}}</td>
-              </tr>
-                <tr>
-                  <th><b>{{ __('Owner Name')}}</b></th>
-                  <td colspan="3">{{ $property->owner}}</td>
-              </tr>
-                  <tr>
-                      <th><b>{{ __('Tel')}}</b></th>
-                      <td colspan="3">{{ $property->ophone}}</td>
-                  </tr>
-                  <tr>
-                      <th><b>{{ __('Status')}}</b></th>
-                      <td colspan="3">{{ $property->owner_status}}</td>
-                  </tr>
+              
+          
+        
+     
+               
                   <tr>
                     <th><b>{{ __('Description')}}</b></th>
                     <td colspan="3">{{ $property->description}}</td>

@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('client_name')->nullable();
             $table->string('client_type')->nullable();
             $table->string('request_name')->nullable();
+            $table->string('other_request')->nullable();
             $table->timestamp('contact_datetime')->nullable();
             $table->string('client_phone')->nullable();
             $table->enum('traking_client', [

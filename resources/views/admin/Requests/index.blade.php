@@ -128,13 +128,20 @@
                 </span>
             </td>
             
-              <td>
-                @if ($request->contact_datetime)
-                    {{ \Carbon\Carbon::parse($request->contact_datetime)->format('d-m-Y h:i A') }}
+            <td>
+              @php 
+                  $event = \App\Models\Event::where('request_id', $request->id)->first();
+              @endphp
+             
+                @if($event && isset($event->start))
+                    {{ \Carbon\Carbon::parse($event->start)->locale('ar')->isoFormat('dddd DD/MM الساعة h a') }}
                 @else
-                    -- -- ---- -- -- 
+                    لم يتم تحديد وقت
                 @endif
-              </td>
+            </td>
+              
+          
+          </td>
               <td> <form action="{{ route('requests.destroy', $request->id) }}" method="post" enctype="multipart/form-data">
                 @csrf
                 @method('DELETE')

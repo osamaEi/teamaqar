@@ -24,18 +24,73 @@
                 
                     <div class="col-sm-4">
                       <label for="exampleInputPassword1">{{ __('Property No')}}</label>
-                        <input type="text" name="number" class="form-control" id="exampleInputPassword1">
+                        <input type="number" name="number" class="form-control" id="exampleInputPassword1">
                     </div>
                     <div class="col-sm-4">
 
                     
                  <label for="exampleInputEmail1">{{ __('Property Area')}}</label>
 
-<input type="text" name="area" class="form-control" id="exampleInputEmail1">
+      <input type="text" name="area" class="form-control" id="exampleInputEmail1">
 
-</div>
+        </div>
+
+                </div> 
+
+                <div class="row mb-3">
+                  
+                  <div class="col-sm-4">
+
+                  <label>{{ __('Property Type')}}</label>
+                        <select class="form-control select2" style="width: 100%;" name="property_type">
+                          <option value="أرض زراعية">أرض زراعية </option>
+                          <option value="حوش">حوش </option>
+                          <option value=" بيت شعبي  "> بيت شعبي  </option>
+                        </select>
+                      </div>
+
+                      <div class="col-sm-4">
+
+                        <label>{{ __('حالة تملك الارض')}}</label>
+                              <select class="form-control select2" style="width: 100%;" name="land_situation">
+                                <option value="أرض بصك">أرض بصك </option>
+                                <option value="أرض باحكام">أرض باحكام </option>
+                                <option value="أرض استثمار"> أرض استثمار  </option>
+                                <option value="أرض بدون"> أرض بدون  </option>
+                              </select>
+                            </div>
+
+                            <div class="col-sm-4">
+                              <label for="exampleInputEmail1">{{ __('Location')}}</label>
+                              <input type="text" name="location" class="form-control" id="exampleInputEmail1">
+                          </div>
+                          
 
                 </div>
+
+                   
+
+                      <div class="form-group">
+                        <label for="exampleInputFile">{{ __('Property Describtion')}}</label>
+    
+                
+         
+                  <textarea class="form-control"name="description">
+                  </textarea>
+             
+          </div>
+    
+    
+          
+          <div class="form-group">
+            <label for="exampleInputFile">{{ __('notes')}}</label>
+    
+    
+    
+            <textarea class="form-control"name="notes">
+            </textarea>
+    
+    </div>
                 
                 <div class="row mb-3">
                 
@@ -83,12 +138,7 @@
                     <input type="text" name="phone2" class="form-control" >
                   </div>
                 </div>
-                    <div class="form-group">
-
-                      <label for="exampleInputEmail1">{{ __('Location')}}</label>
-                      <input id="address" name="address" class="form-control" >
-                    </div>
-
+                 
                     
                     <!-- In your view -->
 
@@ -102,14 +152,7 @@
 
                     <div class="row mb-3">
 
-                      <div class="col-sm-4">
-                        <label>{{ __('Property Type')}}</label>
-                              <select class="form-control select2" style="width: 100%;" name="property_type">
-                                <option value="أرض زراعية">أرض زراعية </option>
-                                <option value="حوش">حوش </option>
-                                <option value=" بيت شعبي  "> بيت شعبي  </option>
-                              </select>
-                            </div>
+                    
 
 
                             <div class="col-sm-4">
@@ -129,39 +172,22 @@
                                   <option value="Sold"> {{ __('Sold')}} </option>
                                 </select>
                               </div>
+
+
+                              
+                    <div class="col-sm-4">
+                      <label for="exampleInputEmail1">{{ __('Price')}}</label>
+                       <input type="number" name="price" class="form-control" id="exampleInputEmail1">
+                     </div>
+                 
   
                     </div>
 
 
-                  <div class="form-group">
-                    <label for="exampleInputFile">{{ __('Property Describtion')}}</label>
-
-            
-     
-              <textarea class="form-control"name="description">
-              </textarea>
-         
-      </div>
-
-
-      
-      <div class="form-group">
-        <label for="exampleInputFile">{{ __('notes')}}</label>
+              
 
 
 
-        <textarea class="form-control"name="notes">
-        </textarea>
-
-</div>
-
-
-
-      <div class="form-group">
-        <label for="exampleInputEmail1">{{ __('Price')}}</label>
-        <input type="text" name="price" class="form-control" id="exampleInputEmail1">
-      </div>
-  
       
 
 

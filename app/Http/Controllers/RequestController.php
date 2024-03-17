@@ -17,11 +17,17 @@ class RequestController extends Controller
     public function index()
     {
         $requests = RequestProperty::latest()->paginate(8);
-
-
-        return view('admin.Requests.index',compact('requests'));
+    
+        // Retrieve events separately for each request
+        $events = [];
+        foreach ($requests as $request) {
+            $events[$request->id] = Event::where('request_id', $request->id)->get();
+        }
+    
+        // Pass requests and events to the view
+        return view('admin.Requests.index', compact('requests', 'events'));
     }
-
+    
     /**
      * Show the form for creating a new resource.
      */
@@ -44,6 +50,7 @@ class RequestController extends Controller
         'client_phone' => 'string',
         'client_name' => 'string',
         'client_type' => 'string',
+        'other_request' => 'string',
         'request_name' => 'string',
         'property_id' => 'integer',
      
@@ -56,6 +63,7 @@ class RequestController extends Controller
         'client_phone' => $request->get('client_phone'),
         'client_name' => $request->get('client_name'),
         'client_type' => $request->get('client_type'),
+        'other_request' => $request->get('other_request'),
         'request_name' => $request->get('request_name'),
         'property_id' => $request->get('property_id'),
 
@@ -64,7 +72,7 @@ class RequestController extends Controller
     $request_property->save();
 
     // Redirect to a specific route or page after successful submission
-    return redirect()->route('requests.thank_you');
+    return redirect()->back();
     }
 
     /**
@@ -97,14 +105,24 @@ class RequestController extends Controller
      * Remove the specified resource from storage.
      */
     public function destroy($id) {
-
+        // Find the RequestProperty record
         $propertyrequest = RequestProperty::find($id);
-
-        $propertyrequest->delete();
-        
-
+    
+        // Check if the record exists
+        if ($propertyrequest) {
+            // Delete the related Event record if it exists
+            if ($propertyrequest->event) {
+                $propertyrequest->event->delete();
+            }
+    
+            // Delete the RequestProperty record
+            $propertyrequest->delete();
+        }
+    
+        // Redirect back
         return redirect()->back();
     }
+    
 
 
 
@@ -128,16 +146,16 @@ class RequestController extends Controller
     } 
 
     public function applyTime(Request $request)
-    {
-        // Set the default timezone to Saudi Arabia
-        date_default_timezone_set('Asia/Riyadh');
-    
-        $selectedIds = explode(',', $request->input('selectedIds'));
-        $contactDatetime = $request->input('contact_datetime');
-    
-        // Validate input if needed
-    
-       foreach ($selectedIds as $requestId) {
+{
+    // Set the default timezone to Saudi Arabia
+    date_default_timezone_set('Asia/Riyadh');
+
+    $selectedIds = explode(',', $request->input('selectedIds'));
+    $contactDatetime = $request->input('contact_datetime');
+
+    // Validate input if needed
+
+    foreach ($selectedIds as $requestId) {
         $requestProperty = RequestProperty::find($requestId);
 
         if ($requestProperty) {
@@ -146,20 +164,21 @@ class RequestController extends Controller
             // Set the start date
             $start = Carbon::parse($contactDatetime);
 
-            // Set the end date to be the day after the start date
-            $end = $start->copy()->addDay();
-
-            Event::create([
-                'title' => $clientName,  // Set the event title to the client name
-                'start' => $start,        // Set the start time
-                'end' => $end,            // Set the end time
-                
-            ]);
+            // Use updateOrCreate to either update existing event or create new
+            Event::updateOrCreate(
+                ['request_id' => $requestId], // Search criteria
+                [
+                    'title' => $clientName,  // Set the event title to the client name
+                    'start' => $start,        // Set the start time
+                    'end' => $start,          // Set the end time
+                ]
+            );
         }
     }
 
-        return redirect()->back()->with('success', 'Datetime applied successfully!');
-    }  
+    return redirect()->back()->with('success', 'Datetime applied successfully!');
+}
+
 
     public function reminders()
     {

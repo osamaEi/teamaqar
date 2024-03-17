@@ -20,6 +20,6 @@ class RequestProperty extends Model
 
     public function event()
     {
-        return $this->hasOne(Event::class);
+        return $this->hasOne(Event::class,'request_id');
     }
 }

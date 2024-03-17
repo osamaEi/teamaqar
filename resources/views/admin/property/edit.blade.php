@@ -101,7 +101,19 @@
                           <option value="بيع منازل" {{ $property->propery_cat == 'بيع منازل' ? 'selected' : '' }}>بيع منازل</option>
                           <option value="تأجير أراضى" {{ $property->propery_cat == 'تأجير أراضى' ? 'selected' : '' }}>تأجير أراضى</option>
                       </select>
-                  </div>
+                  </div>  
+
+
+                  <div class="col-sm-4">
+                    <label>{{ __('حالة تملك الأرض')}}</label>
+                    <select class="form-control select2" style="width: 100%;" name="land_situation">
+                        <option value="أرض بصك" {{ $property->land_situation == 'أرض بصك' ? 'selected' : '' }}>أرض بصك</option>
+                        <option value="أرض باحكام" {{ $property->land_situation == 'أرض باحكام' ? 'selected' : '' }}>أرض باحكام</option>
+                        <option value="أرض استثمار" {{ $property->land_situation == 'أرض استثمار' ? 'selected' : '' }}>أرض استثمار</option>
+                        <option value="أرض بدون" {{ $property->land_situation == 'أرض بدون' ? 'selected' : '' }}>أرض بدون</option>
+                    </select>
+                </div>
+                
                   
                   <div class="col-sm-4">
                       <label>{{ __('Property Status')}}</label>

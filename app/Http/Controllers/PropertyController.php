@@ -53,25 +53,25 @@ class PropertyController extends Controller
         'owner_status' => 'string|nullable',
         'ophone' => 'string|nullable',
         'notes' => 'string|nullable',
+        'land_situation' => 'string|nullable',
         'propery_cat' => 'string|nullable',
     ]);
 
-    // Handle file upload
-    $img = time().'.'.$request->image->extension();
-    $request->image->storeAs('public/img/', $img);
+
 
     // Create a new Property instance and store in the database
     $property = new Property([
         'name' => $request->get('name'),
         'number' => $request->get('number'),
         'area' => $request->get('area'),
-        'Location' => $request->get('Location'),
+        'Location' => $request->get('location'),
         'property_type' => $request->get('property_type'),
         'status' => $request->get('status'),
         'description' => $request->get('description'),
         'price' => $request->get('price'),
-        'image' => $img,
+        
         'mediator1' => $request->get('mediator1'),
+        'land_situation' => $request->get('land_situation'),
         'phone1' => $request->get('phone1'),
         'mediator2' => $request->get('mediator2'),
         'phone2' => $request->get('phone2'),
@@ -83,7 +83,6 @@ class PropertyController extends Controller
     ]);
 
     $property->save();
-
     if( $property->save()){
         $files = $request->multi_img;
       
@@ -107,15 +106,25 @@ class PropertyController extends Controller
 }
 
 
-    public function destroy($id) {
+public function destroy($id) {
+    $property = Property::find($id);
 
-        $property = Property::find($id);
-
-        $property->delete();
-        
-
-        return redirect()->route('properties.page');
+    // Delete associated images
+    $multiImages = MultiImages::where('propery_id', $property->id)->get();
+    foreach ($multiImages as $multiImage) {
+        $imagePath = public_path('upload/property/multi_img/' . $multiImage->images);
+        if (file_exists($imagePath)) {
+            unlink($imagePath);
+        }
+        $multiImage->delete();
     }
+
+    // Now delete the property
+    $property->delete();
+
+    return redirect()->route('properties.page');
+}
+
 
     public function edit($id)
     {
@@ -135,11 +144,12 @@ class PropertyController extends Controller
         'number' => 'string|nullable',
         'area' => 'string|nullable',
         'Location' => 'string|nullable',
+        'land_situation' => 'string|nullable',
+
         'property_type' => 'string|nullable',
         'status' => 'string|nullable',
         'description' => 'string|nullable',
         'price' => 'numeric|nullable',
-        'image' => 'image|mimes:jpeg,png,jpg,gif,svg|nullable',
         'mediator1' => 'string|nullable',
         'phone1' => 'string|nullable',
         'mediator2' => 'string|nullable',
@@ -151,23 +161,13 @@ class PropertyController extends Controller
         'propery_cat' => 'string|nullable',
     ]);
 
-    // Handle file upload if a new image is provided
-    if ($request->hasFile('image')) {
-        // Delete previous image if exists
-        if ($property->image) {
-            Storage::delete('public/img/' . $property->image);
-        }
-        // Upload new image
-        $img = time() . '.' . $request->image->extension();
-        $request->image->storeAs('public/img/', $img);
-        $property->image = $img;
-    }
 
     // Update other property attributes
     $property->name = $request->get('name');
     $property->number = $request->get('number');
     $property->area = $request->get('area');
-    $property->Location = $request->get('Location');
+    $property->location = $request->get('location');
+    $property->land_situation = $request->get('land_situation');
     $property->property_type = $request->get('property_type');
     $property->status = $request->get('status');
     $property->description = $request->get('description');
@@ -182,7 +182,7 @@ class PropertyController extends Controller
     $property->notes = $request->get('notes');
     $property->propery_cat = $request->get('propery_cat');
 
-    $property->save();
+   $property->save();
 
     $files = $request->multi_img;
     if (!empty($files)) {

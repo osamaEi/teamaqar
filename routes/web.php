@@ -106,7 +106,7 @@ Route::put('/properties/{property}', [PropertyController::class, 'update'])->nam
 
 
 
-Route::get('fullcalender', [EventController::class, 'index']);
+Route::get('fullcalender', [EventController::class, 'index'])->name('calender.index');
 
 Route::post('fullcalenderAjax', [EventController::class, 'ajax']);
 

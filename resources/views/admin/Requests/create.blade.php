@@ -34,9 +34,26 @@
                 -->
     
                     
-                    <div class="col-sm-8">
     
+
+                      <div class="col-sm-8">
+                        <label for="exampleInputEmail1">{{ __('Name')}}</label>
+                        <input type="text" name="client_name" class="form-control">
+                      </div>
+    
+    
+    
+    
+                  
+    
+  
+                      
+                    <div class="col-sm-8">
+                        <label for="exampleInputEmail1">{{ __('phone')}} </label>
+                        <input type="text" name="client_phone" class="form-control">
+                      </div> 
                         
+                      <div class="col-sm-8">
 
                         <label>{{ __('Offer Type')}}</label>
     
@@ -56,22 +73,7 @@
                       </div>
                     -->
                     
-                      <div class="col-sm-8">
-                        <label for="exampleInputEmail1">{{ __('Name')}}</label>
-                        <input type="text" name="client_name" class="form-control">
-                      </div>
-    
-    
-    
-    
-                  
-    
-  
-                      
-                    <div class="col-sm-8">
-                        <label for="exampleInputEmail1">{{ __('phone')}} </label>
-                        <input type="text" name="client_phone" class="form-control">
-                      </div> 
+             
     
     
 
@@ -87,6 +89,15 @@
                            <option value="وكيل">وكيل</option>
                          </select>
                         </div>
+
+
+                        
+                      <div class="col-sm-8">
+                        <label for="exampleInputEmail1">{{ __('طلب أخر')}}</label>
+                        <input type="text" name="other_request" class="form-control">
+                      </div>
+    
+    
     
                     <!-- /.card-body -->
     
