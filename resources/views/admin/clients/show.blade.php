@@ -108,16 +108,7 @@
                   <td colspan="3">{{ $property->notes}}</td>
               </tr>
 
-              <tr>
-                <th><b>{{ __('Actions')}}</b></th>
-                <td colspan="3"><a href="{{ route('property.edit',$property->id)}}" class="btn btn-success">{{ __('Edit')}}</a>
-                  <form action="{{ route('property.destroy', $property->id) }}" method="post" enctype="multipart/form-data">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="btn btn-danger">{{ __('Delete')}}</button>
-                </form>            
-          </td>
-            </tr>
+              
                   <tr>
                       <td colspan="4" class="bg-lightgreen py-2 px-3 mt-4">
                           <h4 class="mb-0">

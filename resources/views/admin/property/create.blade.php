@@ -115,9 +115,9 @@
                             <div class="col-sm-4">
                               <label>{{ __('Property Category')}}</label>
                               <select class="form-control select2" style="width: 100%;" name="propery_cat">
-                                <option value="بيع اراضى">بيع أراضى  </option>
-                                <option value="بيع منازل">بيع منازل  </option>
-                                <option value="  تأجير أراضى    "> تأجير أراضى  </option>
+                                <option value="أرض للبيع">أرض للبيع   </option>
+                                <option value="منازل للبيع">منازل للبيع  </option>
+                                <option value="استثمار للتقبيل"> استثمار للتقبيل  </option>
                               </select>
                             </div>
 
@@ -162,25 +162,7 @@
         <input type="text" name="price" class="form-control" id="exampleInputEmail1">
       </div>
   
-      <div class="form-group">
-        <label for="exampleInputFile">{{ __('Image')}}</label>
-        <input type="file" name="image" class="form-control" onchange="previewImage(this)">
-        <img id="preview" class="product-image" alt="Product Image" style="width:300px; height:220px;">
-    </div>
-    
-    <script>
-        function previewImage(input) {
-            var preview = document.getElementById('preview');
-            if (input.files && input.files[0]) {
-                var reader = new FileReader();
-                reader.onload = function (e) {
-                    preview.src = e.target.result;
-                }
-                reader.readAsDataURL(input.files[0]);
-            }
-        }
-    </script>
-    
+      
 
 
     <div class="form-group">

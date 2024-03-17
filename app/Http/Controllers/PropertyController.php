@@ -120,7 +120,10 @@ class PropertyController extends Controller
     public function edit($id)
     {
         $property = Property::find($id);
-        return view('admin.property.edit', compact('property'));
+        
+        $multiImages = MultiImages::where('propery_id',$property->id)->get();
+
+        return view('admin.property.edit', compact('property','multiImages'));
     }
 
 

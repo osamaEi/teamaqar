@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SmsController;
 use App\Http\Controllers\EventController;
+use App\Http\Controllers\ClientController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RequestController;
 use App\Http\Controllers\CalenderController;
@@ -23,14 +24,25 @@ use App\Http\Controllers\NotificationController;
 |
 */
 
-Route::get('/', function () {
+//clients
+Route::get('/', [ClientController::class ,'index'])->name('clients.index');
+
+Route::get('/show/{id}', [ClientController::class ,'show'])->name('clients.show');
+
+Route::get('/create/client', [ClientController::class ,'create'])->name('create.client');
+
+Route::get('/thank_you/client', [ClientController::class ,'thank_you'])->name('clients.thank_you');
+
+Route::post('/store/client', [ClientController::class ,'store'])->name('client.store');
+
+Route::get('/login', function () {
 
     
 
     return view('auth.login');
 });
 
-Route::get('/view', function () {
+Route::get('/dashboard', function () {
 
     return view('admin.dashboard.index');
 })->middleware(['auth', 'verified'])->name('dashboard');

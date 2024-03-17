@@ -19,7 +19,8 @@
     $reminders = $notificationsController->getReminders();
 @endphp
 
-      
+@if (Auth::check())
+
     <li class="nav-item dropdown">
         <a class="nav-link" data-toggle="dropdown" href="#">
             <i class="fa fa-bell"></i>
@@ -57,16 +58,21 @@
   
 
       
-              <li class="nav-item dropdown">
+    <li class="nav-item dropdown">
         <a class="nav-link" data-toggle="dropdown" href="#">
-<span>{{Auth::user()->name}}<br>
-</span>          
+            <span>{{ Auth::user()->name }}</span>
         </a>
         <div class="dropdown-menu">
-          <a class="dropdown-item d-flex align-items-right" href="{{ route('employee.logout') }}"><i class="bx bx-log-out-circle"></i><span>Logout</span></a>
-    
-       
+            <a class="dropdown-item d-flex align-items-right" href="{{ route('employee.logout') }}">
+                <i class="bx bx-log-out-circle"></i><span>Logout</span>
+            </a>
         </div>
-      </li>
+    </li>
+@else
+    <li class="nav-item">
+        <a class="nav-link" href="{{ route('login') }}">Login</a>
+    </li>
+@endif
+
   </ul>
 </nav>

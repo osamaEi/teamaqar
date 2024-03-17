@@ -13,9 +13,10 @@ class Property extends Model
     protected $guarded =[];
 
 
-    public function images()
+    public function multiImages()
     {
-        return $this->hasMany(MultiImages::class);
+        return $this->hasMany(MultiImages::class, 'propery_id');
     }
+    
     
 }

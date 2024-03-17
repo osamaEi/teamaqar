@@ -138,25 +138,7 @@
                     <input type="text" name="price" class="form-control" id="price" value="{{ $property->price }}">
                 </div>
   
-                <!-- Image -->
-                <div class="form-group">
-                  <label for="image">{{ __('Image')}}</label>
-                  <input type="file" name="image" class="form-control" id="image" onchange="previewImage(this)">
-                  <img id="preview" src="{{ asset('storage/img/'.$property->image) }}" class="product-image" alt="Product Image" style="width:150px; disply:inline-block; margin-right: 10px; ">
-              </div>
-              
-              <script>
-                  function previewImage(input) {
-                      var preview = document.getElementById('preview');
-                      if (input.files && input.files[0]) {
-                          var reader = new FileReader();
-                          reader.onload = function (e) {
-                              preview.src = e.target.result;
-                          }
-                          reader.readAsDataURL(input.files[0]);
-                      }
-                  }
-              </script>
+                
               
               <div class="form-group">
                 <label for="exampleInputFile">{{ __('Other Images')}}</label>
@@ -165,7 +147,6 @@
 
                   @php 
 
-                  $multiImages = \App\models\multiImages::where('propery_id',$property->id)->get();
 
                   @endphp
 

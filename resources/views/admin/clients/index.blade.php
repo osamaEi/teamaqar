@@ -43,7 +43,7 @@
                                       </svg>{{$property->location}}</b></span>
                 
                 <p style="padding-top:25px;"class="card-text">{{ __('Price')}}:{{$property->price}} $ </p>
-                <a href="{{ route('property.show',$property->id)}}" class="btn btn-success outline">{{ __('Read More')}}</a>
+                <a href="{{ route('clients.show',$property->id)}}" class="btn btn-success outline">{{ __('Read More')}}</a>
                 <div class="action-buttons">
                     <form action="{{ route('property.destroy', $property->id) }}" method="post" enctype="multipart/form-data">
                         @csrf

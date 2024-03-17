@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Property;
+use App\Models\MultiImages;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -16,13 +17,20 @@ class RedirectController extends Controller
     }
 
 
-    public function properties() {
+   public function properties() {
+    
+    $properties = Property::latest()->paginate(4);
+    
+    // Retrieve multi-images separately for each property
+    $multiImages = [];
+    foreach ($properties as $property) {
+        $multiImages[$property->id] = MultiImages::where('propery_id', $property->id)->get();
+    }
 
-        $properties = Property::latest()->paginate(4);
+    // Pass properties and multi-images to the view
+    return view('admin.property.index', compact('properties', 'multiImages'));
+}
 
-
-        return  view('admin.property.index',compact('properties'));
-    } 
 
 
     public function notification() {
