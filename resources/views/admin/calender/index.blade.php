@@ -244,7 +244,16 @@
     
     toastr.success(message, 'حدث');
 }
-
+$('#calendar').on('click touchstart', function (event) {
+        // Prevent the default action
+        event.preventDefault();
+        // Get the clicked/touched coordinates
+        var coords = event.originalEvent.touches ? event.originalEvent.touches[0] : event;
+        // Determine the clicked/touched date
+        var date = calendar.fullCalendar('getDateFromElement', $(this), coords);
+        // Open the event creation prompt
+        handleEventCreation(date, date, true); // Pass the same start and end date for simplicity
+    });
                     </script>
                 </div>
                 <!-- /.row -->
@@ -253,10 +262,14 @@
         </div>
         <!-- /.content -->
     </div>
-    <!-- /.content-wrapper -->
-    <!-- Control Sidebar -->
-    <!-- /.control-sidebar -->
-    <!-- Main Footer -->
+
+    
+   
+    <!-- jQuery Knob Chart -->
+
+    <!-- overlayScrollbars -->
+    <script src="{{asset('plugins/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
+
     <script src="{{asset('dist/js/adminlte.js')}}"></script>
 </div> <!-- .wrapper -->
 </body>
