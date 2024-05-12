@@ -9,11 +9,8 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <!-- Styles -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.css">
     <link rel="stylesheet" href="{{ asset('plugins/icheck-bootstrap/icheck-bootstrap.min.css') }}">
-    
-    <!-- Other scripts -->
     <!-- Toastr -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
     <!-- Font Awesome -->
@@ -31,10 +28,6 @@
     <!-- Custom styles -->
     <link rel="stylesheet" href="{{ asset('dist/css/custom.css') }}">
 </head>
-
-
-
-
 <body class="hold-transition sidebar-mini" dir="rtl">
 <div class="wrapper">
     <!-- Navbar -->
@@ -117,256 +110,119 @@
         <!-- /.navbar -->
     @include('admin.body.side_nav')
     <!-- Main Sidebar Container -->
-    <div class="content-wrapper" dir="ltr">
+    <div class="content-wrapper">
         <div class="content-header">
             <div class="container-fluid">
                 <div class="row mb-2">
-                </div>
-                    <button id="openModalButton" class="btn btn-primary">+</button>
                     <div id='calendar'></div>
                     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-                    <!-- jQuery -->
-
-<!-- Bootstrap JavaScript -->
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-
                     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
                     <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.js"></script>
-                    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/locale/ar.js"></script>
-
                     <script src="{{ asset('plugins/toastr/toastr.min.js') }}"></script>
 
-                    <div id="addEventModal" class="modal" tabindex="-1" role="dialog">
-                        <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title">تحديد موعد جديد</h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <form id="addEventForm" method="POST" action="{{ route('calendar.event.store') }}">
-                                    @csrf
-                                <div class="modal-body">
-                                    <div class="form-group">
-                                        <label for="eventTitle">العنوان</label>
-                                        <input type="text" name="title" class="form-control" id="eventTitle">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="eventStartDate">البدء من : </label>
-                                        <input type="datetime-local" name="start" class="form-control" id="eventStartDate">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="eventEndDate">الانتهاء من :</label>
-                                        <input type="datetime-local" name="end" class="form-control" id="eventEndDate">
-                                    </div>
-                                </div>
-
-
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">X</button>
-                                    <button type="submit" class="btn btn-primary" id="addEventBtn">ادخال</button>
-                                </div>
-
-                                </form>
-                            </div>
-                        </div>
-                    </div>
                     <style>
-
-#calendar {
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-}
-
-@media only screen and (max-width: 800px) {
-        /* Adjustments for mobile */
-        #calendar {
-            width: 100%;
-            font-size: 15px;
-            overflow: hidden;
-        }
-    }
-
-.fc table {
-  width: 100%;
-  table-layout: fixed;
-  border-collapse: initial;
-  border-spacing: 0;
-  font-size: 1em;
-}
-
-.fc button {
- 
-  font-size: .85em;
-  white-space: nowrap;
-  cursor: pointer;
-}
-.fc-button {
-
-  border-bottom-color: #6e1d1d;
-  border-color: #ddd;
-  color: white;
-  background-color: rgb(19, 27, 99);
-}
-
-.fc-day-number {
-  font-size: 16px;
-  font-weight: 634;
-  padding-left: 10px; /* Change padding-left to padding-right */
-  direction: rtl; /* Add this line */
-}
-
 
 
 .toast-success {
     background-color: skyblue ; /* Set the background color to light green */
 }
                     </style>
+                    <script>
+                        $(document).ready(function () {
+                            var SITEURL = "{{ url('/') }}";
+                            $.ajaxSetup({
+                                headers: {
+                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                                }
+                            });
+                            var calendar = $('#calendar').fullCalendar({
+                                editable: true,
+                                events: SITEURL + "/fullcalender",
+                                displayEventTime: true,
+                                header: {
+                                    left: 'prev,next today',
+                                    center: 'title',
+                                    right: 'month,agendaWeek,agendaDay',
+                                    backgroundColor: 'green' // Set the background color to green
 
+                                },
+                                eventRender: function (event, element, view) {
+                                    if (event.allDay === 'true') {
+                                        event.allDay = true;
+                                    } else {
+                                        event.allDay = false;
+                                    }
+                                },
+                                selectable: true,
+                                selectHelper: true,
+                                select: function (start, end, allDay) {
+                                    var title = prompt('عنوان الحدث:');
+                                    if (title) {
+                                        var start = $.fullCalendar.formatDate(start, "Y-MM-DD HH:mm:ss");
+                                        var end = $.fullCalendar.formatDate(end, "Y-MM-DD HH:mm:ss");
+                                        $.ajax({
+                                            url: SITEURL + "/fullcalenderAjax",
+                                            data: {
+                                                title: title,
+                                                start: start,
+                                                end: end,
+                                                type: 'add'
+                                            },
+                                            type: "POST",
+                                            success: function (data) {
+    displayMessage("تم إنشاء الموعد بنجاح");
+    calendar.fullCalendar('renderEvent', {
+        id: data.id,
+        title: title,
+        start: start,
+        end: end,
+        allDay: allDay,
+        backgroundColor: 'green' // Set the background color to green
+    }, true);
+    calendar.fullCalendar('unselect');
+}
 
-
-
-
-
- <script>
-                 $(document).ready(function() {
-    var SITEURL = "{{ url('/') }}";
-    $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        }
-    });
-    var calendar = $('#calendar').fullCalendar({
-        editable: true,
-        events: SITEURL + "/fullcalender",
-        displayEventTime: true,
-        header: {
-            left: 'next,prev today', // Added list views
-            center: 'title',
-            right: 'month,agendaWeek,agendaDay,listWeek',
-        },
-
-        eventRender: function(event, element, view) {
-
-            element.css('background-color', 'lightgreen');
-
-            if (event.allDay === 'true') {
-                event.allDay = true;
-            } else {
-                event.allDay = false;
-            }
-        },
-        selectable: true,
-        selectHelper: true,
-        select: function(start, end, allDay) {
-            var title = prompt('ادخل موعد');
-            if (title) {
-                var start = $.fullCalendar.formatDate(start, "Y-MM-DD HH:mm:ss");
-                var end = $.fullCalendar.formatDate(end, "Y-MM-DD HH:mm:ss");
-                $.ajax({
-                    url: SITEURL + "/fullcalenderAjax",
-                    data: {
-                        title: title,
-                        start: start,
-                        end: end,
-                        type: 'add'
-                    },
-                    type: "POST",
-                    success: function(data) {
-                        displayMessage("تم إنشاء الموعد بنجاح");
-                        calendar.fullCalendar('renderEvent', {
-                            id: data.id,
-                            title: title,
-                            start: start,
-                            end: end,
-                            allDay: allDay,
-                            backgroundColor: 'green' // Set the background color to green
-                        }, true);
-                        calendar.fullCalendar('unselect');
-                    }
-                });
-            }
-        },
-        eventDrop: function(event, delta) {
-            var start = $.fullCalendar.formatDate(event.start, "Y-MM-DD HH:mm:ss");
-            var end = $.fullCalendar.formatDate(event.end, "Y-MM-DD HH:mm:ss");
-            $.ajax({
-                url: SITEURL + '/fullcalenderAjax',
-                data: {
-                    title: event.title,
-                    start: start,
-                    end: end,
-                    id: event.id,
-                    type: 'update'
-                },
-                type: "POST",
-                success: function(response) {
-                    displayMessage("تم تحديث الحدث بنجاح");
-                }
-            });
-        },
-        eventClick: function(event) {
-            var deleteMsg = confirm("هل تريد مسح الموعد ؟");
-            if (deleteMsg) {
-                $.ajax({
-                    type: "POST",
-                    url: SITEURL + '/fullcalenderAjax',
-                    data: {
-                        id: event.id,
-                        type: 'delete'
-                    },
-                    success: function(response) {
-                        calendar.fullCalendar('removeEvents', event.id);
-                        displayMessage("تم حذف الحدث بنجاح");
-                    }
-                });
-            }
-        },
-        // Custom render function for day cells
-        dayRender: function (date, cell) {
-            cell.addClass('fc-day-button');
-            // Attach click event listener to each day cell
-            cell.click(function() {
-                var title = prompt('ادخل موعد');
-                if (title) {
-                    var start = date.format('YYYY-MM-DD') + 'T00:00:00'; // Start time of the day
-                    var end = date.format('YYYY-MM-DD') + 'T23:59:59'; // End time of the day
-                    $.ajax({
-                        url: SITEURL + "/fullcalenderAjax",
-                        data: {
-                            title: title,
-                            start: start,
-                            end: end,
-                            type: 'add'
-                        },
-                        type: "POST",
-                        success: function(data) {
-                            displayMessage("تم إنشاء الموعد بنجاح");
-                            calendar.fullCalendar('renderEvent', {
-                                id: data.id,
-                                title: title,
-                                start: start,
-                                end: end,
-                                allDay: true,
-                                backgroundColor: 'green' // Set the background color to green
-                            }, true);
-                        }
-                    });
-                }
-            });
-        }
-    });
-});
-    $(document).ready(function() {
-        // Handle click event of open modal button
-        $('#openModalButton').click(function() {
-            $('#addEventModal').modal('show');
-        });
-
-    });
-function displayMessage(message) {
+                                        });
+                                    }
+                                },
+                                eventDrop: function (event, delta) {
+                                    var start = $.fullCalendar.formatDate(event.start, "Y-MM-DD HH:mm:ss");
+                                    var end = $.fullCalendar.formatDate(event.end, "Y-MM-DD HH:mm:ss");
+                                    $.ajax({
+                                        url: SITEURL + '/fullcalenderAjax',
+                                        data: {
+                                            title: event.title,
+                                            start: start,
+                                            end: end,
+                                            id: event.id,
+                                            type: 'update'
+                                        },
+                                        type: "POST",
+                                        success: function (response) {
+                                            displayMessage("تم تحديث الحدث بنجاح");
+                                        }
+                                    });
+                                },
+                                eventClick: function (event) {
+                                    var deleteMsg = confirm("هل تريد مسح الموعد ؟");
+                                    if (deleteMsg) {
+                                        $.ajax({
+                                            type: "POST",
+                                            url: SITEURL + '/fullcalenderAjax',
+                                            data: {
+                                                id: event.id,
+                                                type: 'delete'
+                                            },
+                                            success: function (response) {
+                                                calendar.fullCalendar('removeEvents', event.id);
+                                                displayMessage("تم حذف الحدث بنجاح");
+                                            }
+                                        });
+                                    }
+                                }
+                            });
+                        });
+                        function displayMessage(message) {
     toastr.options = {
         "positionClass": "toast-top-right",
         "preventDuplicates": true,
@@ -384,12 +240,20 @@ function displayMessage(message) {
             "success": "toast-success"
         }
     };
-
+    
+    
     toastr.success(message, 'حدث');
 }
-
-
-
+$('#calendar').on('click touchstart', function (event) {
+        // Prevent the default action
+        event.preventDefault();
+        // Get the clicked/touched coordinates
+        var coords = event.originalEvent.touches ? event.originalEvent.touches[0] : event;
+        // Determine the clicked/touched date
+        var date = calendar.fullCalendar('getDateFromElement', $(this), coords);
+        // Open the event creation prompt
+        handleEventCreation(date, date, true); // Pass the same start and end date for simplicity
+    });
                     </script>
                 </div>
                 <!-- /.row -->
@@ -398,10 +262,14 @@ function displayMessage(message) {
         </div>
         <!-- /.content -->
     </div>
-    <!-- /.content-wrapper -->
-    <!-- Control Sidebar -->
-    <!-- /.control-sidebar -->
-    <!-- Main Footer -->
+
+    
+   
+    <!-- jQuery Knob Chart -->
+
+    <!-- overlayScrollbars -->
+    <script src="{{asset('plugins/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
+
     <script src="{{asset('dist/js/adminlte.js')}}"></script>
 </div> <!-- .wrapper -->
 </body>
