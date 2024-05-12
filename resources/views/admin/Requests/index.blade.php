@@ -1,7 +1,27 @@
 @extends('admin.index')
 @section('admin') 
 
-<div class="filter-div d-flex justify-content-between" style="padding-bottom: 20px; padding-left: 32px; ">
+
+<style>
+
+/* CSS for button styles */
+.btn-info {
+    background-color: #5bc0de; /* Change to your preferred color */
+    border-color: #46b8da; /* Change to your preferred color */
+    color: #fff; /* Text color */
+    padding: 10px 20px; /* Adjust padding as needed */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Show pointer cursor on hover */
+}
+
+.btn-info:hover {
+    background-color: #31b0d5; /* Darken the background color on hover */
+    border-color: #269abc; /* Darken the border color on hover */
+}
+
+
+  </style>
+<div class="filter-div d-flex justify-content-between">
   <div class="col-md-6">
     <form method="post" action="{{ route('requests.applyAction') }}" class="filter-form filter-form-left d-flex justify-content-start" id="clientForm" onclick="applyAction()">
       @csrf
@@ -43,18 +63,17 @@
     </select>
     
     
-      <button class="btn-info btn btn-icon dungdt-apply-form-btn" type="submit"   style="margin-right: 21px;">تغيير اجراء</button>
+      <button class="btn-info btn btn-icon dungdt-apply-form-btn" type="submit"  style="  margin-right: 20px;  margin-bottom: 15px; width: 77px;">تغيير </button>
     </form>
   </div>
 </div>
-<br>
-<div class="filter-div d-flex justify-content-between" style="padding-left: 32px;">
+<div class="filter-div d-flex justify-content-between" >
   <div class="col-md-6">
     <form method="post" action="{{ route('requests.applyTime') }}" class="filter-form filter-form-left d-flex justify-content-start" id="clientFormTime" onclick="applyTime()">
       @csrf
       <input type="hidden" name="selectedIds" id="selectedIdsTime" value="">
       <input type="datetime-local" name="contact_datetime" class="form-control"  style="  width: 250px;">
-      <button class="btn-info btn btn-icon dungdt-apply-form-btn" type="submit" style="margin-right: 20px;">تحديد موعد</button>
+      <button class="btn-info btn btn-icon dungdt-apply-form-btn" type="submit" style="margin-right: 20px; margin-bottom: 15px; ">تحديد </button>
     </form>
   </div>
 </div>

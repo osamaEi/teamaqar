@@ -16,8 +16,11 @@ return new class extends Migration
             $table->string('title');
             $table->dateTime('start');
             $table->dateTime('end');
+            $table->string('backgroundColor')->nullable();
+            $table->string('borderColor')->nullable();
+            $table->string('textColor')->nullable();
             $table->timestamps();
-        });
+        }); 
         
     }
 

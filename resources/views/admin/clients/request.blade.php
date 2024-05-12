@@ -42,12 +42,23 @@
 
 
 
-            
+                <div class="col-sm-8">
+
+                  <label>{{ __('Client Type')}}</label>
+
+                     <select class="form-control select2" style="width: 100%;" name="client_type">
+                       
+                       <option value=" عميل"> عميل</option>
+                       <option value="وسيط عقاري">وسيط عقاري</option>
+                       <option value="مالك">مالك</option>
+                       <option value="وكيل">وكيل</option>
+                     </select>
+                    </div>
 
 
                 
               <div class="col-sm-8">
-                  <label for="exampleInputEmail1">{{ __('phone')}} </label>
+                  <label for="exampleInputEmail1">الجوال </label>
                   <input type="text" name="client_phone" class="form-control">
                 </div> 
                     <div class="col-sm-8">
@@ -74,26 +85,15 @@
                     
     
 
-
-                      <div class="col-sm-8">
-                        <label for="exampleInputEmail1">{{ __('طلب أخر')}}</label>
-                        <input type="text" name="other_request" class="form-control">
-                      </div>
+                    <div class="col-sm-8">
+                      <label for="exampleInputEmail1">مواصفات اضافية</label>
+                      <textarea name="other_request" class="form-control" style="height: 100px; width: 100%;"></textarea>
+                  </div>
+                  
     
     
 
-                      <div class="col-sm-8">
-
-                      <label>{{ __('Client Type')}}</label>
-    
-                         <select class="form-control select2" style="width: 100%;" name="client_type">
-                           
-                           <option value=" عميل"> عميل</option>
-                           <option value="وسيط عقاري">وسيط عقاري</option>
-                           <option value="مالك">مالك</option>
-                           <option value="وكيل">وكيل</option>
-                         </select>
-                        </div>
+                
     
                     <!-- /.card-body -->
     

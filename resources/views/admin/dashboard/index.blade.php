@@ -152,6 +152,33 @@ $latestRequestCount = \App\Models\RequestProperty::where('created_at', '>=', $tw
       </div>
     </div>
 
+
+
+
+
+          
+        
+                      
+          
+    
+          
+      </div>
+  </div>
+</div>
+
+
+
+        
+        
+      
+                    
+        
+  
+        
+    </div>
+</div>
+    
+
     
 
   @endsection

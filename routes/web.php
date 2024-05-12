@@ -6,6 +6,7 @@ use App\Http\Controllers\EventController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RequestController;
+use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\CalenderController;
 use App\Http\Controllers\languageController;
 use App\Http\Controllers\PropertyController;
@@ -25,7 +26,7 @@ use App\Http\Controllers\NotificationController;
 */
 
 //clients
-Route::get('/', [ClientController::class ,'index'])->name('clients.index');
+Route::get('/index', [ClientController::class ,'index'])->name('clients.index');
 
 Route::get('/show/{id}', [ClientController::class ,'show'])->name('clients.show');
 
@@ -35,17 +36,13 @@ Route::get('/thank_you/client', [ClientController::class ,'thank_you'])->name('c
 
 Route::post('/store/client', [ClientController::class ,'store'])->name('client.store');
 
-Route::get('/login', function () {
+Route::get('/', function () {
 
     
 
     return view('auth.login');
 });
 
-Route::get('/dashboard', function () {
-
-    return view('admin.dashboard.index');
-})->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -108,11 +105,16 @@ Route::put('/properties/{property}', [PropertyController::class, 'update'])->nam
 
 Route::get('fullcalender', [EventController::class, 'index'])->name('calender.index');
 
-Route::post('fullcalenderAjax', [EventController::class, 'ajax']);
+Route::post('fullcalenderAjax', [EventController::class, 'ajax'])->name('calendar.ajax');
 
+Route::post('calender/store', [EventController::class, 'storeEvent'])->name('calendar.event.store');
 
 
 
 });
+
+
+
+
 
 

@@ -13,7 +13,7 @@ class NotificationController extends Controller
     public function getReminders()
     {
         $today = Carbon::now()->startOfDay();
-        $reminders = Event::whereDate('start', '<=', $today)
+        $reminders = Event::whereDate('start', '=', $today)
             ->where('read', false)
             ->get();
 

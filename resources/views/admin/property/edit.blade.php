@@ -113,7 +113,7 @@
                         <option value="أرض بدون" {{ $property->land_situation == 'أرض بدون' ? 'selected' : '' }}>أرض بدون</option>
                     </select>
                 </div>
-                
+                 
                   
                   <div class="col-sm-4">
                       <label>{{ __('Property Status')}}</label>

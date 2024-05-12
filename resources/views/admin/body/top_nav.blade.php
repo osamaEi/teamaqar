@@ -35,6 +35,7 @@
                 <button type="submit" class="dropdown-item">
                     <div class="notification-content">
                         <i class="far fa-bell"></i> 
+                        
 
                         <span>لديك اجتماع اليوم مع   {{ $reminder->title }}</span>
                     </div>

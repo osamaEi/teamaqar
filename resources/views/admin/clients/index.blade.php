@@ -19,6 +19,7 @@
 </style>
 
 
+
     @foreach($properties as $property)
     <div class="col-md-3">
         <div class="card position-relative" >

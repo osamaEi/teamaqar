@@ -32,7 +32,6 @@
   <link rel="stylesheet" href="{{ asset('dist/css/custom.css') }}">
 
 
-
  
 
 

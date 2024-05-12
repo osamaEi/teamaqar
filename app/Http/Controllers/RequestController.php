@@ -145,39 +145,40 @@ class RequestController extends Controller
     
     } 
 
-    public function applyTime(Request $request)
-{
-    // Set the default timezone to Saudi Arabia
-    date_default_timezone_set('Asia/Riyadh');
+     public function applyTime(Request $request)
+    {
+        // Set the default timezone to Saudi Arabia
+        date_default_timezone_set('Asia/Riyadh');
+    
+        $selectedIds = explode(',', $request->input('selectedIds'));
+        $startDatetime = $request->input('contact_datetime');
 
-    $selectedIds = explode(',', $request->input('selectedIds'));
-    $contactDatetime = $request->input('contact_datetime');
-
-    // Validate input if needed
-
-    foreach ($selectedIds as $requestId) {
-        $requestProperty = RequestProperty::find($requestId);
-
-        if ($requestProperty) {
-            $clientName = $requestProperty->client_name;
-
-            // Set the start date
-            $start = Carbon::parse($contactDatetime);
-
-            // Use updateOrCreate to either update existing event or create new
-            Event::updateOrCreate(
-                ['request_id' => $requestId], // Search criteria
-                [
-                    'title' => $clientName,  // Set the event title to the client name
-                    'start' => $start,        // Set the start time
-                    'end' => $start,          // Set the end time
-                ]
-            );
+        // Validate input if needed
+    
+        foreach ($selectedIds as $requestId) {
+            $requestProperty = RequestProperty::find($requestId);
+    
+            if ($requestProperty) {
+                $clientName = $requestProperty->client_name; 
+                
+                
+                $endDatetime = \Carbon\Carbon::parse($startDatetime)->addHour();
+    
+                // Use updateOrCreate to either update existing event or create new
+                Event::updateOrCreate(
+                    ['request_id' => $requestId], // Search criteria
+                    [
+                        'title' => $clientName,  // Set the event title to the client name
+                        'start' => $startDatetime,        // Set the start time
+                        'end' => $endDatetime,          // Set the end time
+                    ]
+                );
+            }
         }
+    
+        return redirect()->back()->with('success', 'Datetime applied successfully!');
     }
-
-    return redirect()->back()->with('success', 'Datetime applied successfully!');
-}
+    
 
 
     public function reminders()
