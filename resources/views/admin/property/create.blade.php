@@ -357,8 +357,27 @@
           map.fitBounds(bounds);
       });
 
+      // Get user's current location
+      if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(function(position) {
+              var pos = {
+                  lat: position.coords.latitude,
+                  lng: position.coords.longitude
+              };
+              map.setCenter(pos);
+              addMarker(pos);
+              geocodeLatLng(pos);
+          }, function() {
+              handleLocationError(true, map.getCenter());
+          });
+      } else {
+          // Browser doesn't support Geolocation
+          handleLocationError(false, map.getCenter());
+      }
+
       // Listen for click event on the map
       map.addListener('click', function(event) {
+          addMarker(event.latLng);
           geocodeLatLng(event.latLng);
       });
 
@@ -368,8 +387,6 @@
           geocoder.geocode({ 'location': latLng }, function(results, status) {
               if (status === 'OK') {
                   if (results[0]) {
-                      clearMarkers();
-                      addMarker(latLng);
                       $("#pac-input").val(results[0].formatted_address);
                   } else {
                       window.alert('No results found');
@@ -379,8 +396,17 @@
               }
           });
       }
+
+      // Function to handle errors in geolocation
+      function handleLocationError(browserHasGeolocation, pos) {
+          window.alert(browserHasGeolocation ?
+              'Error: The Geolocation service failed.' :
+              'Error: Your browser doesn\'t support geolocation.');
+      }
   }
 </script>
+
+
 
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBbgI1lSYiI8QtiLhSxiW-nIuMOdFti0rs&libraries=places&callback=initAutocomplete&language=ar&region=EG
          async defer"></script>
