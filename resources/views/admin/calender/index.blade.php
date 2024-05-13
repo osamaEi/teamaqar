@@ -27,7 +27,18 @@
     <link rel="stylesheet" href="https://cdn.rtlcss.com/bootstrap/v4.2.1/css/bootstrap.min.css">
     <!-- Custom styles -->
     <link rel="stylesheet" href="{{ asset('dist/css/custom.css') }}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap">
+
+
+
 </head>
+<style>
+
+    body {
+    font-family: 'Cairo', sans-serif;
+}
+
+</style>
 <body class="hold-transition sidebar-mini" dir="rtl">
 <div class="wrapper">
     <!-- Navbar -->

@@ -16,12 +16,17 @@
           </div>
           
           <div class="col-12 product-image-thumbs">
-              @foreach($multiImage as $image)
-                  <div class="product-image-thumb">
-                      <img class="thumbnail" src="{{ asset('upload/property/multi_img/' . $image->images) }}" >
-                  </div>
-              @endforeach
-          </div>
+            <div class="row">
+                @foreach($multiImage as $image)
+                    <div class="col-3"> <!-- 3 columns for each image to fit 4 images in a row -->
+                        <div class="product-image-thumb">
+                            <img class="thumbnail" src="{{ asset('upload/property/multi_img/' . $image->images) }}" >
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+        
           
           
           <script>

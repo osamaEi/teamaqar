@@ -8,9 +8,17 @@
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-</head>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap">
 
+
+
+</head>
 <style>
+
+    body {
+    font-family: 'Cairo', sans-serif;
+}
+
 
 .border-primary {
     border-color: #0056b3 !important; /* Darker shade of blue */

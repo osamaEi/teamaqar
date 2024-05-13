@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SmsController;
+use App\Http\Controllers\TodoController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\ProfileController;
@@ -52,6 +53,7 @@ Route::middleware('auth')->group(function () {
 
 require __DIR__.'/auth.php';
 
+Route::resource('todo', TodoController::class);
 
 Route::middleware('auth')->group(function () {
 //logout  
@@ -114,7 +116,7 @@ Route::post('calender/store', [EventController::class, 'storeEvent'])->name('cal
 });
 
 
-
+Route::post('/todos/update-status', [ToDoController::class, 'updateStatus'])->name('todos.update-status');
 
 
 
