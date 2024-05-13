@@ -55,6 +55,8 @@ class PropertyController extends Controller
         'notes' => 'string|nullable',
         'land_situation' => 'string|nullable',
         'propery_cat' => 'string|nullable',
+        'latitude' => 'string|nullable',
+        'longitude' => 'string|nullable',
     ]);
 
 
@@ -80,6 +82,8 @@ class PropertyController extends Controller
         'ophone' => $request->get('ophone'),
         'notes' => $request->get('notes'),
         'propery_cat' => $request->get('propery_cat'),
+        'latitude' => $request->get('latitude'),
+        'longitude' => $request->get('longitude'),
     ]);
 
     $property->save();

@@ -61,7 +61,9 @@
           
                   <tr>
                       <th style="font-size: 15px; color: dodgerblue;"><b>{{ __('Location')}}</b></th>
-                      <td colspan="3">{{$property->location}}</td>
+                      <td colspan="3">{{$property->location}}
+                        <div id="map" style="height: 300px; width: 100%;"></div>
+                      </td>
                   </tr>
                   <tr>
                       <th colspan="4">
@@ -154,6 +156,32 @@
     </div>
     <!-- /.card -->
 
+    <script>
+      function initMap() {
+          var map = new google.maps.Map(document.getElementById('map'), {
+              center: { lat: {{ $property->latitude }}, lng: {{ $property->longitude }} },
+              zoom: 13
+          });
+  
+          // Add marker for property location
+          var marker = new google.maps.Marker({
+              position: { lat: {{ $property->latitude }}, lng: {{ $property->longitude }} },
+              map: map,
+              title: '{{ $property->name }}'
+          });
+      }
+  </script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBbgI1lSYiI8QtiLhSxiW-nIuMOdFti0rs&callback=initMap" async defer></script>
+  
+  <script>
+      $(document).ready(function() {
+          $('.product-image-thumb').on('click', function () {
+              var $image_element = $(this).find('img')
+              $('.product-image').prop('src', $image_element.attr('src'))
+              $('.product-image-thumb.active').removeClass('active')
+          })
+      })
+  </script>
   <script>
     $(document).ready(function() {
       $('.product-image-thumb').on('click', function () {
