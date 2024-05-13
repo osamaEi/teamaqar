@@ -71,6 +71,12 @@
                   <p> {{ __('Lists')}}</p>
                 </a>
               </li>
+              <li class="nav-item">
+                <a href="{{ route('property.map')}}" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p> {{ __('Maps')}}</p>
+                </a>
+              </li>
             </ul>
           </li>
 

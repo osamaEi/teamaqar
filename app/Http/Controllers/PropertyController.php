@@ -20,6 +20,15 @@ class PropertyController extends Controller
 
     } 
 
+    public function map() {
+
+        $places  =Property::all();
+
+        return view('admin.property.map',compact('places'));
+
+
+
+    } 
 
     public function show($id) {
 

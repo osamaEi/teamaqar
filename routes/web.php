@@ -94,6 +94,8 @@ Route::post('/{id}/mark-as-read', [RequestController::class, 'markAsRead'])->nam
 
 Route::get('/sendsms',[SmsController::class, 'sendsms']);
 
+Route::get('/map',[PropertyController::class, 'map'])->name('property.map');
+
 
 Route::get('lang/{locale}', [LanguageController::class, 'swap'])->name('language.switch'); 
 
