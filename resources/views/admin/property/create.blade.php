@@ -182,11 +182,20 @@
                  
   
                     </div>
+                    <div class="row mb-3">
+                      <div class="col-sm-12 ">
+                                              <label for="exampleInputEmail1">{{ __('العنوان')}}</label>
+                       <input type="text" name="location" class="form-control" id="pac-input">
+                     </div>
+                 
+  
+                    </div>
 
-
-              
-
-
+                
+                      <div class="col-sm-12 ">
+                    <div id="map" style="height: 500px;"></div>
+                      </div>
+                    </div
 
       
 
@@ -273,7 +282,108 @@
 
 
 
+<script>
+  function initAutocomplete() {
+      var map = new google.maps.Map(document.getElementById('map'), {
+          center: { lat: 24.740691, lng: 46.6528521 },
+          zoom: 13,
+          mapTypeId: 'roadmap'
+      });
 
+      // Array to hold markers
+      var markers = [];
+
+      // Function to add a marker to the map
+      function addMarker(location) {
+          clearMarkers();
+          var marker = new google.maps.Marker({
+              position: location,
+              map: map
+          });
+          markers.push(marker);
+      }
+
+      // Function to clear all markers from the map
+      function clearMarkers() {
+          markers.forEach(function(marker) {
+              marker.setMap(null);
+          });
+          markers = [];
+      }
+
+      // Create the search box and link it to the UI element.
+      var input = document.getElementById('pac-input');
+      var searchBox = new google.maps.places.SearchBox(input);
+      map.controls[google.maps.ControlPosition.TOP_RIGHT].push(input);
+
+      // Bias the SearchBox results towards current map's viewport.
+      map.addListener('bounds_changed', function() {
+          searchBox.setBounds(map.getBounds());
+      });
+
+      // Listen for the event fired when the user selects a prediction and retrieve
+      // more details for that place.
+      searchBox.addListener('places_changed', function() {
+          var places = searchBox.getPlaces();
+
+          if (places.length == 0) {
+              return;
+          }
+
+          // Clear out the old markers.
+          clearMarkers();
+
+          // For each place, get the icon, name, and location.
+          var bounds = new google.maps.LatLngBounds();
+          places.forEach(function(place) {
+              if (!place.geometry) {
+                  console.log("Returned place contains no geometry");
+                  return;
+              }
+
+              // Create a marker for each place.
+              addMarker(place.geometry.location);
+
+              // Set the input field value to the selected place's formatted address.
+              $("#pac-input").val(place.formatted_address);
+
+              if (place.geometry.viewport) {
+                  // Only geocodes have viewport.
+                  bounds.union(place.geometry.viewport);
+              } else {
+                  bounds.extend(place.geometry.location);
+              }
+          });
+          map.fitBounds(bounds);
+      });
+
+      // Listen for click event on the map
+      map.addListener('click', function(event) {
+          geocodeLatLng(event.latLng);
+      });
+
+      // Function to get address from LatLng and update the input field
+      function geocodeLatLng(latLng) {
+          var geocoder = new google.maps.Geocoder();
+          geocoder.geocode({ 'location': latLng }, function(results, status) {
+              if (status === 'OK') {
+                  if (results[0]) {
+                      clearMarkers();
+                      addMarker(latLng);
+                      $("#pac-input").val(results[0].formatted_address);
+                  } else {
+                      window.alert('No results found');
+                  }
+              } else {
+                  window.alert('Geocoder failed due to: ' + status);
+              }
+          });
+      }
+  }
+</script>
+
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBbgI1lSYiI8QtiLhSxiW-nIuMOdFti0rs&libraries=places&callback=initAutocomplete&language=ar&region=EG
+         async defer"></script>
 
 
 
