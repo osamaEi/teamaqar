@@ -49,7 +49,7 @@
     "Edit" : "تعديل العرض",
     "Delete" : "ازالة العرض",
     "Send A Request" : "ارسل طلب",
-    "Price" : "التكلفة",
+    "Price" : "السعر",
     "Offer Type" : "نوع الطلب",
     "Client Type" : "الصفة",
     "phone": "الهاتف",
@@ -59,7 +59,8 @@
     "Other Images" : "أضف صور أخرى",
     "Notifications" : "الاشعارات",
     "Mark as Read" : "وضع علامة كمقروء",
-    "Property No" : "رقم العقار/الارض"
+    "Property No" : "رقم العقار/الارض",
+    "Maps" : "الخريطة"
 
 
     

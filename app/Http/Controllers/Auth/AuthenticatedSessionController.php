@@ -32,7 +32,7 @@ class AuthenticatedSessionController extends Controller
 
         Alert::success('Congrate','add success');
 
-        return redirect()->route('create.client');
+        return redirect()->route('property.map');
     }
 
     /**

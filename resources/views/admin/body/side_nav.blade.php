@@ -135,7 +135,7 @@
 
 
 
-<aside class="main-sidebar sidebar-dark-primary elevation-4">
+<aside class="main-sidebar sidebar-dark-primary elevation-4" style="background: rgb(87, 119, 87)">
   <!-- Brand Logo -->
   <a href="" class="brand-link">
     
@@ -160,19 +160,24 @@
           <a href="#" class="nav-link">
             <i class="nav-icon fas fa-book"></i>
             <p>
-              {{ __('Requests')}}
+              {{ __('Properties')}}
               <i class="fas fa-angle-left right"></i>
             </p>
           </a>
           <ul class="nav nav-treeview">
            
             <li class="nav-item">
-              <a href="{{ route('create.client')}}" class="nav-link">
+              <a href="{{ route('clients.index')}}" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
-                <p> {{ __('Add New Requests')}}</p>
+                <p>  {{ __('Lists')}}</p>
               </a>
             </li>
-            
+            <li class="nav-item">
+              <a href="{{ route('property.map')}}" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p> {{ __('Maps')}}</p>
+              </a>
+            </li>
      
 
           

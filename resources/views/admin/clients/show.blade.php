@@ -98,7 +98,7 @@
                   <tr>
                       <td colspan="4" class="bg-lightgreen py-2 px-3 mt-4">
                           <h4 class="mb-0">
-                              <b>{{ __('Price')}}: </b>${{$property->price}}       
+                              <b>{{ __('Price')}}: </b>{{$property->price}} ريال       
                               <br><hr>  
                               <a class="btn btn-success" data-toggle="modal" data-target="#requestModal">{{ __('Send A Request')}}</a>
                           </h4>
