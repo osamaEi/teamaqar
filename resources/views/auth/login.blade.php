@@ -47,7 +47,7 @@
                             <div class="card-body">
                                 <!-- Your logo or view -->
                                 <div class="text-center mb-4">
-                                    <img src="{{ asset('upload/123.jpg')}}" alt="Logo" width="150">
+                                    <img src="{{ asset('upload/123.jpg')}}" alt="Logo" style="width: 250px;">
                                     <!-- Or any other content you want to display -->
                                 </div>
                     
