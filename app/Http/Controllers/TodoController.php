@@ -55,27 +55,22 @@ use App\Models\ToDo;
         public function updateStatus(Request $request)
         {
             // Get the todo ID from the form
-            $todoId = $request->input('todos');
-            
-            // If no todo is checked (unchecked checkbox), $todoId will be 0
-            if ($todoId !== null && $todoId !== 0) {
-                // Find the todo
-                $todo = Todo::findOrFail($todoId);
-            
-                // Toggle the completion status
-                $todo->completed = !$todo->completed;
-            
-                // Save the changes
-                $todo->save();
-            } else {
-                // If the checkbox is unchecked, set completed to false
-                $todo->completed = false;
-                $todo->save();
-            }
+            $todoId = $request->input('todo_id');
+            $completed = $request->has('todos');
+        
+            // Find the todo
+            $todo = Todo::findOrFail($todoId);
+        
+            // Update the completion status based on the checkbox state
+            $todo->completed = $completed;
+        
+            // Save the changes
+            $todo->save();
         
             // Redirect back or return a response as needed
             return redirect()->back();
         }
+        
         
         
     }

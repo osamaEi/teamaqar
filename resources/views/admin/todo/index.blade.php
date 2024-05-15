@@ -1,15 +1,12 @@
 @extends('admin.index')
 @section('admin')
 
-
 <style>
-
 .completed {
     text-decoration: line-through;
 }
-
-
 </style>
+
 <div class="col-md-12">
     <div class="card">
         <div class="card-body">
@@ -29,41 +26,27 @@
             <div class="form-row mt-3">
                 <div class="col-12" id="todo-container">
                     @foreach($todos as $todo)
-                    <form action="{{ route('todos.update-status') }}" method="POST">
-                        @csrf
-                        <div class="input-group">
-                        
-                                <div class="input-group-text">
-                                    <input type="hidden" name="todos" value="0"> <!-- Hidden input to send a value when checkbox is unchecked -->
-                                    <input type="checkbox" name="todos" value="{{ $todo->id }}" {{ $todo->completed ? 'checked' : '' }} onchange="this.form.submit()">
-                                </div>
-                            </form>
-                            
-                            
-                            
-                            <input type="text" class="form-control {{ $todo->completed ? 'completed' : '' }}" aria-label="Text input with checkbox" value="{{ $todo->title }}">                        <form action="{{ route('todo.destroy', $todo) }}" method="POST">
+                    <form action="{{ route('todos.update-status') }}" method="POST" class="d-flex align-items-center w-100">
+
+                    <div class="input-group mb-2">
+                            @csrf
+                            <div class="input-group-text">
+                                <input type="hidden" name="todo_id" value="{{ $todo->id }}">
+                                <input type="checkbox" name="todos" value="1" {{ $todo->completed ? 'checked' : '' }} onchange="this.form.submit()">
+                            </div>
+                            <input type="text" class="form-control {{ $todo->completed ? 'completed' : '' }}" aria-label="Text input with checkbox" value="{{ $todo->title }}" readonly>
+                        </form>
+                        <form action="{{ route('todo.destroy', $todo) }}" method="POST" class="ms-2">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" class="btn btn-outline-secondary bg-danger text-white" id="button-addon2">X</button>
+                            <button type="submit" class="btn btn-outline-secondary bg-danger text-white">X</button>
                         </form>
-                        
-                        </div>
+                    </div>
                     @endforeach
                 </div>
             </div>
         </div>
     </div>
 </div>
-
-
-
-
-
-
-
-
-
-
-
 
 @endsection
