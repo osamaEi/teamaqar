@@ -97,7 +97,7 @@
             border-radius: 1.1em;">
                 <div class="card-body">
                     <div class="button-container text-center">
-                         <a class="btn btn-lg" href="{{ route('clients.index')}}"> <b>طلب أرض </b></a>
+                         <a class="btn btn-lg" href="{{ route('create.client')}}"> <b>طلب أرض </b></a>
                     </div>
                 </div>
             </div>
