@@ -120,8 +120,26 @@
                   <p> {{ __('ToDo')}}</p>
                 </a>
               </li>
-  
+        
         </ul>
+
+        <li class="nav-item">
+          <a href="#" class="nav-link">
+            <i class="nav-icon fas fa-book"></i>
+            <p>
+              {{ __('Files')}}
+              <i class="fas fa-angle-left right"></i>
+            </p>
+          </a>
+          <ul class="nav nav-treeview">
+           
+            <li class="nav-item">
+              <a href="{{ route('files.index')}}" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p> {{ __('Files')}}</p>
+              </a>
+            </li>
+          </ul>
             </nav>
             <!-- /.sidebar-menu -->
         </div>

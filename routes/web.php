@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SmsController;
 use App\Http\Controllers\TodoController;
 use App\Http\Controllers\EventController;
+use App\Http\Controllers\FilesController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RequestController;
@@ -112,7 +113,9 @@ Route::post('fullcalenderAjax', [EventController::class, 'ajax'])->name('calenda
 
 Route::post('calender/store', [EventController::class, 'storeEvent'])->name('calendar.event.store');
 
-
+Route::resource('/files',FilesController::class);
+Route::get('/images', [FilesController::class, 'image'])->name('image.files');
+Route::get('/video', [FilesController::class, 'video'])->name('video.files');
 
 });
 
