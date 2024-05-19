@@ -66,6 +66,12 @@
                 </a>
               </li>
               <li class="nav-item">
+                <a href="{{ route('property.createdraw')}}" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p> {{ __('اضف بالرسمة')}}</p>
+                </a>
+              </li>
+              <li class="nav-item">
                 <a href="{{ route('properties.page')}}" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p> {{ __('Lists')}}</p>

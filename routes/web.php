@@ -54,19 +54,22 @@ Route::middleware('auth')->group(function () {
 
 require __DIR__.'/auth.php';
 
-Route::resource('todo', TodoController::class);
 
 Route::middleware('auth')->group(function () {
 //logout  
+Route::resource('todo', TodoController::class);
 
 Route::get('/employee/logout',[RedirectController::class ,'Logout'])->name('employee.logout');
 
 //properties
 Route::get('/create',[PropertyController::class ,'create'])->name('property.create.page');
 
+Route::get('/createdraw',[PropertyController::class ,'createdraw'])->name('property.createdraw');
+
 Route::get('/{id}/property',[PropertyController::class ,'show'])->name('property.show');
 
 Route::post('/store',[PropertyController::class ,'store'])->name('property.store'); 
+Route::post('/storeDraw',[PropertyController::class ,'storeDraw'])->name('property.store.draw'); 
 
 Route::delete('/deleteProperty/{id}',[PropertyController::class ,'destroy'])->name('property.destroy');
 
@@ -116,12 +119,12 @@ Route::post('calender/store', [EventController::class, 'storeEvent'])->name('cal
 Route::resource('/files',FilesController::class);
 Route::get('/images', [FilesController::class, 'image'])->name('image.files');
 Route::get('/video', [FilesController::class, 'video'])->name('video.files');
-
-});
-
-
 Route::post('/todos/update-status', [ToDoController::class, 'updateStatus'])->name('todos.update-status');
 
 
 
 Route::get('/map',[PropertyController::class, 'map'])->name('property.map');
+});
+
+
+

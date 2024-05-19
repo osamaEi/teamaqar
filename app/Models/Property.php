@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Shape;
 use App\Models\MultiImages;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -18,5 +19,9 @@ class Property extends Model
         return $this->hasMany(MultiImages::class, 'propery_id');
     }
     
+    public function shapes()
+    {
+        return $this->hasMany(Shape::class);
+    }
     
 }

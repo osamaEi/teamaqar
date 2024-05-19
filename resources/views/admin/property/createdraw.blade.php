@@ -9,7 +9,7 @@
         </div>
         <!-- /.card-header -->
         <!-- form start -->
-        <form action="{{ route('property.store')}}" method="post" enctype="multipart/form-data">
+        <form action="{{ route('property.store.draw')}}" method="post" enctype="multipart/form-data">
             @csrf
             @method('POST')
             <div class="card-body">
@@ -125,10 +125,10 @@
                 <!-- Latitude and Longitude inputs -->
                 <input type="hidden" name="latitude" id="latitude">
                 <input type="hidden" name="longitude" id="longitude">
-
-                <div class="col-sm-12">
-                    <div id="map" style="height: 500px;"></div>
-                </div>
+                <input type="hidden" name="drawn_data" id="drawn_data">
+            
+                <!-- map and other form fields -->
+                <div id="map" style="height: 500px;"></div>
             </div>
 
             <div class="form-group">
@@ -181,136 +181,71 @@
     </div>
 
 </div>
-
 <script>
     function initAutocomplete() {
-        var map = new google.maps.Map(document.getElementById('map'), {
-            center: { lat: 24.740691, lng: 46.6528521 },
-            zoom: 13,
-            mapTypeId: 'roadmap'
-        });
+    var map = new google.maps.Map(document.getElementById('map'), {
+        center: { lat: 24.740691, lng: 46.6528521 },
+        zoom: 13,
+        mapTypeId: 'roadmap'
+    });
 
-        // Array to hold markers
-        var markers = [];
-
-        // Function to add a marker to the map
-        function addMarker(location) {
-            clearMarkers();
-            var marker = new google.maps.Marker({
-                position: location,
-                map: map
-            });
-            markers.push(marker);
-
-            // Update latitude and longitude inputs
-            document.getElementById('latitude').value = location.lat();
-            document.getElementById('longitude').value = location.lng();
+    var drawingManager = new google.maps.drawing.DrawingManager({
+        drawingMode: google.maps.drawing.OverlayType.POLYGON,
+        drawingControl: true,
+        drawingControlOptions: {
+            position: google.maps.ControlPosition.TOP_CENTER,
+            drawingModes: ['polygon']
         }
+    });
+    drawingManager.setMap(map);
 
-        // Function to clear all markers from the map
-        function clearMarkers() {
-            markers.forEach(function(marker) {
-                marker.setMap(null);
-            });
-            markers = [];
-        }
+    var drawnPolygons = [];
 
-        // Create the search box and link it to the UI element.
-        var input = document.getElementById('pac-input');
-        var searchBox = new google.maps.places.SearchBox(input);
-        map.controls[google.maps.ControlPosition.TOP_RIGHT].push(input);
+    google.maps.event.addListener(drawingManager, 'overlaycomplete', function(event) {
+        if (event.type == google.maps.drawing.OverlayType.POLYGON) {
+            var polygon = event.overlay;
+            var path = polygon.getPath();
 
-        // Bias the SearchBox results towards current map's viewport.
-        map.addListener('bounds_changed', function() {
-            searchBox.setBounds(map.getBounds());
-        });
-
-        // Listen for the event fired when the user selects a prediction and retrieve
-        // more details for that place.
-        searchBox.addListener('places_changed', function() {
-            var places = searchBox.getPlaces();
-
-            if (places.length == 0) {
-                return;
+            var coordinates = [];
+            for (var i = 0; i < path.getLength(); i++) {
+                var latLng = path.getAt(i);
+                coordinates.push({
+                    lat: latLng.lat(),
+                    lng: latLng.lng()
+                });
             }
 
-            // Clear out the old markers.
-            clearMarkers();
-
-            // For each place, get the icon, name, and location.
-            var bounds = new google.maps.LatLngBounds();
-            places.forEach(function(place) {
-                if (!place.geometry) {
-                    console.log("Returned place contains no geometry");
-                    return;
-                }
-
-                // Create a marker for each place.
-                addMarker(place.geometry.location);
-
-                // Set the input field value to the selected place's formatted address.
-                $("#pac-input").val(place.formatted_address);
-
-                if (place.geometry.viewport) {
-                    // Only geocodes have viewport.
-                    bounds.union(place.geometry.viewport);
-                } else {
-                    bounds.extend(place.geometry.location);
-                }
+            drawnPolygons.push({
+                type: 'polygon',
+                coordinates: coordinates
             });
-            map.fitBounds(bounds);
-        });
 
-        // Get user's current location
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(function(position) {
-                var pos = {
-                    lat: position.coords.latitude,
-                    lng: position.coords.longitude
-                };
-                map.setCenter(pos);
-                addMarker(pos);
-                geocodeLatLng(pos);
-            }, function() {
-                handleLocationError(true, map.getCenter());
-            });
-        } else {
-            // Browser doesn't support Geolocation
-            handleLocationError(false, map.getCenter());
+            document.getElementById('drawn_data').value = JSON.stringify(drawnPolygons);
         }
+    });
+}
 
-        // Listen for click event on the map
-        map.addListener('click', function(event) {
-            addMarker(event.latLng);
-            geocodeLatLng(event.latLng);
-        });
+function loadGoogleMapsScript(callback) {
+    var script = document.createElement('script');
+    script.src = "https://maps.googleapis.com/maps/api/js?key=AIzaSyBbgI1lSYiI8QtiLhSxiW-nIuMOdFti0rs&libraries=places,drawing&callback=" + callback;
+    script.async = true;
+    script.defer = true;
+    document.body.appendChild(script);
+}
 
-        // Function to get address from LatLng and update the input field
-        function geocodeLatLng(latLng) {
-            var geocoder = new google.maps.Geocoder();
-            geocoder.geocode({ 'location': latLng }, function(results, status) {
-                if (status === 'OK') {
-                    if (results[0]) {
-                        $("#pac-input").val(results[0].formatted_address);
-                    } else {
-                        window.alert('No results found');
-                    }
-                } else {
-                    window.alert('Geocoder failed due to: ' + status);
-                }
-            });
-        }
-
-        // Function to handle errors in geolocation
-        function handleLocationError(browserHasGeolocation, pos) {
-            window.alert(browserHasGeolocation ?
-                'Error: The Geolocation service failed.' :
-                'Error: Your browser doesn\'t support geolocation.');
-        }
-    }
+loadGoogleMapsScript('initAutocomplete');
 </script>
 
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBbgI1lSYiI8QtiLhSxiW-nIuMOdFti0rs&libraries=places&callback=initAutocomplete&language=ar&region=EG
-async defer"></script>
 
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBbgI1lSYiI8QtiLhSxiW-nIuMOdFti0rs&libraries=places,drawing&callback=initAutocomplete&language=ar&region=EG async defer"></script>
 @endsection
+
+
+
+
+
+
+
+
+
+
