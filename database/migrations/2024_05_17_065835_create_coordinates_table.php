@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('coordinates', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('shape_id')->constrained('shapes')->onDelete('cascade');
+            $table->unsignedBigInteger('shape_id');
             $table->decimal('latitude', 10, 7);
             $table->decimal('longitude', 10, 7);
             $table->timestamps();

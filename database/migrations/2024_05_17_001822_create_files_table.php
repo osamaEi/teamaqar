@@ -11,12 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('files', function (Blueprint $table) {
-            $table->id();
-            $table->string('path');
-            $table->string('name')->nullable();
-            $table->timestamps();
-        });
+        if (!Schema::hasTable('files')) {
+            Schema::create('files', function (Blueprint $table) {
+                $table->id();
+                $table->string('path');
+                $table->string('name')->nullable();
+                $table->timestamps();
+            });
+        }
     }
 
     /**
