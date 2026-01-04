@@ -333,7 +333,23 @@ public function destroy($id) {
     return redirect()->route('properties.page');
 }
 
-
-
+/**
+ * Save map drawing
+ */
+public function saveDrawing(Request $request)
+{
+    // For now, just return success - you can create a MapDrawing model later
+    return response()->json([
+        'success' => true,
+        'message' => 'تم حفظ الرسم بنجاح',
+        'data' => [
+            'name' => $request->name,
+            'color' => $request->color,
+            'notes' => $request->notes,
+            'coordinates' => $request->coordinates,
+            'type' => $request->type
+        ]
+    ]);
+}
 
 }

@@ -39,11 +39,17 @@ Route::get('/thank_you/client', [ClientController::class ,'thank_you'])->name('c
 Route::post('/store/client', [ClientController::class ,'store'])->name('client.store');
 
 Route::get('/', function () {
-
-    
-
-    return view('auth.login');
+    return view('home');
 });
+
+// Language Switcher
+Route::get('lang/{locale}', function ($locale) {
+    if (in_array($locale, ['en', 'ar'])) {
+        session(['locale' => $locale]);
+        app()->setLocale($locale);
+    }
+    return redirect()->back();
+})->name('lang.switch');
 
 
 Route::middleware('auth')->group(function () {
@@ -125,6 +131,7 @@ Route::post('/todos/update-status', [ToDoController::class, 'updateStatus'])->na
 
 
 Route::get('/map',[PropertyController::class, 'map'])->name('property.map');
+Route::post('/map/drawing/save',[PropertyController::class, 'saveDrawing'])->name('map.drawing.save');
 });
 
 
