@@ -115,6 +115,7 @@ Route::get('fullcalender', [EventController::class, 'index'])->name('calender.in
 Route::post('fullcalenderAjax', [EventController::class, 'ajax'])->name('calendar.ajax');
 
 Route::post('calender/store', [EventController::class, 'storeEvent'])->name('calendar.event.store');
+Route::post('event/mark-read/{id}', [EventController::class, 'markAsRead'])->name('event.mark-read');
 
 Route::resource('/files',FilesController::class);
 Route::get('/images', [FilesController::class, 'image'])->name('image.files');

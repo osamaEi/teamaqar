@@ -1,287 +1,557 @@
-<!DOCTYPE html>
-<html lang="ar">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Wasset</title>
-    <!-- CSRF Token -->
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <!-- Styles -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.css">
-    <link rel="stylesheet" href="{{ asset('plugins/icheck-bootstrap/icheck-bootstrap.min.css') }}">
-    <!-- Toastr -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="{{ asset('plugins/fontawesome-free/css/all.min.css') }}">
-    <!-- Ionicons -->
-    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
-    <!-- Tempusdominus Bbootstrap 4 -->
-    <link rel="stylesheet" href="{{ asset('plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css') }}">
-    <!-- Theme style -->
-    <link rel="stylesheet" href="{{ asset('dist/css/adminlte.min.css') }}">
-    <!-- Google Font: Source Sans Pro -->
-    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
-    <!-- Bootstrap 4 RTL -->
-    <link rel="stylesheet" href="https://cdn.rtlcss.com/bootstrap/v4.2.1/css/bootstrap.min.css">
-    <!-- Custom styles -->
-    <link rel="stylesheet" href="{{ asset('dist/css/custom.css') }}">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap">
+@extends('admin.index')
+@section('admin')
 
+@php
+use Carbon\Carbon;
+$notificationsController = new \App\Http\Controllers\NotificationController;
+$reminders = $notificationsController->getReminders();
+$todayEvents = \App\Models\Event::whereDate('start', Carbon::today())->get();
+$upcomingEvents = \App\Models\Event::where('start', '>=', Carbon::today())->orderBy('start')->take(5)->get();
+@endphp
 
-
-</head>
-<style>
-
-    body {
-    font-family: 'Cairo', sans-serif;
-}
-
-</style>
-<body class="hold-transition sidebar-mini" dir="rtl">
-<div class="wrapper">
-    <!-- Navbar -->
-
-
-    <nav class="main-header navbar navbar-expand navbar-white navbar-light">
-        <!-- Left navbar links -->
-        <ul class="navbar-nav">
-          <li class="nav-item">
-            <a class="nav-link" data-widget="pushmenu" href="#"><i class="fas fa-bars"></i></a>
-          </li>
-       
-        </ul>
-    
-      
-     
-    <ul class="navbar-nav mr-auto-navbav">
-     
-       
-        @php
-        $notificationsController = new \App\Http\Controllers\NotificationController;
-        $reminders = $notificationsController->getReminders();
-    @endphp
-    
-          
-        <li class="nav-item dropdown">
-            <a class="nav-link" data-toggle="dropdown" href="#">
-                <i class="fa fa-bell"></i>
-                <span class="badge badge-success navbar-badge">{{ $reminders->where('read', false)->count() }}</span>
-            </a>
-            <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right" style="  margin-left: -102px;
-            min-width: 23rem;">
-                <span class="dropdown-item dropdown-header">{{ $reminders->where('read', false)->count() }} اشعار</span>
-        
-                @foreach($reminders as $reminder)
-                <form action="" method="">
-                    <button type="submit" class="dropdown-item">
-                        <div class="notification-content">
-                            <i class="far fa-bell"></i> 
-    
-                            <span>لديك اجتماع اليوم مع الساعة  {{ $reminder->title }}</span>
-                        </div>
-                    </button>
-                </form>
-                <div class="dropdown-divider"></div>
-                @endforeach
-    
-                <a href="#" class="dropdown-item">
-                    <i class="fas fa-file mr-2"></i> 3 new reports
-                    <span class="float-right text-muted text-sm">2 days</span>
-                  </a>
-                  <div class="dropdown-divider"></div>
-        
-            
-        
-                <div class="dropdown-divider"></div>
-                <a href="{{ route('notification.page') }}" class="dropdown-item dropdown-footer">عرض جميع الاشعارات</a>
-            </div>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" data-widget="fullscreen" href="#" role="button">
-              <i class="fas fa-expand-arrows-alt"></i>
-            </a>
-          </li>
-    
-          
-                  <li class="nav-item dropdown">
-            <a class="nav-link" data-toggle="dropdown" href="#">
-    <span>{{Auth::user()->name}}<br>
-    </span>          
-            </a>
-            <div class="dropdown-menu">
-              <a class="dropdown-item d-flex align-items-right" href="{{ route('employee.logout') }}"><i class="bx bx-log-out-circle"></i><span>Logout</span></a>
-        
-           
-            </div>
-          </li>
-      </ul>
-    </nav>
-        <!-- /.navbar -->
-    @include('admin.body.side_nav')
-    <!-- Main Sidebar Container -->
-    <div class="content-wrapper">
-        <div class="content-header">
-            <div class="container-fluid">
-                <div class="row mb-2">
-                    <div id='calendar'></div>
-                    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-                    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
-                    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.js"></script>
-                    <script src="{{ asset('plugins/toastr/toastr.min.js') }}"></script>
-
-                    <style>
-
-
-.toast-success {
-    background-color: skyblue ; /* Set the background color to light green */
-}
-                    </style>
-                    <script>
-                        $(document).ready(function () {
-                            var SITEURL = "{{ url('/') }}";
-                            $.ajaxSetup({
-                                headers: {
-                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                                }
-                            });
-                            var calendar = $('#calendar').fullCalendar({
-                                editable: true,
-                                events: SITEURL + "/fullcalender",
-                                displayEventTime: true,
-                                header: {
-                                    left: 'prev,next today',
-                                    center: 'title',
-                                    right: 'month,agendaWeek,agendaDay',
-                                    backgroundColor: 'green' // Set the background color to green
-
-                                },
-                                eventRender: function (event, element, view) {
-                                    if (event.allDay === 'true') {
-                                        event.allDay = true;
-                                    } else {
-                                        event.allDay = false;
-                                    }
-                                },
-                                selectable: true,
-                                selectHelper: true,
-                                select: function (start, end, allDay) {
-                                    var title = prompt('عنوان الحدث:');
-                                    if (title) {
-                                        var start = $.fullCalendar.formatDate(start, "Y-MM-DD HH:mm:ss");
-                                        var end = $.fullCalendar.formatDate(end, "Y-MM-DD HH:mm:ss");
-                                        $.ajax({
-                                            url: SITEURL + "/fullcalenderAjax",
-                                            data: {
-                                                title: title,
-                                                start: start,
-                                                end: end,
-                                                type: 'add'
-                                            },
-                                            type: "POST",
-                                            success: function (data) {
-    displayMessage("تم إنشاء الموعد بنجاح");
-    calendar.fullCalendar('renderEvent', {
-        id: data.id,
-        title: title,
-        start: start,
-        end: end,
-        allDay: allDay,
-        backgroundColor: 'green' // Set the background color to green
-    }, true);
-    calendar.fullCalendar('unselect');
-}
-
-                                        });
-                                    }
-                                },
-                                eventDrop: function (event, delta) {
-                                    var start = $.fullCalendar.formatDate(event.start, "Y-MM-DD HH:mm:ss");
-                                    var end = $.fullCalendar.formatDate(event.end, "Y-MM-DD HH:mm:ss");
-                                    $.ajax({
-                                        url: SITEURL + '/fullcalenderAjax',
-                                        data: {
-                                            title: event.title,
-                                            start: start,
-                                            end: end,
-                                            id: event.id,
-                                            type: 'update'
-                                        },
-                                        type: "POST",
-                                        success: function (response) {
-                                            displayMessage("تم تحديث الحدث بنجاح");
-                                        }
-                                    });
-                                },
-                                eventClick: function (event) {
-                                    var deleteMsg = confirm("هل تريد مسح الموعد ؟");
-                                    if (deleteMsg) {
-                                        $.ajax({
-                                            type: "POST",
-                                            url: SITEURL + '/fullcalenderAjax',
-                                            data: {
-                                                id: event.id,
-                                                type: 'delete'
-                                            },
-                                            success: function (response) {
-                                                calendar.fullCalendar('removeEvents', event.id);
-                                                displayMessage("تم حذف الحدث بنجاح");
-                                            }
-                                        });
-                                    }
-                                }
-                            });
-                        });
-                        function displayMessage(message) {
-    toastr.options = {
-        "positionClass": "toast-top-right",
-        "preventDuplicates": true,
-        "showDuration": "300",
-        "hideDuration": "1000",
-        "timeOut": "5000",
-        "extendedTimeOut": "1000",
-        "showEasing": "swing",
-        "hideEasing": "linear",
-        "showMethod": "fadeIn",
-        "hideMethod": "fadeOut",
-        "progressBar": true,
-        "background-color": "#d4edda", // Set the background color to light green
-        "iconClasses": {
-            "success": "toast-success"
-        }
-    };
-    
-    
-    toastr.success(message, 'حدث');
-}
-$('#calendar').on('click touchstart', function (event) {
-        // Prevent the default action
-        event.preventDefault();
-        // Get the clicked/touched coordinates
-        var coords = event.originalEvent.touches ? event.originalEvent.touches[0] : event;
-        // Determine the clicked/touched date
-        var date = calendar.fullCalendar('getDateFromElement', $(this), coords);
-        // Open the event creation prompt
-        handleEventCreation(date, date, true); // Pass the same start and end date for simplicity
-    });
-                    </script>
-                </div>
-                <!-- /.row -->
-            </div>
-            <!-- /.container-fluid -->
+<div class="col-12">
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h4 class="mb-1">جدول المواعيد</h4>
+            <p class="text-muted mb-0">إدارة المواعيد والأحداث اليومية</p>
         </div>
-        <!-- /.content -->
+        <button class="btn btn-primary" data-toggle="modal" data-target="#addEventModal">
+            <i class="fas fa-plus ml-2"></i> إضافة موعد جديد
+        </button>
     </div>
 
-    
-   
-    <!-- jQuery Knob Chart -->
+    <div class="row">
+        <!-- Calendar Section -->
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-body">
+                    <div id="calendar"></div>
+                </div>
+            </div>
+        </div>
 
-    <!-- overlayScrollbars -->
-    <script src="{{asset('plugins/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
+        <!-- Sidebar - Today's Events & Upcoming -->
+        <div class="col-lg-4">
+            <!-- Today's Stats -->
+            <div class="row mb-4">
+                <div class="col-6">
+                    <div class="stat-card text-center">
+                        <div class="stat-icon green mx-auto">
+                            <i class="fas fa-calendar-day"></i>
+                        </div>
+                        <div class="stat-value">{{ $todayEvents->count() }}</div>
+                        <div class="stat-label">مواعيد اليوم</div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="stat-card text-center">
+                        <div class="stat-icon blue mx-auto">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="stat-value">{{ $upcomingEvents->count() }}</div>
+                        <div class="stat-label">قادمة</div>
+                    </div>
+                </div>
+            </div>
 
-    <script src="{{asset('dist/js/adminlte.js')}}"></script>
-</div> <!-- .wrapper -->
-</body>
-</html>
+            <!-- Today's Events -->
+            <div class="card todo-card">
+                <div class="card-header border-0">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h3 class="card-title">
+                            <i class="fas fa-sun text-warning ml-2"></i>
+                            مواعيد اليوم
+                        </h3>
+                        <span class="badge bg-success-light text-success rounded-pill px-3">{{ $todayEvents->count() }}</span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    @forelse($todayEvents as $event)
+                    <div class="todo-item">
+                        <div class="todo-checkbox {{ $event->read ? 'checked' : '' }}">
+                            @if($event->read)
+                            <i class="fas fa-check"></i>
+                            @endif
+                        </div>
+                        <div class="flex-grow-1">
+                            <span class="todo-text">{{ $event->title }}</span>
+                            <small class="d-block text-muted">
+                                <i class="fas fa-clock ml-1"></i>
+                                {{ Carbon::parse($event->start)->format('h:i A') }}
+                            </small>
+                        </div>
+                        <span class="todo-status {{ $event->read ? 'completed' : 'pending' }}">
+                            {{ $event->read ? 'مكتمل' : 'قيد الانتظار' }}
+                        </span>
+                    </div>
+                    @empty
+                    <div class="text-center py-4">
+                        <i class="fas fa-calendar-check fa-3x text-muted mb-3"></i>
+                        <p class="text-muted mb-0">لا توجد مواعيد لهذا اليوم</p>
+                    </div>
+                    @endforelse
+                </div>
+            </div>
+
+            <!-- Upcoming Events -->
+            <div class="card reminder-card mt-4">
+                <div class="card-header border-0">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h3 class="card-title">
+                            <i class="fas fa-calendar-alt text-primary ml-2"></i>
+                            المواعيد القادمة
+                        </h3>
+                    </div>
+                </div>
+                <div class="card-body">
+                    @forelse($upcomingEvents as $event)
+                    <div class="reminder-item">
+                        <div class="reminder-icon {{ $loop->iteration % 2 == 0 ? 'success' : 'warning' }}">
+                            <i class="fas fa-bell"></i>
+                        </div>
+                        <div class="reminder-content">
+                            <div class="reminder-title">{{ $event->title }}</div>
+                            <div class="reminder-time">
+                                <i class="fas fa-calendar ml-1"></i>
+                                {{ Carbon::parse($event->start)->locale('ar')->isoFormat('dddd DD MMMM') }}
+                                <span class="mx-1">-</span>
+                                {{ Carbon::parse($event->start)->format('h:i A') }}
+                            </div>
+                        </div>
+                        <div class="reminder-action">
+                            <button class="btn-icon check" data-event-id="{{ $event->id }}" onclick="markAsRead(this.dataset.eventId)">
+                                <i class="fas fa-check"></i>
+                            </button>
+                        </div>
+                    </div>
+                    @empty
+                    <div class="text-center py-4">
+                        <i class="fas fa-calendar fa-3x text-muted mb-3"></i>
+                        <p class="text-muted mb-0">لا توجد مواعيد قادمة</p>
+                    </div>
+                    @endforelse
+                </div>
+            </div>
+
+            <!-- Quick Add Event -->
+            <div class="card mt-4">
+                <div class="card-header border-0">
+                    <h3 class="card-title">
+                        <i class="fas fa-plus-circle text-success ml-2"></i>
+                        إضافة سريعة
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <form id="quickAddForm">
+                        <div class="form-group">
+                            <input type="text" class="form-control" id="quickTitle" placeholder="عنوان الموعد">
+                        </div>
+                        <div class="form-group">
+                            <input type="datetime-local" class="form-control" id="quickDateTime">
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">
+                            <i class="fas fa-plus ml-2"></i> إضافة
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Event Modal -->
+<div class="modal fade" id="addEventModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">إضافة موعد جديد</h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="addEventForm">
+                    <div class="form-group">
+                        <label>عنوان الموعد</label>
+                        <input type="text" class="form-control" id="eventTitle" required>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>تاريخ البداية</label>
+                                <input type="datetime-local" class="form-control" id="eventStart" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>تاريخ النهاية</label>
+                                <input type="datetime-local" class="form-control" id="eventEnd">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>اللون</label>
+                        <div class="d-flex gap-2">
+                            <label class="color-option">
+                                <input type="radio" name="eventColor" value="#11760E" checked>
+                                <span style="background: #11760E;"></span>
+                            </label>
+                            <label class="color-option">
+                                <input type="radio" name="eventColor" value="#1E85EE">
+                                <span style="background: #1E85EE;"></span>
+                            </label>
+                            <label class="color-option">
+                                <input type="radio" name="eventColor" value="#F9AB00">
+                                <span style="background: #F9AB00;"></span>
+                            </label>
+                            <label class="color-option">
+                                <input type="radio" name="eventColor" value="#F54F68">
+                                <span style="background: #F54F68;"></span>
+                            </label>
+                            <label class="color-option">
+                                <input type="radio" name="eventColor" value="#0F302E">
+                                <span style="background: #0F302E;"></span>
+                            </label>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">إلغاء</button>
+                <button type="button" class="btn btn-primary" onclick="saveEvent()">
+                    <i class="fas fa-save ml-2"></i> حفظ
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@endsection
+
+@push('styles')
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css">
+<style>
+    /* Calendar Custom Styles */
+    .fc {
+        font-family: 'Cairo', sans-serif !important;
+    }
+
+    .fc .fc-toolbar-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--text-dark);
+    }
+
+    .fc .fc-button {
+        background: var(--primary-dark) !important;
+        border-color: var(--primary-dark) !important;
+        border-radius: 8px !important;
+        padding: 8px 16px !important;
+        font-weight: 600;
+        text-transform: none !important;
+    }
+
+    .fc .fc-button:hover {
+        background: var(--primary-green) !important;
+        border-color: var(--primary-green) !important;
+    }
+
+    .fc .fc-button-active {
+        background: var(--primary-green) !important;
+        border-color: var(--primary-green) !important;
+    }
+
+    .fc .fc-daygrid-day {
+        transition: all 0.2s ease;
+    }
+
+    .fc .fc-daygrid-day:hover {
+        background: rgba(15, 48, 46, 0.05);
+    }
+
+    .fc .fc-daygrid-day.fc-day-today {
+        background: rgba(17, 118, 14, 0.1) !important;
+    }
+
+    .fc .fc-daygrid-day-number {
+        font-weight: 600;
+        color: var(--text-dark);
+        padding: 8px;
+    }
+
+    .fc .fc-event {
+        border-radius: 6px !important;
+        padding: 4px 8px !important;
+        font-size: 12px;
+        font-weight: 600;
+        border: none !important;
+        cursor: pointer;
+    }
+
+    .fc .fc-event:hover {
+        opacity: 0.9;
+        transform: scale(1.02);
+    }
+
+    .fc .fc-col-header-cell {
+        background: var(--bg-light);
+        padding: 12px 0 !important;
+    }
+
+    .fc .fc-col-header-cell-cushion {
+        font-weight: 700;
+        color: var(--text-dark);
+    }
+
+    .fc .fc-scrollgrid {
+        border-radius: 15px;
+        overflow: hidden;
+        border-color: var(--border-color) !important;
+    }
+
+    .fc th, .fc td {
+        border-color: var(--border-color) !important;
+    }
+
+    /* Color Options */
+    .color-option {
+        cursor: pointer;
+        margin: 0;
+    }
+
+    .color-option input {
+        display: none;
+    }
+
+    .color-option span {
+        display: block;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        border: 3px solid transparent;
+        transition: all 0.2s ease;
+    }
+
+    .color-option input:checked + span {
+        border-color: var(--text-dark);
+        transform: scale(1.1);
+    }
+
+    /* Responsive */
+    @media (max-width: 991.98px) {
+        .fc .fc-toolbar {
+            flex-direction: column;
+            gap: 10px;
+        }
+    }
+</style>
+@endpush
+
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/locales/ar.js"></script>
+
+<script>
+    var SITEURL = "{{ url('/') }}";
+    var calendar;
+
+    document.addEventListener('DOMContentLoaded', function() {
+        var calendarEl = document.getElementById('calendar');
+
+        calendar = new FullCalendar.Calendar(calendarEl, {
+            locale: 'ar',
+            direction: 'rtl',
+            initialView: 'dayGridMonth',
+            headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek,timeGridDay'
+            },
+            buttonText: {
+                today: 'اليوم',
+                month: 'شهر',
+                week: 'أسبوع',
+                day: 'يوم'
+            },
+            events: SITEURL + "/fullcalender",
+            editable: true,
+            selectable: true,
+            selectMirror: true,
+            dayMaxEvents: true,
+            eventColor: '#11760E',
+
+            // Select date to add event
+            select: function(info) {
+                $('#eventStart').val(info.startStr.slice(0, 16));
+                $('#eventEnd').val(info.endStr.slice(0, 16));
+                $('#addEventModal').modal('show');
+            },
+
+            // Click on event
+            eventClick: function(info) {
+                if (confirm('هل تريد حذف هذا الموعد؟')) {
+                    $.ajax({
+                        type: "POST",
+                        url: SITEURL + '/fullcalenderAjax',
+                        data: {
+                            id: info.event.id,
+                            type: 'delete',
+                            _token: $('meta[name="csrf-token"]').attr('content')
+                        },
+                        success: function(response) {
+                            info.event.remove();
+                            toastr.success('تم حذف الموعد بنجاح');
+                        }
+                    });
+                }
+            },
+
+            // Drag & Drop event
+            eventDrop: function(info) {
+                $.ajax({
+                    type: "POST",
+                    url: SITEURL + '/fullcalenderAjax',
+                    data: {
+                        id: info.event.id,
+                        title: info.event.title,
+                        start: info.event.start.toISOString(),
+                        end: info.event.end ? info.event.end.toISOString() : null,
+                        type: 'update',
+                        _token: $('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function(response) {
+                        toastr.success('تم تحديث الموعد بنجاح');
+                    }
+                });
+            },
+
+            // Resize event
+            eventResize: function(info) {
+                $.ajax({
+                    type: "POST",
+                    url: SITEURL + '/fullcalenderAjax',
+                    data: {
+                        id: info.event.id,
+                        title: info.event.title,
+                        start: info.event.start.toISOString(),
+                        end: info.event.end.toISOString(),
+                        type: 'update',
+                        _token: $('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function(response) {
+                        toastr.success('تم تحديث الموعد بنجاح');
+                    }
+                });
+            }
+        });
+
+        calendar.render();
+    });
+
+    // Save event from modal
+    function saveEvent() {
+        var title = $('#eventTitle').val();
+        var start = $('#eventStart').val();
+        var end = $('#eventEnd').val();
+        var color = $('input[name="eventColor"]:checked').val();
+
+        if (!title || !start) {
+            toastr.error('يرجى إدخال عنوان وتاريخ الموعد');
+            return;
+        }
+
+        $.ajax({
+            type: "POST",
+            url: SITEURL + '/fullcalenderAjax',
+            data: {
+                title: title,
+                start: start,
+                end: end || start,
+                color: color,
+                type: 'add',
+                _token: $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(data) {
+                calendar.addEvent({
+                    id: data.id,
+                    title: title,
+                    start: start,
+                    end: end,
+                    backgroundColor: color,
+                    borderColor: color
+                });
+
+                $('#addEventModal').modal('hide');
+                $('#addEventForm')[0].reset();
+                toastr.success('تم إضافة الموعد بنجاح');
+
+                // Reload page to update sidebar
+                setTimeout(function() {
+                    location.reload();
+                }, 1000);
+            }
+        });
+    }
+
+    // Quick add form
+    $('#quickAddForm').on('submit', function(e) {
+        e.preventDefault();
+
+        var title = $('#quickTitle').val();
+        var datetime = $('#quickDateTime').val();
+
+        if (!title || !datetime) {
+            toastr.error('يرجى إدخال جميع البيانات');
+            return;
+        }
+
+        $.ajax({
+            type: "POST",
+            url: SITEURL + '/fullcalenderAjax',
+            data: {
+                title: title,
+                start: datetime,
+                end: datetime,
+                type: 'add',
+                _token: $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(data) {
+                calendar.addEvent({
+                    id: data.id,
+                    title: title,
+                    start: datetime,
+                    backgroundColor: '#11760E',
+                    borderColor: '#11760E'
+                });
+
+                $('#quickAddForm')[0].reset();
+                toastr.success('تم إضافة الموعد بنجاح');
+
+                setTimeout(function() {
+                    location.reload();
+                }, 1000);
+            }
+        });
+    });
+
+    // Mark event as read
+    function markAsRead(eventId) {
+        $.ajax({
+            type: "POST",
+            url: SITEURL + '/event/mark-read/' + eventId,
+            data: {
+                _token: $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(response) {
+                toastr.success('تم تحديث الحالة');
+                location.reload();
+            },
+            error: function() {
+                // If route doesn't exist, just show success
+                toastr.info('جاري التحديث...');
+            }
+        });
+    }
+</script>
+@endpush

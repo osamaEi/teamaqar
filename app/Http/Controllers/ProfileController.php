@@ -7,6 +7,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\File;
 use Illuminate\View\View;
 
 class ProfileController extends Controller
@@ -26,13 +27,51 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        $request->user()->fill($request->validated());
+        $user = $request->user();
 
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
+        $user->fill($request->validated());
+
+        if ($user->isDirty('email')) {
+            $user->email_verified_at = null;
         }
 
-        $request->user()->save();
+        // Handle profile photo upload
+        if ($request->hasFile('photo')) {
+            $photo = $request->file('photo');
+
+            // Delete old photo if exists
+            if ($user->photo) {
+                $oldPhotoPath = public_path('upload/profile/' . $user->photo);
+                if (File::exists($oldPhotoPath)) {
+                    File::delete($oldPhotoPath);
+                }
+            }
+
+            // Generate unique filename
+            $filename = time() . '_' . $user->id . '.' . $photo->getClientOriginalExtension();
+
+            // Create directory if not exists
+            $uploadPath = public_path('upload/profile');
+            if (!File::exists($uploadPath)) {
+                File::makeDirectory($uploadPath, 0755, true);
+            }
+
+            // Move file to upload directory
+            $photo->move($uploadPath, $filename);
+
+            // Save filename to user
+            $user->photo = $filename;
+        }
+
+        // Handle phone and address (if columns exist)
+        if ($request->has('phone')) {
+            $user->phone = $request->phone;
+        }
+        if ($request->has('address')) {
+            $user->address = $request->address;
+        }
+
+        $user->save();
 
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
     }
@@ -47,6 +86,14 @@ class ProfileController extends Controller
         ]);
 
         $user = $request->user();
+
+        // Delete profile photo if exists
+        if ($user->photo) {
+            $photoPath = public_path('upload/profile/' . $user->photo);
+            if (File::exists($photoPath)) {
+                File::delete($photoPath);
+            }
+        }
 
         Auth::logout();
 

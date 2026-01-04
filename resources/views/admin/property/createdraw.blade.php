@@ -227,7 +227,7 @@
 
 function loadGoogleMapsScript(callback) {
     var script = document.createElement('script');
-    script.src = "https://maps.googleapis.com/maps/api/js?key=AIzaSyBbgI1lSYiI8QtiLhSxiW-nIuMOdFti0rs&libraries=places,drawing&callback=" + callback;
+    script.src = "https://maps.googleapis.com/maps/api/js?key={{ env('GOOGLE_MAPS_API_KEY') }}&libraries=places,drawing&callback=" + callback;
     script.async = true;
     script.defer = true;
     document.body.appendChild(script);
@@ -237,7 +237,7 @@ loadGoogleMapsScript('initAutocomplete');
 </script>
 
 
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBbgI1lSYiI8QtiLhSxiW-nIuMOdFti0rs&libraries=places,drawing&callback=initAutocomplete&language=ar&region=EG async defer"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key={{ env('GOOGLE_MAPS_API_KEY') }}&libraries=places,drawing&callback=initAutocomplete&language=ar&region=EG" async defer></script>
 @endsection
 
 

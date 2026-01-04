@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(php artisan tinker --execute=\"echo json_encode\\(\\\\Schema::getColumnListing\\(''events''\\)\\);\")",
+      "Bash(php artisan tinker:*)"
+    ]
+  }
+}

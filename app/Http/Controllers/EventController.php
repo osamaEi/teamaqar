@@ -9,131 +9,101 @@ use Illuminate\Http\Request;
 class EventController extends Controller
 {
     public function index(Request $request)
-
     {
-
-  
-
         if($request->ajax()) {
+            $data = Event::whereDate('start', '>=', $request->start)
+                      ->whereDate('end', '<=', $request->end)
+                      ->get(['id', 'title', 'start', 'end', 'backgroundColor', 'borderColor', 'textColor']);
 
-       
-
-             $data = Event::whereDate('start', '>=', $request->start)
-
-                       ->whereDate('end',   '<=', $request->end)
-
-                       ->get(['id', 'title', 'start', 'end']);
-
-  
-
-             return response()->json($data);
-
+            return response()->json($data);
         }
-
-  
 
         return view('admin.calender.index');
-
     }
-
- 
 
     /**
-
-     * Write code on Method
-
-     *
-
-     * @return response()
-
+     * Handle AJAX requests for calendar events
      */
-
     public function ajax(Request $request)
-
     {
-
- 
-
         switch ($request->type) {
+            case 'add':
+                $start = Carbon::parse($request->start)->format('Y-m-d H:i:s');
+                $end = $request->end ? Carbon::parse($request->end)->format('Y-m-d H:i:s') : $start;
+                $color = $request->color ?? '#11760E';
 
-           case 'add':
-            $start = Carbon::parse($request->start)->format('Y-m-d H:i:s');
+                $event = Event::create([
+                    'title' => $request->title,
+                    'start' => $start,
+                    'end' => $end,
+                    'backgroundColor' => $color,
+                    'borderColor' => $color,
+                    'textColor' => '#ffffff',
+                ]);
 
-            // Parse and format the end datetime
-            $end = Carbon::parse($request->end)->format('Y-m-d H:i:s');
-            
-            // Create the event with the parsed and formatted datetime values
-            $event = Event::create([
-                'title' => $request->title,
-                'start' => $start,
-                'end' => $end,
-            ]);
+                return response()->json($event);
+                break;
 
- 
+            case 'update':
+                $event = Event::find($request->id);
+                if ($event) {
+                    $event->update([
+                        'title' => $request->title,
+                        'start' => $request->start,
+                        'end' => $request->end,
+                    ]);
+                }
+                return response()->json($event);
+                break;
 
-              return response()->json($event);
+            case 'delete':
+                $event = Event::find($request->id);
+                if ($event) {
+                    $event->delete();
+                }
+                return response()->json(['success' => true]);
+                break;
 
-             break;
-
-  
-
-           case 'update':
-
-              $event = Event::find($request->id)->update([
-
-                  'title' => $request->title,
-
-                  'start' => $request->start,
-
-                  'end' => $request->end,
-
-              ]);
-
- 
-
-              return response()->json($event);
-
-             break;
-
-  
-
-           case 'delete':
-
-              $event = Event::find($request->id)->delete();
-
-  
-
-              return response()->json($event);
-
-             break;
-
-             
-
-           default:
-
-             # code...
-
-             break;
-
+            default:
+                return response()->json(['error' => 'Invalid type'], 400);
+                break;
         }
-
     }
 
-    public function storeEvent(Request $request) {
-
+    /**
+     * Store event from form
+     */
+    public function storeEvent(Request $request)
+    {
         $validatedData = $request->validate([
             'title' => 'required|string',
             'start' => 'required|date',
-            'end' => 'required|date',
+            'end' => 'nullable|date',
         ]);
 
-        // Create a new event instance
         $event = new Event;
         $event->title = $validatedData['title'];
         $event->start = $validatedData['start'];
-        $event->end = $validatedData['end'];
+        $event->end = $validatedData['end'] ?? $validatedData['start'];
+        $event->backgroundColor = '#11760E';
+        $event->borderColor = '#11760E';
+        $event->textColor = '#ffffff';
         $event->save();
 
-        return redirect()->back();
+        return redirect()->back()->with('success', 'تم إضافة الموعد بنجاح');
+    }
+
+    /**
+     * Mark event as read
+     */
+    public function markAsRead($id)
+    {
+        $event = Event::find($id);
+        if ($event) {
+            $event->read = !$event->read;
+            $event->save();
+            return response()->json(['success' => true, 'read' => $event->read]);
+        }
+        return response()->json(['error' => 'Event not found'], 404);
     }
 }

@@ -288,9 +288,9 @@ public function destroy($id) {
     $property->number = $request->get('number');
     $property->area = $request->get('area');
     $property->location = $request->get('location');
-    $property->land_situation = $request->get('land_situation');
-    $property->property_type = $request->get('property_type');
-    $property->status = $request->get('status');
+    $property->land_situation = $request->get('land_situation') ?? $property->land_situation ?? '';
+    $property->property_type = $request->get('property_type') ?? $property->property_type ?? '';
+    $property->status = $request->get('status') ?? 'Available';
     $property->description = $request->get('description');
     $property->price = $request->get('price');
     $property->mediator1 = $request->get('mediator1');
@@ -298,10 +298,18 @@ public function destroy($id) {
     $property->mediator2 = $request->get('mediator2');
     $property->phone2 = $request->get('phone2');
     $property->owner = $request->get('owner');
-    $property->owner_status = $request->get('owner_status');
+    $property->owner_status = $request->get('owner_status') ?? 'مالك';
     $property->ophone = $request->get('ophone');
     $property->notes = $request->get('notes');
-    $property->propery_cat = $request->get('propery_cat');
+    $property->propery_cat = $request->get('propery_cat') ?? $property->propery_cat ?? '';
+
+    // Update coordinates if provided
+    if ($request->has('latitude') && $request->get('latitude')) {
+        $property->latitude = $request->get('latitude');
+    }
+    if ($request->has('longitude') && $request->get('longitude')) {
+        $property->longitude = $request->get('longitude');
+    }
 
    $property->save();
 

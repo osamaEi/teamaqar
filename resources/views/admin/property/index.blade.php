@@ -1,67 +1,251 @@
 @extends('admin.index')
-@section('admin') 
+@section('admin')
 
-<style>
-.action-buttons {
-    position: absolute;
-    top: 0;
-    right: 0;
-    padding: 5px;
-    display: flex;
-    flex-direction: row;
-}
+<div class="col-12">
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h4 class="mb-1">قائمة العقارات</h4>
+            <p class="text-muted mb-0">إدارة جميع العقارات المسجلة في النظام</p>
+        </div>
+        <div class="d-flex gap-2">
+            <a href="{{ route('property.map') }}" class="btn btn-outline-primary">
+                <i class="fas fa-map-marker-alt ml-2"></i> عرض الخريطة
+            </a>
+            <a href="{{ route('property.create.page') }}" class="btn btn-primary">
+                <i class="fas fa-plus ml-2"></i> إضافة عقار
+            </a>
+        </div>
+    </div>
 
-.close-btn, .btn-warning {
-    margin-left: 5px;
-}
-
-
-</style>
-
-
-    @foreach($properties as $property)
-    <div class="col-md-3">
-        <div class="card position-relative" >
-            @if(isset($multiImages[$property->id]) && $multiImages[$property->id]->isNotEmpty())
-            <img src="{{ asset('upload/property/multi_img/' . $multiImages[$property->id]->first()->images) }}" class="card-img-top" alt="Property Image" style="height: 198px;">
-        @else
-            <!-- Provide a default image or alternative content -->
-            <img src="{{ asset('path_to_default_image.jpg') }}" class="card-img-top" alt="Default Image" style="height: 198px;">
-        @endif            <div class="card-body">
-                <h4 class="" style="font-size: 20px;">
-                    <b>{{ $property->name }}</b>
-                    <span class="btn {{ $property->status === 'Sold' ? 'btn-danger' : 'btn-success' }}" style="font-size: 13px; padding: 0px;">
-                        {{ __($property->status) }}
-                    </span>
-
-
-                                    </h4>
-
-                
-                                    <span style=" font-size:15px;  color: dodgerblue;"  ><b><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-geo-alt-fill" viewBox="0 0 16 16">
-                                        <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10m0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6"/>
-                                      </svg>{{$property->location}}</b></span>
-                
-                <p style="padding-top:25px;"class="card-text">{{ __('Price')}}:{{$property->price}}  ريال  </p>
-                <a href="{{ route('property.show',$property->id)}}" class="btn btn-success outline">{{ __('Read More')}}</a>
-                <div class="action-buttons">
-                    <form action="{{ route('property.destroy', $property->id) }}" method="post" enctype="multipart/form-data">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="close-btn">X</button>
-                    </form>
+    <!-- Stats Row -->
+    <div class="row mb-4">
+        <div class="col-lg-3 col-md-6 col-sm-6">
+            <div class="stat-card">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="stat-value">{{ $properties->total() }}</div>
+                        <div class="stat-label">إجمالي العقارات</div>
+                    </div>
+                    <div class="stat-icon green">
+                        <i class="fas fa-building"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 col-sm-6">
+            <div class="stat-card">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="stat-value">{{ \App\Models\Property::where('status', 'Available')->count() }}</div>
+                        <div class="stat-label">متاح للبيع</div>
+                    </div>
+                    <div class="stat-icon blue">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 col-sm-6">
+            <div class="stat-card">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="stat-value">{{ \App\Models\Property::where('status', 'Sold')->count() }}</div>
+                        <div class="stat-label">مباع</div>
+                    </div>
+                    <div class="stat-icon red">
+                        <i class="fas fa-times-circle"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 col-sm-6">
+            <div class="stat-card">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="stat-value">{{ number_format(\App\Models\Property::sum('price')) }}</div>
+                        <div class="stat-label">إجمالي القيمة (ريال)</div>
+                    </div>
+                    <div class="stat-icon yellow">
+                        <i class="fas fa-coins"></i>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Properties Table Card -->
+    <div class="card table-card">
+        <div class="card-header border-0">
+            <div class="d-flex justify-content-between align-items-center flex-wrap">
+                <h3 class="card-title">جدول العقارات</h3>
+                <div class="d-flex gap-2 flex-wrap">
+                    <!-- Search -->
+                    <div class="navbar-search" style="width: 250px;">
+                        <i class="fas fa-search text-muted ml-2"></i>
+                        <input type="text" placeholder="بحث عن عقار..." id="searchProperty">
+                    </div>
+                    <!-- Filter by Status -->
+                    <select class="form-control" id="filterStatus" style="width: 150px;">
+                        <option value="">كل الحالات</option>
+                        <option value="Available">متاح</option>
+                        <option value="Sold">مباع</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover" id="propertiesTable">
+                    <thead>
+                        <tr>
+                            <th width="60">#</th>
+                            <th width="80">الصورة</th>
+                            <th>اسم العقار</th>
+                            <th>الموقع</th>
+                            <th>المساحة</th>
+                            <th>السعر</th>
+                            <th>المالك</th>
+                            <th>الحالة</th>
+                            <th width="150">الإجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($properties as $index => $property)
+                        <tr data-status="{{ $property->status }}">
+                            <td>
+                                <span class="font-weight-bold text-muted">{{ ($properties->currentPage() - 1) * $properties->perPage() + $index + 1 }}</span>
+                            </td>
+                            <td>
+                                @if(isset($multiImages[$property->id]) && $multiImages[$property->id]->isNotEmpty())
+                                    <img src="{{ asset('upload/property/multi_img/' . $multiImages[$property->id]->first()->images) }}"
+                                         class="rounded" style="width: 60px; height: 45px; object-fit: cover;" alt="{{ $property->name }}">
+                                @else
+                                    <div class="bg-light rounded d-flex align-items-center justify-content-center" style="width: 60px; height: 45px;">
+                                        <i class="fas fa-image text-muted"></i>
+                                    </div>
+                                @endif
+                            </td>
+                            <td>
+                                <a href="{{ route('property.show', $property->id) }}" class="font-weight-bold text-primary">
+                                    {{ $property->name }}
+                                </a>
+                                @if($property->number)
+                                <br><small class="text-muted">رقم: {{ $property->number }}</small>
+                                @endif
+                            </td>
+                            <td>
+                                <i class="fas fa-map-marker-alt text-danger ml-1"></i>
+                                {{ $property->location ?? $property->city ?? '-' }}
+                            </td>
+                            <td>
+                                <i class="fas fa-ruler-combined text-success ml-1"></i>
+                                {{ $property->area ?? '-' }} م²
+                            </td>
+                            <td>
+                                <span class="font-weight-bold" style="color: var(--primary-dark);">
+                                    {{ number_format($property->price) }}
+                                </span>
+                                <small class="text-muted">ريال</small>
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="bg-primary-light rounded-circle d-flex align-items-center justify-content-center ml-2" style="width: 30px; height: 30px;">
+                                        <i class="fas fa-user text-primary" style="font-size: 12px;"></i>
+                                    </div>
+                                    <div>
+                                        <span class="d-block">{{ $property->owner ?? '-' }}</span>
+                                        @if($property->ophone)
+                                        <small class="text-muted">{{ $property->ophone }}</small>
+                                        @endif
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="status-badge {{ $property->status === 'Sold' ? 'inactive' : 'active' }}">
+                                    <i class="fas {{ $property->status === 'Sold' ? 'fa-times-circle' : 'fa-check-circle' }} ml-1"></i>
+                                    {{ __($property->status) }}
+                                </span>
+                            </td>
+                            <td>
+                                <div class="d-flex gap-1">
+                                    <a href="{{ route('property.show', $property->id) }}" class="btn btn-sm btn-info btn-icon" title="عرض">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <a href="{{ route('property.edit', $property->id) }}" class="btn btn-sm btn-warning btn-icon" title="تعديل">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <form action="{{ route('property.destroy', $property->id) }}" method="post" class="d-inline">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-sm btn-danger btn-icon" onclick="return confirm('هل أنت متأكد من الحذف؟')" title="حذف">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        @empty
+                        <tr>
+                            <td colspan="9" class="text-center py-5">
+                                <i class="fas fa-building fa-4x text-muted mb-3"></i>
+                                <h5>لا توجد عقارات</h5>
+                                <p class="text-muted">لم يتم إضافة أي عقارات بعد</p>
+                                <a href="{{ route('property.create.page') }}" class="btn btn-primary">
+                                    <i class="fas fa-plus ml-2"></i> إضافة عقار جديد
+                                </a>
+                            </td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
 
-
-@endforeach
-
-{{ $properties->links() }}
-
-
-
+        <!-- Card Footer with Pagination -->
+        @if($properties->hasPages())
+        <div class="card-footer bg-white">
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="text-muted">
+                    عرض {{ $properties->firstItem() }} إلى {{ $properties->lastItem() }} من {{ $properties->total() }} عقار
+                </div>
+                <div>
+                    {{ $properties->links() }}
+                </div>
+            </div>
+        </div>
+        @endif
+    </div>
+</div>
 
 @endsection
+
+@push('scripts')
+<script>
+    // Search functionality
+    document.getElementById('searchProperty').addEventListener('keyup', function() {
+        filterTable();
+    });
+
+    // Filter by status
+    document.getElementById('filterStatus').addEventListener('change', function() {
+        filterTable();
+    });
+
+    function filterTable() {
+        const searchValue = document.getElementById('searchProperty').value.toLowerCase();
+        const statusValue = document.getElementById('filterStatus').value;
+        const rows = document.querySelectorAll('#propertiesTable tbody tr');
+
+        rows.forEach(function(row) {
+            const text = row.textContent.toLowerCase();
+            const rowStatus = row.getAttribute('data-status');
+
+            const matchesSearch = text.includes(searchValue);
+            const matchesStatus = !statusValue || rowStatus === statusValue;
+
+            row.style.display = (matchesSearch && matchesStatus) ? '' : 'none';
+        });
+    }
+</script>
+@endpush
