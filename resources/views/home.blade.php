@@ -54,7 +54,7 @@
         }
 
         .logo img {
-            height: 60px;
+            height: 80px;
             width: auto;
         }
 
@@ -493,7 +493,7 @@
         }
 
         .footer-brand .logo img {
-            height: 80px;
+            height: 100px;
         }
 
         .footer-brand p {
