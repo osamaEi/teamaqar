@@ -109,29 +109,13 @@
         .logo {
             display: flex;
             align-items: center;
-            gap: 15px;
+            justify-content: center;
             margin-bottom: 40px;
         }
 
-        .logo-icon {
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(135deg, var(--primary-green), var(--accent-gold));
-            border-radius: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .logo-icon i {
-            color: white;
-            font-size: 28px;
-        }
-
-        .logo-text {
-            color: white;
-            font-size: 28px;
-            font-weight: 800;
+        .logo img {
+            height: 120px;
+            width: auto;
         }
 
         .login-welcome h2 {
@@ -447,10 +431,7 @@
         <div class="login-welcome">
             <div class="welcome-content">
                 <div class="logo">
-                    <div class="logo-icon">
-                        <i class="fas fa-building"></i>
-                    </div>
-                    <span class="logo-text">أبو نواف</span>
+                    <img src="{{ asset('upload/123.png') }}" alt="أبو نواف">
                 </div>
 
                 <h2>

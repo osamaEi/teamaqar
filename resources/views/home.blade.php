@@ -50,29 +50,12 @@
         .logo {
             display: flex;
             align-items: center;
-            gap: 12px;
             text-decoration: none;
         }
 
-        .logo-icon {
-            width: 50px;
-            height: 50px;
-            background: linear-gradient(135deg, var(--primary-green), var(--accent-gold));
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .logo-icon i {
-            color: white;
-            font-size: 24px;
-        }
-
-        .logo-text {
-            color: white;
-            font-size: 24px;
-            font-weight: 800;
+        .logo img {
+            height: 60px;
+            width: auto;
         }
 
         .nav-links {
@@ -509,6 +492,10 @@
             margin-bottom: 20px;
         }
 
+        .footer-brand .logo img {
+            height: 80px;
+        }
+
         .footer-brand p {
             color: rgba(255,255,255,0.6);
             line-height: 1.8;
@@ -614,10 +601,7 @@
     <!-- Navbar -->
     <nav class="navbar" id="navbar">
         <a href="/" class="logo">
-            <div class="logo-icon">
-                <i class="fas fa-building"></i>
-            </div>
-            <span class="logo-text">{{ $isAr ? 'أبو نواف' : 'Abu Nawaf' }}</span>
+            <img src="{{ asset('upload/123.png') }}" alt="{{ $isAr ? 'أبو نواف' : 'Abu Nawaf' }}">
         </a>
 
         <div class="nav-links">
@@ -779,10 +763,7 @@
         <div class="footer-content">
             <div class="footer-brand">
                 <a href="/" class="logo">
-                    <div class="logo-icon">
-                        <i class="fas fa-building"></i>
-                    </div>
-                    <span class="logo-text">{{ $isAr ? 'أبو نواف' : 'Abu Nawaf' }}</span>
+                    <img src="{{ asset('upload/123.png') }}" alt="{{ $isAr ? 'أبو نواف' : 'Abu Nawaf' }}">
                 </a>
                 <p>{{ $isAr ? 'نظام متكامل لإدارة العقارات، يوفر لك كل الأدوات اللازمة لإدارة ممتلكاتك بكفاءة واحترافية.' : 'A complete real estate management system that provides you with all the tools needed to manage your properties efficiently and professionally.' }}</p>
             </div>
