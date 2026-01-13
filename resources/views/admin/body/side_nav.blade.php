@@ -115,6 +115,31 @@
                 </li>
 
 
+                <!-- Contacts/Clients -->
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon fas fa-users"></i>
+                        <p>
+                            العملاء
+                            <i class="fas fa-angle-left right"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{{ route('contacts.index') }}" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>قائمة العملاء</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('contacts.create') }}" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>إضافة عميل</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
                 <!-- Mediators -->
                 <li class="nav-item">
                     <a href="#" class="nav-link">

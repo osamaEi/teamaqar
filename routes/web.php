@@ -6,6 +6,7 @@ use App\Http\Controllers\TodoController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\FilesController;
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\ContactClientController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RequestController;
 use App\Http\Controllers\CalendarController;
@@ -132,6 +133,17 @@ Route::post('/todos/update-status', [ToDoController::class, 'updateStatus'])->na
 
 Route::get('/map',[PropertyController::class, 'map'])->name('property.map');
 Route::post('/map/drawing/save',[PropertyController::class, 'saveDrawing'])->name('map.drawing.save');
+
+// Contacts/Clients Management
+Route::get('/contacts', [ContactClientController::class, 'index'])->name('contacts.index');
+Route::get('/contacts/create', [ContactClientController::class, 'create'])->name('contacts.create');
+Route::post('/contacts', [ContactClientController::class, 'store'])->name('contacts.store');
+Route::get('/contacts/{id}/edit', [ContactClientController::class, 'edit'])->name('contacts.edit');
+Route::put('/contacts/{id}', [ContactClientController::class, 'update'])->name('contacts.update');
+Route::delete('/contacts/{id}', [ContactClientController::class, 'destroy'])->name('contacts.destroy');
+Route::get('/contacts/{id}/send-offer', [ContactClientController::class, 'sendOfferForm'])->name('contacts.send_offer');
+Route::post('/contacts/{id}/send-whatsapp', [ContactClientController::class, 'sendWhatsApp'])->name('contacts.send_whatsapp');
+Route::post('/contacts/{id}/send-email', [ContactClientController::class, 'sendEmail'])->name('contacts.send_email');
 });
 
 
