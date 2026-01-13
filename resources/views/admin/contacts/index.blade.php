@@ -1,5 +1,4 @@
-@extends('admin.index
-')
+@extends('admin.index')
 @section('title', 'إدارة العملاء')
 @section('admin')
 
