@@ -11,7 +11,7 @@
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">الرئيسية</a></li>
+                        <li class="breadcrumb-item"><a href="{{ route('dashboard.page') }}">الرئيسية</a></li>
                         <li class="breadcrumb-item"><a href="{{ route('contacts.index') }}">العملاء</a></li>
                         <li class="breadcrumb-item active">تعديل</li>
                     </ol>
