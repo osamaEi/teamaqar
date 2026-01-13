@@ -1,4 +1,5 @@
-@extends('admin.admin_master')
+@extends('admin.index
+')
 @section('title', 'إضافة عميل جديد')
 @section('admin')
 
