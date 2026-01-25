@@ -144,6 +144,16 @@ Route::delete('/contacts/{id}', [ContactClientController::class, 'destroy'])->na
 Route::get('/contacts/{id}/send-offer', [ContactClientController::class, 'sendOfferForm'])->name('contacts.send_offer');
 Route::post('/contacts/{id}/send-whatsapp', [ContactClientController::class, 'sendWhatsApp'])->name('contacts.send_whatsapp');
 Route::post('/contacts/{id}/send-email', [ContactClientController::class, 'sendEmail'])->name('contacts.send_email');
+
+// User Dashboard Routes (for registered users)
+Route::get('/dashboard', [App\Http\Controllers\UserDashboardController::class, 'index'])->name('user.dashboard');
+Route::get('/my-properties', [App\Http\Controllers\UserDashboardController::class, 'index'])->name('user.properties.index');
+Route::get('/my-properties/create', [App\Http\Controllers\UserDashboardController::class, 'create'])->name('user.properties.create');
+Route::post('/my-properties', [App\Http\Controllers\UserDashboardController::class, 'store'])->name('user.properties.store');
+Route::get('/my-properties/{id}', [App\Http\Controllers\UserDashboardController::class, 'show'])->name('user.properties.show');
+Route::get('/my-properties/{id}/edit', [App\Http\Controllers\UserDashboardController::class, 'edit'])->name('user.properties.edit');
+Route::put('/my-properties/{id}', [App\Http\Controllers\UserDashboardController::class, 'update'])->name('user.properties.update');
+Route::delete('/my-properties/{id}', [App\Http\Controllers\UserDashboardController::class, 'destroy'])->name('user.properties.destroy');
 });
 
 

@@ -30,9 +30,16 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        Alert::success('Congrate','add success');
+        $user = Auth::user();
 
-        return redirect()->route('property.map');
+        Alert::success('مرحباً', 'تم تسجيل الدخول بنجاح');
+
+        // Redirect based on user role
+        if ($user->isAdmin()) {
+            return redirect()->route('property.map');
+        }
+
+        return redirect()->route('user.dashboard');
     }
 
     /**

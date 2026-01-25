@@ -18,10 +18,15 @@ class Property extends Model
     {
         return $this->hasMany(MultiImages::class, 'propery_id');
     }
-    
+
     public function shapes()
     {
         return $this->hasMany(Shape::class);
     }
-    
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
 }
