@@ -17,9 +17,9 @@
                     <i class="fas fa-calendar ml-1"></i> تقويم
                 </button>
             </div>
-            <a href="{{ route('requests.create') }}" class="btn btn-primary">
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createRequestModal">
                 <i class="fas fa-plus ml-2"></i> إضافة طلب جديد
-            </a>
+            </button>
         </div>
     </div>
 
@@ -191,6 +191,86 @@
         {{ $requests->links() }}
     </div>
     @endif
+</div>
+
+<!-- Create Request Modal -->
+<div class="modal fade" id="createRequestModal" tabindex="-1" role="dialog" aria-labelledby="createRequestModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="background: #0F302E; color: white;">
+                <h5 class="modal-title" id="createRequestModalLabel">
+                    <i class="fas fa-plus-circle ml-2"></i>
+                    إضافة طلب جديد
+                </h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="{{ route('requests.store') }}" method="POST">
+                @csrf
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="client_name">الاسم <span class="text-danger">*</span></label>
+                                <input type="text" name="client_name" id="client_name" class="form-control" placeholder="اسم العميل" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="client_phone">رقم الهاتف <span class="text-danger">*</span></label>
+                                <input type="text" name="client_phone" id="client_phone" class="form-control" placeholder="05xxxxxxxx" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="request_name">نوع العرض <span class="text-danger">*</span></label>
+                                <select class="form-control" name="request_name" id="request_name" required>
+                                    <option value="">-- اختر نوع العرض --</option>
+                                    <option value="أرض ايجار زراعية">أرض ايجار زراعية</option>
+                                    <option value="أرض شراء زراعية">أرض شراء زراعية</option>
+                                    <option value="أرض سكنية">أرض سكنية</option>
+                                    <option value="أرض استثمار">أرض استثمار</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="client_type">نوع العميل <span class="text-danger">*</span></label>
+                                <select class="form-control" name="client_type" id="client_type" required>
+                                    <option value="">-- اختر نوع العميل --</option>
+                                    <option value="عميل">عميل</option>
+                                    <option value="وسيط عقاري">وسيط عقاري</option>
+                                    <option value="مالك">مالك</option>
+                                    <option value="وكيل">وكيل</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="other_request">طلب آخر</label>
+                                <textarea name="other_request" id="other_request" class="form-control" rows="3" placeholder="أي ملاحظات أو طلبات إضافية..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                        <i class="fas fa-times ml-1"></i> إلغاء
+                    </button>
+                    <button type="submit" class="btn btn-primary" style="background: #0F302E; border-color: #0F302E;">
+                        <i class="fas fa-save ml-1"></i> حفظ الطلب
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 
 @endsection
