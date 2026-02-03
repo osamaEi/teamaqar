@@ -46,7 +46,7 @@ class PropertyController extends Controller
     {
         $property = Property::with(['shapes.coordinates'])->findOrFail($id);
         $multiImage = MultiImages::where('propery_id', $id)->get();
-        $propertyFiles = \App\Models\File::where('property_id', $id)->orWhere('propery_id', $id)->get();
+        $propertyFiles = \App\Models\File::where('property_id', $id)->get();
 
         return view('admin.property.show', compact('property', 'multiImage', 'propertyFiles'));
     }
@@ -250,7 +250,7 @@ class PropertyController extends Controller
     // Redirect to a specific route or page after successful submission
     return redirect()->route('properties.page');
 }
-
+}
     public function destroy($id) {
     $property = Property::find($id);
 
