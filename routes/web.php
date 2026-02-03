@@ -95,6 +95,7 @@ Route::resource('requests', RequestController::class);
 Route::get('/clients/apply-action', [RequestController::class, 'thank_you'])->name('requests.thank_you');
 Route::post('/clients/apply-action', [RequestController::class, 'applyAction'])->name('requests.applyAction');
 Route::post('/clients/apply-time', [RequestController::class, 'applyTime'])->name('requests.applyTime');
+Route::get('/requests/calendar/events', [RequestController::class, 'getCalendarEvents'])->name('requests.calendar.events');
 
 //notifications 
 

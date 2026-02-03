@@ -8,9 +8,19 @@
             <h4 class="mb-1">قائمة الطلبات</h4>
             <p class="text-muted mb-0">إدارة طلبات العملاء والمتابعة</p>
         </div>
-        <a href="{{ route('requests.create') }}" class="btn btn-primary">
-            <i class="fas fa-plus ml-2"></i> إضافة طلب جديد
-        </a>
+        <div class="d-flex gap-2">
+            <div class="btn-group" role="group">
+                <button type="button" class="btn btn-outline-primary active" id="tableViewBtn" onclick="switchView('table')">
+                    <i class="fas fa-list ml-1"></i> جدول
+                </button>
+                <button type="button" class="btn btn-outline-primary" id="calendarViewBtn" onclick="switchView('calendar')">
+                    <i class="fas fa-calendar ml-1"></i> تقويم
+                </button>
+            </div>
+            <a href="{{ route('requests.create') }}" class="btn btn-primary">
+                <i class="fas fa-plus ml-2"></i> إضافة طلب جديد
+            </a>
+        </div>
     </div>
 
     <!-- Quick Actions Card -->
@@ -59,8 +69,15 @@
         </div>
     </div>
 
+    <!-- Calendar View Card -->
+    <div class="card" id="calendarView" style="display: none;">
+        <div class="card-body">
+            <div id="calendar"></div>
+        </div>
+    </div>
+
     <!-- Requests Table Card -->
-    <div class="card table-card">
+    <div class="card table-card" id="tableView">
         <div class="card-header border-0">
             <div class="d-flex justify-content-between align-items-center">
                 <h3 class="card-title">جدول الطلبات</h3>
@@ -218,5 +235,97 @@
     function displayMessage(message) {
         toastr.success(message, 'تم بنجاح');
     }
+
+    // View switcher function
+    function switchView(view) {
+        const tableView = document.getElementById('tableView');
+        const calendarView = document.getElementById('calendarView');
+        const tableViewBtn = document.getElementById('tableViewBtn');
+        const calendarViewBtn = document.getElementById('calendarViewBtn');
+
+        if (view === 'table') {
+            tableView.style.display = 'block';
+            calendarView.style.display = 'none';
+            tableViewBtn.classList.add('active');
+            calendarViewBtn.classList.remove('active');
+        } else {
+            tableView.style.display = 'none';
+            calendarView.style.display = 'block';
+            tableViewBtn.classList.remove('active');
+            calendarViewBtn.classList.add('active');
+
+            // Initialize calendar if not already initialized
+            if (!window.calendarInitialized) {
+                initCalendar();
+                window.calendarInitialized = true;
+            }
+        }
+    }
+
+    // Initialize FullCalendar
+    function initCalendar() {
+        var calendarEl = document.getElementById('calendar');
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth',
+            locale: 'ar',
+            direction: 'rtl',
+            headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek,timeGridDay,listMonth'
+            },
+            buttonText: {
+                today: 'اليوم',
+                month: 'شهر',
+                week: 'أسبوع',
+                day: 'يوم',
+                list: 'قائمة'
+            },
+            events: '{{ route("requests.calendar.events") }}',
+            eventClick: function(info) {
+                info.jsEvent.preventDefault();
+                if (info.event.url) {
+                    window.location.href = info.event.url;
+                }
+            },
+            eventTimeFormat: {
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: true
+            },
+            height: 'auto',
+            eventColor: '#0F302E',
+        });
+        calendar.render();
+    }
 </script>
+@endpush
+
+@push('styles')
+<link href='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.css' rel='stylesheet' />
+<style>
+    .fc {
+        direction: rtl;
+    }
+    .fc-toolbar-title {
+        font-size: 1.5rem !important;
+        font-weight: 600;
+    }
+    .fc-button {
+        padding: 0.4rem 0.8rem !important;
+        font-size: 0.875rem !important;
+    }
+    .fc-event {
+        cursor: pointer;
+        border-radius: 4px;
+    }
+    .fc-daygrid-event {
+        white-space: normal !important;
+    }
+</style>
+@endpush
+
+@push('scripts')
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js'></script>
+<script src='https://cdn.jsdelivr.net/npm/@fullcalendar/core@6.1.10/locales/ar.global.min.js'></script>
 @endpush

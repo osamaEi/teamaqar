@@ -203,5 +203,24 @@ class RequestController extends Controller
 
         return view('admin.Requests.thank_you');
     }
-    
+
+    public function getCalendarEvents()
+    {
+        $events = Event::with('request')->get();
+
+        $calendarEvents = $events->map(function($event) {
+            return [
+                'id' => $event->id,
+                'title' => $event->title,
+                'start' => $event->start,
+                'end' => $event->end,
+                'url' => route('requests.show', $event->request_id),
+                'backgroundColor' => '#0F302E',
+                'borderColor' => '#0F302E',
+            ];
+        });
+
+        return response()->json($calendarEvents);
+    }
+
 }
