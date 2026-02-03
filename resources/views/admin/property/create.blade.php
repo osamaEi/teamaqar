@@ -49,7 +49,7 @@
                             <div class="col-md-3">
                                 <div class="form-group">
                                     <label for="area">المساحة (م²)</label>
-                                    <input type="text" name="area" class="form-control" id="area" placeholder="مثال: 500">
+                                    <input type="number" name="area" class="form-control" id="area" placeholder="مثال: 500" onchange="calculatePricePerMeter(); calculateTotalPrice();">
                                 </div>
                             </div>
                         </div>
@@ -96,18 +96,30 @@
                         </div>
 
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group">
-                                    <label for="price">السعر (ريال) <span class="text-danger">*</span></label>
+                                    <label for="price">السعر الكلي (ريال) <span class="text-danger">*</span></label>
                                     <div class="input-group">
-                                        <input type="number" name="price" class="form-control" id="price" placeholder="0" required>
+                                        <input type="number" name="price" class="form-control" id="price" placeholder="0" required onchange="calculatePricePerMeter()">
                                         <div class="input-group-append">
                                             <span class="input-group-text">ريال</span>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="price_per_meter">سعر المتر (ريال)</label>
+                                    <div class="input-group">
+                                        <input type="number" step="0.01" name="price_per_meter" class="form-control" id="price_per_meter" placeholder="0" onchange="calculateTotalPrice()">
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">ريال/م²</span>
+                                        </div>
+                                    </div>
+                                    <small class="text-muted">أدخل القيمة أو حسابها تلقائياً</small>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
                                 <div class="form-group">
                                     <label>حالة العقار</label>
                                     <select class="form-control" name="status">
@@ -151,6 +163,31 @@
                                 </div>
                             </div>
                             <small class="text-muted">اكتب العنوان واضغط بحث أو انقر على الخريطة مباشرة لتحديد الموقع</small>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="city">المدينة</label>
+                                    <select class="form-control" name="city" id="city">
+                                        <option value="">-- اختر المدينة --</option>
+                                        <option value="الرياض">الرياض</option>
+                                        <option value="جدة">جدة</option>
+                                        <option value="الدمام">الدمام</option>
+                                        <option value="مكة المكرمة">مكة المكرمة</option>
+                                        <option value="المدينة المنورة">المدينة المنورة</option>
+                                        <option value="الهفوف">الهفوف</option>
+                                        <option value="الخبر">الخبر</option>
+                                        <option value="أخرى">أخرى</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="address">الحي/المنطقة</label>
+                                    <input type="text" name="address" class="form-control" id="address" placeholder="مثال: حي النخيل، حي الفاخرية">
+                                </div>
+                            </div>
                         </div>
 
                         <div class="row mb-3">
@@ -199,6 +236,32 @@
                         <input type="file" name="multi_img[]" class="d-none" multiple id="multiImg" accept="image/*" onchange="previewMultiImages(this)">
 
                         <div id="multiPreview" class="d-flex flex-wrap mt-3" style="gap: 10px;"></div>
+                    </div>
+                </div>
+
+                <!-- Documents/Files Card -->
+                <div class="card mt-4">
+                    <div class="card-header border-0">
+                        <h3 class="card-title">
+                            <i class="fas fa-file-pdf text-danger ml-2"></i>
+                            المستندات والملفات
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <label>إضافة مستندات (صك، أوراق، عقود... إلخ)</label>
+                        <div class="upload-area p-4 text-center" style="border: 2px dashed #dee2e6; border-radius: 10px; cursor: pointer; transition: all 0.3s;"
+                             onclick="document.getElementById('multiFiles').click()"
+                             ondragover="this.style.borderColor='#0F302E'; this.style.background='#f8f9fa';"
+                             ondragleave="this.style.borderColor='#dee2e6'; this.style.background='transparent';">
+                            <i class="fas fa-file-upload fa-3x text-muted mb-3"></i>
+                            <p class="mb-1">اسحب الملفات هنا أو انقر للاختيار</p>
+                            <small class="text-muted">PDF, Word, Excel، الحد الأقصى 10 MB لكل ملف</small>
+                        </div>
+                        <input type="file" name="property_files[]" class="d-none" multiple id="multiFiles" accept=".pdf,.doc,.docx,.xls,.xlsx,.png,.jpg,.jpeg" onchange="previewMultiFiles(this)">
+
+                        <div id="filesPreview" class="mt-3">
+                            <div class="file-list" id="fileListItems"></div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -452,5 +515,102 @@
     function removePreview(btn) {
         btn.parentElement.remove();
     }
+
+    // File preview for documents
+    function previewMultiFiles(input) {
+        var fileListItems = document.getElementById('fileListItems');
+        fileListItems.innerHTML = '';
+
+        if (input.files && input.files.length > 0) {
+            var fileList = document.createElement('table');
+            fileList.className = 'table table-sm table-hover';
+            fileList.innerHTML = '<thead><tr><th>اسم الملف</th><th>الحجم</th><th>النوع</th><th></th></tr></thead><tbody id="fileTableBody"></tbody>';
+
+            var tbody = fileList.querySelector('tbody');
+
+            for (var i = 0; i < input.files.length; i++) {
+                (function(file, index) {
+                    var fileSize = (file.size / 1024).toFixed(2); // Size in KB
+                    var fileType = file.type || 'Unknown';
+
+                    var row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>
+                            <i class="fas fa-file-${getFileIcon(file.name)} mr-2"></i>
+                            ${file.name}
+                        </td>
+                        <td><small>${fileSize} KB</small></td>
+                        <td><small>${fileType}</small></td>
+                        <td>
+                            <button type="button" class="btn btn-sm btn-danger" onclick="removeFile(this)">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    `;
+                    tbody.appendChild(row);
+                })(input.files[i], i);
+            }
+            fileListItems.appendChild(fileList);
+        }
+    }
+
+    function getFileIcon(filename) {
+        const ext = filename.split('.').pop().toLowerCase();
+        if (ext === 'pdf') return 'pdf';
+        if (['doc', 'docx'].includes(ext)) return 'word';
+        if (['xls', 'xlsx'].includes(ext)) return 'excel';
+        if (['jpg', 'jpeg', 'png', 'gif'].includes(ext)) return 'image';
+        return 'alt';
+    }
+
+    function removeFile(btn) {
+        btn.parentElement.parentElement.remove();
+    }
+
+    // Calculate price per meter from total price and area
+    function calculatePricePerMeter() {
+        const price = parseFloat(document.getElementById('price').value) || 0;
+        const area = parseFloat(document.getElementById('area').value) || 0;
+
+        if (price > 0 && area > 0) {
+            const pricePerMeter = (price / area).toFixed(2);
+            document.getElementById('price_per_meter').value = pricePerMeter;
+        } else if (price === 0 || area === 0) {
+            document.getElementById('price_per_meter').value = '';
+        }
+    }
+
+    // Calculate total price from price per meter and area
+    function calculateTotalPrice() {
+        const pricePerMeter = parseFloat(document.getElementById('price_per_meter').value) || 0;
+        const area = parseFloat(document.getElementById('area').value) || 0;
+
+        if (pricePerMeter > 0 && area > 0) {
+            const totalPrice = (pricePerMeter * area).toFixed(2);
+            document.getElementById('price').value = totalPrice;
+        } else if (pricePerMeter === 0 || area === 0) {
+            // Don't clear the price if user is still entering values
+        }
+    }
+
+    // Initialize calculations on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        const priceInput = document.getElementById('price');
+        const pricePerMeterInput = document.getElementById('price_per_meter');
+        const areaInput = document.getElementById('area');
+
+        if (priceInput) {
+            priceInput.addEventListener('change', calculatePricePerMeter);
+        }
+        if (pricePerMeterInput) {
+            pricePerMeterInput.addEventListener('change', calculateTotalPrice);
+        }
+        if (areaInput) {
+            areaInput.addEventListener('change', function() {
+                calculatePricePerMeter();
+                calculateTotalPrice();
+            });
+        }
+    });
 </script>
 @endpush
