@@ -448,7 +448,12 @@
                 <div class="file-card {{ $type }}" data-filename="{{ strtolower($file->name) }}">
                     <div class="file-card-header">
                         @if($type === 'image')
-                            <img src="{{ asset('storage/' . $file->path) }}" alt="{{ $file->name }}" class="file-preview" data-toggle="modal" data-target="#imageModal-{{ $file->id }}">
+                            <img src="{{ asset('storage/' . $file->path) }}"
+                                 alt="{{ $file->name }}"
+                                 class="file-preview"
+                                 data-toggle="modal"
+                                 data-target="#imageModal-{{ $file->id }}"
+                                 onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'file-icon\'><i class=\'bx bx-image text-muted\'></i></div>';">
                         @else
                             <div class="file-icon">
                                 <i class='bx {{ $icon }}'></i>
