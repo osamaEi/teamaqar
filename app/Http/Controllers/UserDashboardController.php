@@ -62,7 +62,7 @@ class UserDashboardController extends Controller
         if ($request->hasFile('image')) {
             $image = $request->file('image');
             $imageName = time() . '_' . $image->getClientOriginalName();
-            $image->move(public_path('upload/properties'), $imageName');
+            $image->move(public_path('upload/properties'), $imageName);
             $validated['image'] = 'upload/properties/' . $imageName;
         }
 

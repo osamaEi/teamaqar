@@ -867,7 +867,7 @@
         <!-- Form Side -->
         <div class="login-form-container">
             <div class="form-header">
-                <h3>تسجيل الدخول</h3>
+                <h3>{{ __('messages.login') }}</h3>
                 <p>أدخل بياناتك للوصول إلى حسابك</p>
             </div>
 
@@ -875,7 +875,7 @@
                 @csrf
 
                 <div class="form-group">
-                    <label for="email">البريد الإلكتروني</label>
+                    <label for="email">{{ __('messages.email') }}</label>
                     <div class="input-wrapper">
                         <input id="email" class="form-control" type="email" name="email" value="{{ old('email') }}" placeholder="example@email.com" required autofocus>
                         <i class="fas fa-envelope"></i>
@@ -889,7 +889,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="password">كلمة المرور</label>
+                    <label for="password">{{ __('messages.password') }}</label>
                     <div class="input-wrapper">
                         <input id="password" class="form-control" type="password" name="password" placeholder="••••••••" required>
                         <i class="fas fa-lock"></i>
@@ -905,18 +905,18 @@
                 <div class="form-options">
                     <label class="remember-me">
                         <input type="checkbox" name="remember">
-                        <span>تذكرني</span>
+                        <span>{{ __('messages.remember_me') }}</span>
                     </label>
                     @if (Route::has('password.request'))
                         <a href="{{ route('password.request') }}" class="forgot-password">
-                            نسيت كلمة المرور؟
+                            {{ __('messages.forgot_password') }}
                         </a>
                     @endif
                 </div>
 
                 <button type="submit" class="btn-login">
                     <i class="fas fa-sign-in-alt"></i>
-                    تسجيل الدخول
+                    {{ __('messages.login') }}
                 </button>
             </form>
 

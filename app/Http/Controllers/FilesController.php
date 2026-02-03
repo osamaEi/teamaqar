@@ -11,10 +11,8 @@ class FilesController extends Controller
 {
     public function index()
     {
-        $videos = Video::all();
-        $images = Image::all();
         $files = File::all();
-        return view('admin.files.index', compact('videos', 'images', 'files'));
+        return view('admin.files.index', compact('files'));
     }
     public function image()
     {
@@ -46,11 +44,31 @@ class FilesController extends Controller
         }
 
         if ($request->hasFile('file')) {
-            $filePath = $request->file('file')->store('uploads/files', 'public');
-            File::create(['path' => $filePath, 'name' => $request->file('file')->getClientOriginalName()]);
+            $file = $request->file('file');
+            $filePath = $file->store('uploads/files', 'public');
+            $fileSize = round($file->getSize() / 1024 / 1024, 2); // Convert to MB
+
+            File::create([
+                'path' => $filePath,
+                'name' => $file->getClientOriginalName(),
+                'size' => $fileSize . ' MB'
+            ]);
         }
 
-        return redirect()->back()->with('success', 'Files uploaded successfully!');
+        return redirect()->back()->with('success', 'تم رفع الملف بنجاح!');
+    }
+
+    public function destroy($id)
+    {
+        $file = File::findOrFail($id);
+
+        // Delete from storage if needed
+        if (file_exists(storage_path('app/public/' . $file->path))) {
+            unlink(storage_path('app/public/' . $file->path));
+        }
+
+        $file->delete();
+        return redirect()->back()->with('success', 'تم حذف الملف بنجاح!');
     }
 }
 

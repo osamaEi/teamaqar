@@ -623,7 +623,7 @@
         <!-- Form Side -->
         <div class="register-form-container">
             <div class="form-header">
-                <h3>إنشاء حساب جديد</h3>
+                <h3>{{ __('messages.register') }}</h3>
                 <p>املأ البيانات التالية للتسجيل</p>
             </div>
 
@@ -631,7 +631,7 @@
                 @csrf
 
                 <div class="form-group">
-                    <label for="name">الاسم الكامل</label>
+                    <label for="name">{{ __('messages.name') }}</label>
                     <div class="input-wrapper">
                         <input id="name" class="form-control" type="text" name="name" value="{{ old('name') }}" placeholder="أدخل اسمك الكامل" required autofocus>
                         <i class="fas fa-user"></i>
@@ -645,7 +645,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="email">البريد الإلكتروني</label>
+                    <label for="email">{{ __('messages.email') }}</label>
                     <div class="input-wrapper">
                         <input id="email" class="form-control" type="email" name="email" value="{{ old('email') }}" placeholder="example@email.com" required>
                         <i class="fas fa-envelope"></i>
@@ -659,7 +659,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="password">كلمة المرور</label>
+                    <label for="password">{{ __('messages.password') }}</label>
                     <div class="input-wrapper">
                         <input id="password" class="form-control" type="password" name="password" placeholder="••••••••" required>
                         <i class="fas fa-lock"></i>
@@ -673,7 +673,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="password_confirmation">تأكيد كلمة المرور</label>
+                    <label for="password_confirmation">{{ __('messages.password_confirmation') }}</label>
                     <div class="input-wrapper">
                         <input id="password_confirmation" class="form-control" type="password" name="password_confirmation" placeholder="••••••••" required>
                         <i class="fas fa-lock"></i>
@@ -682,7 +682,7 @@
 
                 <button type="submit" class="btn-register">
                     <i class="fas fa-user-plus"></i>
-                    إنشاء الحساب
+                    {{ __('messages.register') }}
                 </button>
             </form>
 

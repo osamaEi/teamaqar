@@ -81,6 +81,24 @@
                                 <td class="font-weight-bold text-left">{{ $property->land_situation ?? '-' }}</td>
                             </tr>
                             <tr>
+                                <td class="text-muted">سعر المتر</td>
+                                <td class="font-weight-bold text-left">
+                                    @if($property->price_per_meter)
+                                        {{ number_format($property->price_per_meter) }} ريال/م²
+                                    @else
+                                        <span class="text-muted">-</span>
+                                    @endif
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted">المدينة</td>
+                                <td class="font-weight-bold text-left">{{ $property->city ?? '-' }}</td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted">الحي/المنطقة</td>
+                                <td class="font-weight-bold text-left">{{ $property->address ?? '-' }}</td>
+                            </tr>
+                            <tr>
                                 <td class="text-muted">الموقع</td>
                                 <td class="font-weight-bold text-left">
                                     <i class="fas fa-map-marker-alt text-danger ml-1"></i>
@@ -275,6 +293,36 @@
                 </div>
                 <div class="card-body pt-0">
                     <p class="mb-0">{{ $property->notes }}</p>
+                </div>
+            </div>
+            @endif
+
+            <!-- Files/Documents Card -->
+            @if($propertyFiles && count($propertyFiles) > 0)
+            <div class="card mt-4">
+                <div class="card-header border-0">
+                    <h3 class="card-title">
+                        <i class="fas fa-file-pdf text-danger ml-2"></i>
+                        المستندات والملفات
+                    </h3>
+                </div>
+                <div class="card-body pt-0">
+                    <div class="list-group list-group-flush">
+                        @foreach($propertyFiles as $file)
+                        <a href="{{ asset('storage/' . $file->path) }}" target="_blank" class="list-group-item list-group-item-action p-3">
+                            <div class="d-flex align-items-center">
+                                <div style="width: 40px; height: 40px; background: #f0f0f0; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-left: 15px;">
+                                    <i class="fas fa-file-pdf text-danger"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1 font-weight-bold">{{ $file->name }}</h6>
+                                    <small class="text-muted">{{ $file->size ?? 'N/A' }} • {{ $file->created_at->format('d/m/Y') }}</small>
+                                </div>
+                                <i class="fas fa-download text-primary"></i>
+                            </div>
+                        </a>
+                        @endforeach
+                    </div>
                 </div>
             </div>
             @endif
