@@ -108,6 +108,7 @@
                                 <input type="hidden" name="todo_id" value="{{ $todo->id }}">
                                 <label class="custom-checkbox">
                                     <input type="checkbox"
+                                           name="todos"
                                            {{ $todo->completed ? 'checked' : '' }}
                                            onchange="this.form.submit()">
                                     <span class="checkmark"></span>

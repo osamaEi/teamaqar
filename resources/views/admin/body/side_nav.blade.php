@@ -43,12 +43,7 @@
                                 <p>التحليلات</p>
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a href="{{ route('calender.index') }}" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>جدول اليوم</p>
-                            </a>
-                        </li>
+                    
                     </ul>
                 </li>
 
@@ -74,12 +69,7 @@
                                 <p>إضافة عقار</p>
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a href="{{ route('property.createdraw') }}" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>إضافة بالرسم</p>
-                            </a>
-                        </li>
+                     
                         <li class="nav-item">
                             <a href="{{ route('property.map') }}" class="nav-link">
                                 <i class="far fa-circle nav-icon"></i>
@@ -140,24 +130,7 @@
                     </ul>
                 </li>
 
-                <!-- Mediators -->
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class="nav-icon fas fa-user-tie"></i>
-                        <p>
-                            الموظفين
-                            <i class="fas fa-angle-left right"></i>
-                        </p>
-                    </a>
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>قائمة الموظفين</p>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
+           
 
           
 
@@ -185,21 +158,7 @@
                     </a>
                 </li>
 
-                <!-- Notifications -->
-                <li class="nav-item">
-                    <a href="{{ route('notification.page') }}" class="nav-link">
-                        <i class="nav-icon fas fa-bell"></i>
-                        <p>الاشعارات</p>
-                    </a>
-                </li>
-
-                <!-- Settings -->
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class="nav-icon fas fa-cog"></i>
-                        <p>الاعدادات</p>
-                    </a>
-                </li>
+         
 
             </ul>
         </nav>
