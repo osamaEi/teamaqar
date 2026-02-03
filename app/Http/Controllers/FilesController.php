@@ -5,14 +5,29 @@ namespace App\Http\Controllers;
 use App\Models\Video;
 use App\Models\Image;
 use App\Models\File;
+use App\Models\Folder;
 use Illuminate\Http\Request;
 
 class FilesController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $files = File::all();
-        return view('admin.files.index', compact('files'));
+        $folderId = $request->query('folder');
+        $currentFolder = null;
+
+        // Get all folders with file counts (for root view)
+        $folders = Folder::withCount('files')->get();
+
+        // Filter files by folder
+        if ($folderId) {
+            $currentFolder = Folder::findOrFail($folderId);
+            $files = File::where('folder_id', $folderId)->get();
+        } else {
+            // Show only root files (no folder)
+            $files = File::whereNull('folder_id')->get();
+        }
+
+        return view('admin.files.index', compact('files', 'folders', 'currentFolder'));
     }
     public function image()
     {
@@ -29,9 +44,12 @@ class FilesController extends Controller
     {
         $request->validate([
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'video' => 'nullable|mimes:mp4,mov,avi|max:20480', // Adjust maximum file size as needed
-            'file' => 'nullable|max:20480', // Adjust maximum file size as needed
+            'video' => 'nullable|mimes:mp4,mov,avi|max:20480',
+            'file' => 'nullable|max:20480',
+            'folder_id' => 'nullable|exists:folders,id',
         ]);
+
+        $folderId = $request->input('folder_id');
 
         if ($request->hasFile('image')) {
             $imagePath = $request->file('image')->store('uploads/images', 'public');
@@ -46,12 +64,13 @@ class FilesController extends Controller
         if ($request->hasFile('file')) {
             $file = $request->file('file');
             $filePath = $file->store('uploads/files', 'public');
-            $fileSize = round($file->getSize() / 1024 / 1024, 2); // Convert to MB
+            $fileSize = round($file->getSize() / 1024 / 1024, 2);
 
             File::create([
                 'path' => $filePath,
                 'name' => $file->getClientOriginalName(),
-                'size' => $fileSize . ' MB'
+                'size' => $fileSize . ' MB',
+                'folder_id' => $folderId,
             ]);
         }
 
@@ -69,6 +88,23 @@ class FilesController extends Controller
 
         $file->delete();
         return redirect()->back()->with('success', 'تم حذف الملف بنجاح!');
+    }
+
+    /**
+     * Move file to a different folder
+     */
+    public function move(Request $request, $id)
+    {
+        $request->validate([
+            'folder_id' => 'nullable|exists:folders,id',
+        ]);
+
+        $file = File::findOrFail($id);
+        $file->update([
+            'folder_id' => $request->input('folder_id'),
+        ]);
+
+        return redirect()->back()->with('success', 'تم نقل الملف بنجاح!');
     }
 }
 

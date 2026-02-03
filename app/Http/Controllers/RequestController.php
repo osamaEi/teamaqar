@@ -50,10 +50,11 @@ class RequestController extends Controller
         'client_phone' => 'string',
         'client_name' => 'string',
         'client_type' => 'string',
+        'city' => 'nullable|string',
         'other_request' => 'string',
         'request_name' => 'string',
         'property_id' => 'integer',
-     
+
     ]);
 
 
@@ -63,6 +64,7 @@ class RequestController extends Controller
         'client_phone' => $request->get('client_phone'),
         'client_name' => $request->get('client_name'),
         'client_type' => $request->get('client_type'),
+        'city' => $request->get('city'),
         'other_request' => $request->get('other_request'),
         'request_name' => $request->get('request_name'),
         'property_id' => $request->get('property_id'),

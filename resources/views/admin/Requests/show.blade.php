@@ -89,7 +89,7 @@
                 </div>
                 <div class="card-body">
                     <div class="row mb-4">
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="info-item mb-3">
                                 <label class="text-muted mb-1">
                                     <i class="fas fa-phone text-primary ml-2"></i>
@@ -102,13 +102,22 @@
                                 </h6>
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="info-item mb-3">
                                 <label class="text-muted mb-1">
                                     <i class="fas fa-user-tag text-info ml-2"></i>
                                     نوع العميل
                                 </label>
                                 <h6 class="mb-0">{{ $request->client_type }}</h6>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="info-item mb-3">
+                                <label class="text-muted mb-1">
+                                    <i class="fas fa-map-marker-alt text-danger ml-2"></i>
+                                    المدينة
+                                </label>
+                                <h6 class="mb-0">{{ $request->city ?? 'غير محدد' }}</h6>
                             </div>
                         </div>
                     </div>

@@ -5,6 +5,7 @@ use App\Http\Controllers\SmsController;
 use App\Http\Controllers\TodoController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\FilesController;
+use App\Http\Controllers\FolderController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\ContactClientController;
 use App\Http\Controllers\ProfileController;
@@ -126,6 +127,8 @@ Route::post('calender/store', [EventController::class, 'storeEvent'])->name('cal
 Route::post('event/mark-read/{id}', [EventController::class, 'markAsRead'])->name('event.mark-read');
 
 Route::resource('/files',FilesController::class);
+Route::patch('/files/{file}/move', [FilesController::class, 'move'])->name('files.move');
+Route::resource('/folders', FolderController::class)->only(['store', 'update', 'destroy']);
 Route::get('/images', [FilesController::class, 'image'])->name('image.files');
 Route::get('/video', [FilesController::class, 'video'])->name('video.files');
 Route::post('/todos/update-status', [ToDoController::class, 'updateStatus'])->name('todos.update-status');

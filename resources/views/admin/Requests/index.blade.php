@@ -98,6 +98,7 @@
                             <th>اسم العميل</th>
                             <th>رقم الهاتف</th>
                             <th>نوع العميل</th>
+                            <th>المدينة</th>
                             <th>الطلب</th>
                             <th>الحالة</th>
                             <th>الموعد</th>
@@ -134,6 +135,16 @@
                                 </a>
                             </td>
                             <td>{{ $request->client_type }}</td>
+                            <td>
+                                @if($request->city)
+                                    <span class="badge badge-info">
+                                        <i class="fas fa-map-marker-alt ml-1"></i>
+                                        {{ $request->city }}
+                                    </span>
+                                @else
+                                    <span class="text-muted">-</span>
+                                @endif
+                            </td>
                             <td>{{ $request->request_name }}</td>
                             <td>
                                 <span class="status-badge {{ $statusColor == 'danger' ? 'inactive' : ($statusColor == 'success' ? 'active' : 'pending') }}">
@@ -173,7 +184,7 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="8" class="text-center py-5">
+                            <td colspan="9" class="text-center py-5">
                                 <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
                                 <p class="text-muted mb-0">لا توجد طلبات</p>
                             </td>
@@ -246,6 +257,33 @@
                                     <option value="وسيط عقاري">وسيط عقاري</option>
                                     <option value="مالك">مالك</option>
                                     <option value="وكيل">وكيل</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="city">المدينة</label>
+                                <select class="form-control" name="city" id="city">
+                                    <option value="">-- اختر المدينة --</option>
+                                    <option value="الرياض">الرياض</option>
+                                    <option value="جدة">جدة</option>
+                                    <option value="الدمام">الدمام</option>
+                                    <option value="مكة المكرمة">مكة المكرمة</option>
+                                    <option value="المدينة المنورة">المدينة المنورة</option>
+                                    <option value="الهفوف">الهفوف</option>
+                                    <option value="الخبر">الخبر</option>
+                                    <option value="الطائف">الطائف</option>
+                                    <option value="تبوك">تبوك</option>
+                                    <option value="القصيم">القصيم</option>
+                                    <option value="حائل">حائل</option>
+                                    <option value="جازان">جازان</option>
+                                    <option value="نجران">نجران</option>
+                                    <option value="أبها">أبها</option>
+                                    <option value="ينبع">ينبع</option>
+                                    <option value="أخرى">أخرى</option>
                                 </select>
                             </div>
                         </div>

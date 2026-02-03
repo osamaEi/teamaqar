@@ -28,11 +28,11 @@
         </li>
 
         <!-- Calendar -->
-        <li class="nav-item">
+        <!-- <li class="nav-item">
             <a class="nav-link" href="{{ route('calender.index') }}" style="width: 42px; height: 42px; display: flex; align-items: center; justify-content: center; border-radius: 12px; background: #f8f9fa; transition: all 0.3s;" title="التقويم">
                 <i class="fas fa-calendar-alt" style="color: #0F302E; font-size: 16px;"></i>
             </a>
-        </li>
+        </li> -->
 
         <!-- Fullscreen -->
         <li class="nav-item">
