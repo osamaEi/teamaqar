@@ -46,8 +46,9 @@ class PropertyController extends Controller
     {
         $property = Property::with(['shapes.coordinates'])->findOrFail($id);
         $multiImage = MultiImages::where('propery_id', $id)->get();
-    
-        return view('admin.property.show', compact('property', 'multiImage'));
+        $propertyFiles = \App\Models\File::where('property_id', $id)->orWhere('propery_id', $id)->get();
+
+        return view('admin.property.show', compact('property', 'multiImage', 'propertyFiles'));
     }
     
     public function storeDraw(Request $request)
@@ -177,17 +178,24 @@ class PropertyController extends Controller
 
 
 
+    // Calculate price per meter
+    $price = $request->get('price') ?? 0;
+    $area = $request->get('area') ?? 0;
+    $pricePerMeter = ($price > 0 && $area > 0) ? $price / $area : 0;
+
     // Create a new Property instance and store in the database
     $property = new Property([
         'name' => $request->get('name'),
         'number' => $request->get('number'),
         'area' => $request->get('area'),
         'Location' => $request->get('location'),
+        'city' => $request->get('city'),
+        'address' => $request->get('address'),
         'property_type' => $request->get('property_type'),
         'status' => $request->get('status'),
         'description' => $request->get('description'),
-        'price' => $request->get('price'),
-        
+        'price' => $price,
+        'price_per_meter' => $pricePerMeter,
         'mediator1' => $request->get('mediator1'),
         'land_situation' => $request->get('land_situation'),
         'phone1' => $request->get('phone1'),
@@ -204,8 +212,9 @@ class PropertyController extends Controller
 
     $property->save();
     if( $property->save()){
+        // Handle images
         $files = $request->multi_img;
-      
+
         if(!empty($files)){
             foreach($files as $file){
                 $imgName = date('YmdHi').$file->getClientOriginalName();
@@ -217,17 +226,32 @@ class PropertyController extends Controller
                 $subimage->images = $imgName;
                 $subimage->save();
             }
+        }
 
+        // Handle property documents/files
+        if($request->hasFile('property_files')){
+            $propertyFiles = $request->file('property_files');
+
+            if(!empty($propertyFiles)){
+                foreach($propertyFiles as $file){
+                    $filePath = $file->store('uploads/property-files', 'public');
+                    $fileSize = round($file->getSize() / 1024 / 1024, 2); // Size in MB
+
+                    \App\Models\File::create([
+                        'property_id' => $property->id,
+                        'path' => $filePath,
+                        'name' => $file->getClientOriginalName(),
+                        'size' => $fileSize . ' MB'
+                    ]);
+                }
+            }
+        }
 
     // Redirect to a specific route or page after successful submission
     return redirect()->route('properties.page');
 }
-    }
-}
 
-
-
-public function destroy($id) {
+    public function destroy($id) {
     $property = Property::find($id);
 
     // Delete associated images
