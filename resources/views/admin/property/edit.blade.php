@@ -286,6 +286,52 @@
                     </div>
                 </div>
 
+                <!-- Documents Card -->
+                <div class="card mt-4">
+                    <div class="card-header border-0">
+                        <h3 class="card-title">
+                            <i class="fas fa-file-pdf text-danger ml-2"></i>
+                            المستندات والملفات
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        @if($propertyFiles && count($propertyFiles) > 0)
+                        <label class="text-muted small mb-2">الملفات الحالية</label>
+                        <div class="list-group mb-3">
+                            @foreach($propertyFiles as $file)
+                            <div class="list-group-item d-flex align-items-center justify-content-between p-2">
+                                <a href="{{ asset('storage/' . $file->path) }}" target="_blank" class="d-flex align-items-center text-dark text-decoration-none flex-grow-1">
+                                    <i class="fas fa-file text-primary ml-2"></i>
+                                    <div>
+                                        <span class="font-weight-bold small">{{ $file->name }}</span>
+                                        <small class="d-block text-muted">{{ $file->size }}</small>
+                                    </div>
+                                </a>
+                                <form action="{{ route('files.destroy', $file->id) }}" method="POST" onsubmit="return confirm('حذف هذا الملف؟')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-sm btn-outline-danger mr-2">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                            @endforeach
+                        </div>
+                        @endif
+
+                        <label>إضافة ملفات جديدة</label>
+                        <div class="upload-area p-3 text-center" style="border: 2px dashed #dee2e6; border-radius: 10px; cursor: pointer; transition: all 0.3s;"
+                             onclick="document.getElementById('editFiles').click()">
+                            <i class="fas fa-file-upload fa-2x text-muted mb-2"></i>
+                            <p class="mb-0 text-muted small">اسحب الملفات هنا أو انقر للاختيار</p>
+                            <small class="text-muted">PDF, Word, Excel. الحد الأقصى 10 MB لكل ملف</small>
+                        </div>
+                        <input type="file" name="property_files[]" class="d-none" multiple id="editFiles"
+                               accept=".pdf,.doc,.docx,.xls,.xlsx,.png,.jpg,.jpeg" onchange="previewEditFiles(this)">
+                        <div id="editFilesPreview" class="mt-2"></div>
+                    </div>
+                </div>
+
                 <!-- Submit Card -->
                 <div class="card mt-4 border-0" style="background: linear-gradient(135deg, #0F302E 0%, #1a5c3a 100%);">
                     <div class="card-body">
@@ -502,6 +548,20 @@
                 // If route doesn't exist, just remove from DOM
                 btn.parentElement.remove();
             });
+        }
+    }
+
+    function previewEditFiles(input) {
+        var preview = document.getElementById('editFilesPreview');
+        preview.innerHTML = '';
+        if (input.files && input.files.length > 0) {
+            for (var i = 0; i < input.files.length; i++) {
+                var file = input.files[i];
+                var div = document.createElement('div');
+                div.className = 'd-flex align-items-center p-2 border rounded mb-1';
+                div.innerHTML = '<i class="fas fa-file text-primary ml-2"></i><span class="small">' + file.name + '</span><small class="text-muted mr-auto">' + (file.size / 1024 / 1024).toFixed(2) + ' MB</small>';
+                preview.appendChild(div);
+            }
         }
     }
 </script>

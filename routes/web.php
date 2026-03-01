@@ -41,7 +41,14 @@ Route::get('/thank_you/client', [ClientController::class ,'thank_you'])->name('c
 Route::post('/store/client', [ClientController::class ,'store'])->name('client.store');
 
 Route::get('/', function () {
-    return view('home');
+    try {
+        $propertyCount = \Illuminate\Support\Facades\Cache::remember('property_count', 300, fn() => \App\Models\Property::count());
+        $requestCount = \Illuminate\Support\Facades\Cache::remember('request_count', 300, fn() => \App\Models\RequestProperty::count());
+    } catch (\Exception $e) {
+        $propertyCount = 0;
+        $requestCount = 0;
+    }
+    return view('home', compact('propertyCount', 'requestCount'));
 });
 
 // Language Switcher
@@ -131,7 +138,7 @@ Route::patch('/files/{file}/move', [FilesController::class, 'move'])->name('file
 Route::resource('/folders', FolderController::class)->only(['store', 'update', 'destroy']);
 Route::get('/images', [FilesController::class, 'image'])->name('image.files');
 Route::get('/video', [FilesController::class, 'video'])->name('video.files');
-Route::post('/todos/update-status', [ToDoController::class, 'updateStatus'])->name('todos.update-status');
+Route::post('/todos/update-status', [TodoController::class, 'updateStatus'])->name('todos.update-status');
 
 
 

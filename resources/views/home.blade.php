@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>أبو نواف للعقارات - مسوق ووسيط عقاري</title>
+    <!-- Preconnect for faster external resource loading -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
@@ -949,11 +953,11 @@
     <section class="stats">
         <div class="stats-container">
             <div class="stat-item animate__animated animate__fadeInUp">
-                <div class="stat-number">{{ \App\Models\Property::count() ?: '50' }}+</div>
+                <div class="stat-number">{{ $propertyCount ?: '50' }}+</div>
                 <div class="stat-label">عقار مسجل</div>
             </div>
             <div class="stat-item animate__animated animate__fadeInUp">
-                <div class="stat-number">{{ \App\Models\RequestProperty::count() ?: '25' }}+</div>
+                <div class="stat-number">{{ $requestCount ?: '25' }}+</div>
                 <div class="stat-label">طلب نشط</div>
             </div>
             <div class="stat-item animate__animated animate__fadeInUp">

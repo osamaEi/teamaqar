@@ -274,10 +274,10 @@ class PropertyController extends Controller
     public function edit($id)
     {
         $property = Property::find($id);
-        
-        $multiImages = MultiImages::where('propery_id',$property->id)->get();
+        $multiImages = MultiImages::where('propery_id', $property->id)->get();
+        $propertyFiles = \App\Models\File::where('property_id', $id)->get();
 
-        return view('admin.property.edit', compact('property','multiImages'));
+        return view('admin.property.edit', compact('property', 'multiImages', 'propertyFiles'));
     }
 
 
@@ -353,6 +353,19 @@ class PropertyController extends Controller
         }
     }
 
+    // Handle property documents/files
+    if ($request->hasFile('property_files')) {
+        foreach ($request->file('property_files') as $file) {
+            $filePath = $file->store('uploads/property-files', 'public');
+            $fileSize = round($file->getSize() / 1024 / 1024, 2);
+            \App\Models\File::create([
+                'property_id' => $property->id,
+                'path' => $filePath,
+                'name' => $file->getClientOriginalName(),
+                'size' => $fileSize . ' MB',
+            ]);
+        }
+    }
 
     return redirect()->route('properties.page');
 }
