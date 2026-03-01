@@ -431,58 +431,90 @@
         document.getElementById('longitude').value = lng.toFixed(6);
     }
 
+    // Mapping of English/Arabic city names to dropdown values
+    var cityMap = {
+        'riyadh': 'الرياض', 'الرياض': 'الرياض', 'ar riyad': 'الرياض', 'ar riyāḑ': 'الرياض',
+        'jeddah': 'جدة', 'jidda': 'جدة', 'جدة': 'جدة', 'جده': 'جدة',
+        'dammam': 'الدمام', 'الدمام': 'الدمام',
+        'mecca': 'مكة المكرمة', 'makkah': 'مكة المكرمة', 'مكة': 'مكة المكرمة', 'مكة المكرمة': 'مكة المكرمة',
+        'medina': 'المدينة المنورة', 'madinah': 'المدينة المنورة', 'المدينة': 'المدينة المنورة', 'المدينة المنورة': 'المدينة المنورة',
+        'hofuf': 'الهفوف', 'al hofuf': 'الهفوف', 'al-ahsa': 'الهفوف', 'الهفوف': 'الهفوف', 'الأحساء': 'الهفوف',
+        'khobar': 'الخبر', 'al khobar': 'الخبر', 'الخبر': 'الخبر',
+    };
+
     function reverseGeocode(latLng) {
-        geocoder.geocode({ location: latLng }, function(results, status) {
+        // Show loading indicator
+        document.getElementById('location').placeholder = 'جاري تحديد الموقع...';
+        document.getElementById('address').placeholder = 'جاري التحديد...';
+
+        geocoder.geocode({ location: latLng, language: 'ar' }, function(results, status) {
+            // Reset placeholders
+            document.getElementById('location').placeholder = 'مثال: حي النخيل، الرياض';
+            document.getElementById('address').placeholder = 'مثال: حي النخيل، حي الفاخرية';
+
             if (status === 'OK' && results[0]) {
                 var result = results[0];
 
-                // Fill the full address field
+                // Fill full address
                 document.getElementById('location').value = result.formatted_address;
 
-                // Extract address components
                 var neighborhood = '';
                 var cityName = '';
+                var adminLevel1 = '';
 
                 result.address_components.forEach(function(component) {
                     var types = component.types;
-
-                    // Neighborhood / District (الحي)
-                    if (types.includes('sublocality_level_1') || types.includes('sublocality') || types.includes('neighborhood')) {
-                        if (!neighborhood) neighborhood = component.long_name;
+                    // Neighborhood / District — prefer most specific
+                    if ((types.includes('sublocality_level_1') || types.includes('sublocality') || types.includes('neighborhood')) && !neighborhood) {
+                        neighborhood = component.long_name;
                     }
-                    // Route / Street as fallback for neighborhood
+                    if (types.includes('administrative_area_level_3') && !neighborhood) {
+                        neighborhood = component.long_name;
+                    }
                     if (types.includes('route') && !neighborhood) {
                         neighborhood = component.long_name;
                     }
                     // City
-                    if (types.includes('locality') || types.includes('administrative_area_level_2')) {
-                        if (!cityName) cityName = component.long_name;
+                    if ((types.includes('locality') || types.includes('administrative_area_level_2')) && !cityName) {
+                        cityName = component.long_name;
+                    }
+                    if (types.includes('administrative_area_level_1') && !adminLevel1) {
+                        adminLevel1 = component.long_name;
                     }
                 });
 
-                // Fill address (حي/المنطقة) field
+                // Fill neighborhood/district field
                 if (neighborhood) {
                     document.getElementById('address').value = neighborhood;
                 }
 
-                // Try to match and select city from dropdown
-                if (cityName) {
-                    var citySelect = document.getElementById('city');
-                    var matched = false;
+                // Match city to dropdown
+                var lookupName = (cityName || adminLevel1 || '').toLowerCase().trim();
+                var matched = cityMap[lookupName] || cityMap[cityName] || null;
+
+                // Also check partial match
+                if (!matched && cityName) {
+                    Object.keys(cityMap).forEach(function(key) {
+                        if (!matched && (cityName.includes(key) || key.includes(cityName))) {
+                            matched = cityMap[key];
+                        }
+                    });
+                }
+
+                var citySelect = document.getElementById('city');
+                if (matched) {
                     for (var i = 0; i < citySelect.options.length; i++) {
-                        if (citySelect.options[i].value && cityName.includes(citySelect.options[i].value)) {
+                        if (citySelect.options[i].value === matched) {
                             citySelect.selectedIndex = i;
-                            matched = true;
                             break;
                         }
                     }
-                    // If no match, select "أخرى"
-                    if (!matched) {
-                        for (var j = 0; j < citySelect.options.length; j++) {
-                            if (citySelect.options[j].value === 'أخرى') {
-                                citySelect.selectedIndex = j;
-                                break;
-                            }
+                } else {
+                    // Select "أخرى" if no match
+                    for (var j = 0; j < citySelect.options.length; j++) {
+                        if (citySelect.options[j].value === 'أخرى') {
+                            citySelect.selectedIndex = j;
+                            break;
                         }
                     }
                 }
@@ -497,14 +529,14 @@
             return;
         }
 
-        geocoder.geocode({ address: address }, function(results, status) {
+        geocoder.geocode({ address: address, language: 'ar' }, function(results, status) {
             if (status === 'OK') {
                 var location = results[0].geometry.location;
                 map.setCenter(location);
                 map.setZoom(17);
                 marker.setPosition(location);
                 updateCoordinates(location.lat(), location.lng());
-                document.getElementById('location').value = results[0].formatted_address;
+                reverseGeocode(location);
             } else {
                 alert('لم يتم العثور على الموقع: ' + status);
             }
