@@ -312,6 +312,8 @@ class PropertyController extends Controller
     $property->number = $request->get('number');
     $property->area = $request->get('area');
     $property->location = $request->get('location');
+    $property->city = $request->get('city');
+    $property->address = $request->get('address');
     $property->land_situation = $request->get('land_situation') ?? $property->land_situation ?? '';
     $property->property_type = $request->get('property_type') ?? $property->property_type ?? '';
     $property->status = $request->get('status') ?? 'Available';

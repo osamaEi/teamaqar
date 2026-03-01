@@ -157,6 +157,31 @@
 
                         <div class="row mb-3">
                             <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="city">المدينة</label>
+                                    <select class="form-control" name="city" id="city">
+                                        <option value="">-- اختر المدينة --</option>
+                                        <option value="الرياض" {{ $property->city == 'الرياض' ? 'selected' : '' }}>الرياض</option>
+                                        <option value="جدة" {{ $property->city == 'جدة' ? 'selected' : '' }}>جدة</option>
+                                        <option value="الدمام" {{ $property->city == 'الدمام' ? 'selected' : '' }}>الدمام</option>
+                                        <option value="مكة المكرمة" {{ $property->city == 'مكة المكرمة' ? 'selected' : '' }}>مكة المكرمة</option>
+                                        <option value="المدينة المنورة" {{ $property->city == 'المدينة المنورة' ? 'selected' : '' }}>المدينة المنورة</option>
+                                        <option value="الهفوف" {{ $property->city == 'الهفوف' ? 'selected' : '' }}>الهفوف</option>
+                                        <option value="الخبر" {{ $property->city == 'الخبر' ? 'selected' : '' }}>الخبر</option>
+                                        <option value="أخرى" {{ $property->city == 'أخرى' ? 'selected' : '' }}>أخرى</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="address">الحي/المنطقة</label>
+                                    <input type="text" name="address" class="form-control" id="address" value="{{ $property->address }}" placeholder="مثال: حي النخيل، حي الفاخرية">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
                                 <div class="form-group mb-0">
                                     <label for="latitude">خط العرض (Latitude)</label>
                                     <input type="text" name="latitude" class="form-control" id="latitude" value="{{ $property->latitude ?? '24.7136' }}" readonly>
@@ -443,7 +468,51 @@
     function reverseGeocode(latLng) {
         geocoder.geocode({ location: latLng }, function(results, status) {
             if (status === 'OK' && results[0]) {
-                document.getElementById('location').value = results[0].formatted_address;
+                var result = results[0];
+
+                // Fill the full address field
+                document.getElementById('location').value = result.formatted_address;
+
+                // Extract address components
+                var neighborhood = '';
+                var cityName = '';
+
+                result.address_components.forEach(function(component) {
+                    var types = component.types;
+                    if (types.includes('sublocality_level_1') || types.includes('sublocality') || types.includes('neighborhood')) {
+                        if (!neighborhood) neighborhood = component.long_name;
+                    }
+                    if (types.includes('route') && !neighborhood) {
+                        neighborhood = component.long_name;
+                    }
+                    if (types.includes('locality') || types.includes('administrative_area_level_2')) {
+                        if (!cityName) cityName = component.long_name;
+                    }
+                });
+
+                if (neighborhood) {
+                    document.getElementById('address').value = neighborhood;
+                }
+
+                if (cityName) {
+                    var citySelect = document.getElementById('city');
+                    var matched = false;
+                    for (var i = 0; i < citySelect.options.length; i++) {
+                        if (citySelect.options[i].value && cityName.includes(citySelect.options[i].value)) {
+                            citySelect.selectedIndex = i;
+                            matched = true;
+                            break;
+                        }
+                    }
+                    if (!matched) {
+                        for (var j = 0; j < citySelect.options.length; j++) {
+                            if (citySelect.options[j].value === 'أخرى') {
+                                citySelect.selectedIndex = j;
+                                break;
+                            }
+                        }
+                    }
+                }
             }
         });
     }

@@ -434,7 +434,58 @@
     function reverseGeocode(latLng) {
         geocoder.geocode({ location: latLng }, function(results, status) {
             if (status === 'OK' && results[0]) {
-                document.getElementById('location').value = results[0].formatted_address;
+                var result = results[0];
+
+                // Fill the full address field
+                document.getElementById('location').value = result.formatted_address;
+
+                // Extract address components
+                var neighborhood = '';
+                var cityName = '';
+
+                result.address_components.forEach(function(component) {
+                    var types = component.types;
+
+                    // Neighborhood / District (الحي)
+                    if (types.includes('sublocality_level_1') || types.includes('sublocality') || types.includes('neighborhood')) {
+                        if (!neighborhood) neighborhood = component.long_name;
+                    }
+                    // Route / Street as fallback for neighborhood
+                    if (types.includes('route') && !neighborhood) {
+                        neighborhood = component.long_name;
+                    }
+                    // City
+                    if (types.includes('locality') || types.includes('administrative_area_level_2')) {
+                        if (!cityName) cityName = component.long_name;
+                    }
+                });
+
+                // Fill address (حي/المنطقة) field
+                if (neighborhood) {
+                    document.getElementById('address').value = neighborhood;
+                }
+
+                // Try to match and select city from dropdown
+                if (cityName) {
+                    var citySelect = document.getElementById('city');
+                    var matched = false;
+                    for (var i = 0; i < citySelect.options.length; i++) {
+                        if (citySelect.options[i].value && cityName.includes(citySelect.options[i].value)) {
+                            citySelect.selectedIndex = i;
+                            matched = true;
+                            break;
+                        }
+                    }
+                    // If no match, select "أخرى"
+                    if (!matched) {
+                        for (var j = 0; j < citySelect.options.length; j++) {
+                            if (citySelect.options[j].value === 'أخرى') {
+                                citySelect.selectedIndex = j;
+                                break;
+                            }
+                        }
+                    }
+                }
             }
         });
     }
