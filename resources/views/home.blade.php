@@ -521,6 +521,258 @@
             font-size: 14px;
         }
 
+        /* ==================== HOW IT WORKS ==================== */
+        .how-it-works {
+            background: white;
+            padding: 90px 5%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .how-it-works::before {
+            content: '';
+            position: absolute;
+            top: -100px;
+            right: -100px;
+            width: 350px;
+            height: 350px;
+            background: radial-gradient(circle, rgba(196,169,98,0.07) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .steps-container {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            max-width: 1000px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .step-item {
+            flex: 1;
+            text-align: center;
+            padding: 0 15px;
+            position: relative;
+        }
+
+        .step-connector {
+            position: absolute;
+            top: 38px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--primary-teal), transparent);
+            z-index: 0;
+        }
+
+        .step-item:first-child .step-connector { left: 50%; }
+        .step-item:last-child .step-connector { right: 50%; }
+
+        .step-number {
+            width: 76px;
+            height: 76px;
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary-teal));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: white;
+            margin: 0 auto 20px;
+            position: relative;
+            z-index: 1;
+            box-shadow: 0 10px 30px rgba(15,48,46,0.25);
+            transition: transform 0.3s;
+        }
+
+        .step-item:hover .step-number { transform: scale(1.1) translateY(-4px); }
+
+        .step-icon-wrap {
+            font-size: 2rem;
+            margin-bottom: 14px;
+            background: linear-gradient(135deg, var(--primary-teal), var(--accent-gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .step-item h3 { color: var(--primary-dark); font-size: 1.1rem; font-weight: 700; margin-bottom: 10px; }
+        .step-item p { color: var(--text-gray); font-size: 14px; line-height: 1.7; }
+
+        /* ==================== WHY CHOOSE US ==================== */
+        .why-us {
+            background: linear-gradient(135deg, #0a2220 0%, var(--primary-dark) 50%, #1a3d3b 100%);
+            padding: 90px 5%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .why-us::after {
+            content: '';
+            position: absolute;
+            bottom: -120px;
+            left: -120px;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(196,169,98,0.08) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .why-us-container {
+            display: flex;
+            align-items: center;
+            gap: 80px;
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .why-us-text { flex: 1; }
+
+        .section-tag {
+            color: var(--accent-gold);
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 14px;
+            display: block;
+        }
+
+        .why-us-text h2 { color: white; font-size: 2.2rem; font-weight: 800; margin-bottom: 18px; line-height: 1.4; }
+        .why-us-text > p { color: rgba(255,255,255,0.65); font-size: 1rem; line-height: 1.9; margin-bottom: 35px; }
+
+        .why-list { list-style: none; display: flex; flex-direction: column; gap: 14px; }
+
+        .why-list li {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            color: rgba(255,255,255,0.85);
+            font-size: 15px;
+            font-weight: 500;
+        }
+
+        .check-icon {
+            width: 36px;
+            height: 36px;
+            background: rgba(196,169,98,0.12);
+            border: 1px solid rgba(196,169,98,0.35);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            color: var(--accent-gold);
+            font-size: 13px;
+        }
+
+        .why-us-visual { flex: 1; display: flex; justify-content: center; }
+
+        .why-cards-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            max-width: 380px;
+        }
+
+        .why-mini-card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.09);
+            border-radius: 20px;
+            padding: 28px 20px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .why-mini-card:hover {
+            background: rgba(196,169,98,0.1);
+            border-color: rgba(196,169,98,0.35);
+            transform: translateY(-4px);
+        }
+
+        .why-mini-card i { font-size: 2rem; color: var(--accent-gold); margin-bottom: 12px; display: block; }
+        .why-mini-card strong { color: white; font-size: 1.7rem; font-weight: 800; display: block; margin-bottom: 4px; }
+        .why-mini-card span { color: rgba(255,255,255,0.55); font-size: 12px; }
+
+        /* ==================== TESTIMONIALS ==================== */
+        .testimonials { background: var(--light-bg); padding: 90px 5%; }
+
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .testimonial-card {
+            background: white;
+            border-radius: 22px;
+            padding: 36px 30px;
+            position: relative;
+            transition: all 0.3s;
+            border: 1px solid transparent;
+        }
+
+        .testimonial-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.08);
+            border-color: rgba(196,169,98,0.3);
+        }
+
+        .quote-mark {
+            font-size: 5rem;
+            color: rgba(27,138,138,0.08);
+            line-height: 0.8;
+            font-family: Georgia, serif;
+            margin-bottom: 18px;
+            display: block;
+        }
+
+        .testimonial-text { color: var(--text-gray); font-size: 15px; line-height: 1.85; margin-bottom: 28px; }
+
+        .stars { color: var(--accent-gold); font-size: 14px; margin-bottom: 18px; letter-spacing: 2px; }
+
+        .testimonial-author { display: flex; align-items: center; gap: 14px; }
+
+        .author-avatar {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary-teal), var(--primary-dark));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            color: white;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .author-info h4 { color: var(--primary-dark); font-size: 15px; font-weight: 700; margin-bottom: 3px; }
+        .author-info span { color: var(--text-gray); font-size: 13px; }
+
+        /* ==================== SCROLL REVEAL ==================== */
+        .reveal {
+            opacity: 0;
+            transform: translateY(35px);
+            transition: opacity 0.65s ease, transform 0.65s ease;
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .reveal-delay-1 { transition-delay: 0.1s; }
+        .reveal-delay-2 { transition-delay: 0.2s; }
+        .reveal-delay-3 { transition-delay: 0.3s; }
+        .reveal-delay-4 { transition-delay: 0.4s; }
+
         /* ==================== RESPONSIVE DESIGN ==================== */
 
         /* Tablet Landscape */
@@ -832,6 +1084,20 @@
             }
         }
 
+        @media (max-width: 992px) {
+            .steps-container { flex-direction: column; align-items: center; gap: 30px; }
+            .step-connector { display: none; }
+            .why-us-container { flex-direction: column; gap: 50px; }
+            .why-us-text h2 { font-size: 1.8rem; }
+            .why-cards-grid { max-width: 100%; width: 100%; }
+        }
+
+        @media (max-width: 768px) {
+            .how-it-works, .why-us, .testimonials { padding: 60px 4%; }
+            .why-cards-grid { grid-template-columns: 1fr 1fr; }
+            .testimonials-grid { grid-template-columns: 1fr; }
+        }
+
         /* Extra Small Screens */
         @media (max-width: 380px) {
             .hero h1 {
@@ -899,10 +1165,24 @@
             <a href="#features">المميزات</a>
             <a href="#about">من نحن</a>
             <a href="#contact">تواصل معنا</a>
-            <a href="{{ route('login') }}" class="login-btn">
-                <i class="fas fa-sign-in-alt"></i>
-                تسجيل الدخول
-            </a>
+            @auth
+                @if(auth()->user()->role === 'admin')
+                    <a href="{{ route('dashboard.page') }}" class="login-btn">
+                        <i class="fas fa-tachometer-alt"></i>
+                        لوحة التحكم
+                    </a>
+                @else
+                    <a href="{{ route('user.dashboard') }}" class="login-btn">
+                        <i class="fas fa-th-large"></i>
+                        لوحتي
+                    </a>
+                @endif
+            @else
+                <a href="{{ route('login') }}" class="login-btn">
+                    <i class="fas fa-sign-in-alt"></i>
+                    تسجيل الدخول
+                </a>
+            @endauth
         </div>
 
         <button class="menu-toggle" id="menuToggle">
@@ -930,10 +1210,24 @@
                 </p>
 
                 <div class="hero-buttons">
-                    <a href="{{ route('login') }}" class="btn-primary">
-                        <i class="fas fa-rocket"></i>
-                        ابدأ الآن
-                    </a>
+                    @auth
+                        @if(auth()->user()->role === 'admin')
+                            <a href="{{ route('dashboard.page') }}" class="btn-primary">
+                                <i class="fas fa-tachometer-alt"></i>
+                                لوحة التحكم
+                            </a>
+                        @else
+                            <a href="{{ route('user.dashboard') }}" class="btn-primary">
+                                <i class="fas fa-th-large"></i>
+                                لوحتي
+                            </a>
+                        @endif
+                    @else
+                        <a href="{{ route('login') }}" class="btn-primary">
+                            <i class="fas fa-rocket"></i>
+                            ابدأ الآن
+                        </a>
+                    @endauth
                     <a href="#features" class="btn-outline">
                         <i class="fas fa-info-circle"></i>
                         تعرف على المزيد
@@ -971,6 +1265,38 @@
         </div>
     </section>
 
+    <!-- How it Works Section -->
+    <section class="how-it-works">
+        <div class="section-header reveal">
+            <h2>كيف يعمل النظام؟</h2>
+            <p>ثلاث خطوات بسيطة للبدء في إدارة عقاراتك باحترافية</p>
+        </div>
+
+        <div class="steps-container">
+            <div class="step-item reveal reveal-delay-1">
+                <div class="step-connector"></div>
+                <div class="step-number">١</div>
+                <div class="step-icon-wrap"><i class="fas fa-user-plus"></i></div>
+                <h3>سجّل حسابك</h3>
+                <p>أنشئ حسابك في دقائق واحصل على وصول فوري لجميع أدوات الإدارة</p>
+            </div>
+            <div class="step-item reveal reveal-delay-2">
+                <div class="step-connector"></div>
+                <div class="step-number">٢</div>
+                <div class="step-icon-wrap"><i class="fas fa-home"></i></div>
+                <h3>أضف عقاراتك</h3>
+                <p>أدخل تفاصيل عقاراتك مع الصور والمستندات وحدد موقعها على الخريطة</p>
+            </div>
+            <div class="step-item reveal reveal-delay-3">
+                <div class="step-connector"></div>
+                <div class="step-number">٣</div>
+                <div class="step-icon-wrap"><i class="fas fa-chart-line"></i></div>
+                <h3>أدر وتابع</h3>
+                <p>تتبع الطلبات، نظّم المواعيد، وراقب أداء عملك من لوحة تحكم واحدة</p>
+            </div>
+        </div>
+    </section>
+
     <!-- Features Section -->
     <section class="features" id="features">
         <div class="section-header">
@@ -979,7 +1305,7 @@
         </div>
 
         <div class="features-grid">
-            <div class="feature-card">
+            <div class="feature-card reveal reveal-delay-1">
                 <div class="feature-icon">
                     <i class="fas fa-building"></i>
                 </div>
@@ -1029,15 +1355,121 @@
         </div>
     </section>
 
+    <!-- Why Choose Us Section -->
+    <section class="why-us">
+        <div class="why-us-container">
+            <div class="why-us-text reveal">
+                <span class="section-tag">لماذا نحن</span>
+                <h2>الشريك الأمثل لإدارة <br><span style="color: var(--accent-gold);">عقاراتك</span></h2>
+                <p>نقدم منظومة متكاملة تجمع بين سهولة الاستخدام وقوة الأدوات، لتمنحك التفوق في سوق العقارات السعودي.</p>
+                <ul class="why-list">
+                    <li><span class="check-icon"><i class="fas fa-check"></i></span> واجهة عربية سهلة الاستخدام مصممة للمحترفين</li>
+                    <li><span class="check-icon"><i class="fas fa-check"></i></span> تتبع فوري لجميع عقاراتك وطلباتك في مكان واحد</li>
+                    <li><span class="check-icon"><i class="fas fa-check"></i></span> خرائط Google تفاعلية لتحديد مواقع العقارات بدقة</li>
+                    <li><span class="check-icon"><i class="fas fa-check"></i></span> نظام ملفات وتوثيق شامل لحفظ عقودك ومستنداتك</li>
+                    <li><span class="check-icon"><i class="fas fa-check"></i></span> تواصل مع العملاء عبر الواتساب والبريد مباشرةً</li>
+                    <li><span class="check-icon"><i class="fas fa-check"></i></span> يعمل على جميع الأجهزة في أي وقت وأي مكان</li>
+                </ul>
+            </div>
+            <div class="why-us-visual reveal reveal-delay-2">
+                <div class="why-cards-grid">
+                    <div class="why-mini-card">
+                        <i class="fas fa-building"></i>
+                        <strong>{{ $propertyCount ?: '50' }}+</strong>
+                        <span>عقار مسجّل</span>
+                    </div>
+                    <div class="why-mini-card">
+                        <i class="fas fa-handshake"></i>
+                        <strong>{{ $requestCount ?: '25' }}+</strong>
+                        <span>طلب نشط</span>
+                    </div>
+                    <div class="why-mini-card">
+                        <i class="fas fa-star"></i>
+                        <strong>100%</strong>
+                        <span>رضا العملاء</span>
+                    </div>
+                    <div class="why-mini-card">
+                        <i class="fas fa-shield-alt"></i>
+                        <strong>آمن</strong>
+                        <span>حماية كاملة</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="testimonials">
+        <div class="section-header reveal">
+            <h2>ماذا يقول عملاؤنا</h2>
+            <p>آراء حقيقية من مستخدمي نظام أبو نواف للعقارات</p>
+        </div>
+
+        <div class="testimonials-grid">
+            <div class="testimonial-card reveal reveal-delay-1">
+                <span class="quote-mark">"</span>
+                <div class="stars">★★★★★</div>
+                <p class="testimonial-text">النظام غيّر طريقة عملي بشكل كامل. الآن أستطيع إدارة جميع عقاراتي وعملائي من مكان واحد بكل سهولة ويسر.</p>
+                <div class="testimonial-author">
+                    <div class="author-avatar">م</div>
+                    <div class="author-info">
+                        <h4>محمد العتيبي</h4>
+                        <span>مسوق عقاري - الرياض</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="testimonial-card reveal reveal-delay-2">
+                <span class="quote-mark">"</span>
+                <div class="stars">★★★★★</div>
+                <p class="testimonial-text">أفضل نظام عقاري استخدمته. الخريطة التفاعلية وإدارة الملفات والمستندات وفّرت عليّ الكثير من الوقت والجهد.</p>
+                <div class="testimonial-author">
+                    <div class="author-avatar">س</div>
+                    <div class="author-info">
+                        <h4>سعد الغامدي</h4>
+                        <span>وسيط عقاري - جدة</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="testimonial-card reveal reveal-delay-3">
+                <span class="quote-mark">"</span>
+                <div class="stars">★★★★★</div>
+                <p class="testimonial-text">متابعة الطلبات وتنظيم المواعيد أصبح أسهل بكثير. النظام سريع وسلس وواجهته عربية ممتازة.</p>
+                <div class="testimonial-author">
+                    <div class="author-avatar">خ</div>
+                    <div class="author-info">
+                        <h4>خالد الشهري</h4>
+                        <span>مالك عقارات - الدمام</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- CTA Section -->
     <section class="cta" id="about">
         <div class="cta-content">
             <h2>جاهز لإدارة عقاراتك بشكل أفضل؟</h2>
             <p>انضم إلينا الآن واستمتع بتجربة إدارة عقارات استثنائية</p>
-            <a href="{{ route('login') }}" class="btn-primary">
-                <i class="fas fa-user-plus"></i>
-                سجل الآن مجاناً
-            </a>
+            @auth
+                @if(auth()->user()->role === 'admin')
+                    <a href="{{ route('dashboard.page') }}" class="btn-primary">
+                        <i class="fas fa-tachometer-alt"></i>
+                        لوحة التحكم
+                    </a>
+                @else
+                    <a href="{{ route('user.dashboard') }}" class="btn-primary">
+                        <i class="fas fa-th-large"></i>
+                        الذهاب للوحتي
+                    </a>
+                @endif
+            @else
+                <a href="{{ route('login') }}" class="btn-primary">
+                    <i class="fas fa-user-plus"></i>
+                    سجل الآن مجاناً
+                </a>
+            @endauth
         </div>
     </section>
 
@@ -1054,7 +1486,15 @@
                 <ul>
                     <li><a href="#features">المميزات</a></li>
                     <li><a href="#about">من نحن</a></li>
-                    <li><a href="{{ route('login') }}">تسجيل الدخول</a></li>
+                    @auth
+                        @if(auth()->user()->role === 'admin')
+                            <li><a href="{{ route('dashboard.page') }}">لوحة التحكم</a></li>
+                        @else
+                            <li><a href="{{ route('user.dashboard') }}">لوحتي</a></li>
+                        @endif
+                    @else
+                        <li><a href="{{ route('login') }}">تسجيل الدخول</a></li>
+                    @endauth
                 </ul>
             </div>
 
@@ -1114,6 +1554,17 @@
                 document.body.style.overflow = '';
             });
         });
+
+        // Scroll reveal animation
+        const revealObserver = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.12 });
+
+        document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
 
         // Smooth scroll
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
