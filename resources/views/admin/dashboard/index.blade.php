@@ -1,603 +1,588 @@
 @extends('admin.index')
 @section('admin')
 
-@php
-use Carbon\Carbon;
-
-// Statistics
-$propertyCount = \App\Models\Property::count();
-$requestCount = \App\Models\RequestProperty::count();
-
-$today = Carbon::now()->startOfDay();
-$remindersTodayCount = \App\Models\Event::whereDate('start', '=', $today)
-    ->where('read', false)
-    ->count();
-
-$allreminders = \App\Models\Event::where('read', false)->count();
-
-$mediator1Count = \App\Models\Property::whereNotNull('mediator1')->distinct('mediator1')->count('mediator1');
-$mediator2Count = \App\Models\Property::whereNotNull('mediator2')->distinct('mediator2')->count('mediator2');
-$totalMediators = $mediator1Count + $mediator2Count;
-
-$twoWeeksAgo = Carbon::now()->subWeeks(2);
-$latestPropertyCount = \App\Models\Property::where('created_at', '>=', $twoWeeksAgo)->count();
-$latestRequestCount = \App\Models\RequestProperty::where('created_at', '>=', $twoWeeksAgo)->count();
-
-// Get recent properties
-$recentProperties = \App\Models\Property::latest()->take(5)->get();
-
-// Get today's tasks/events
-$todayTasks = \App\Models\Event::whereDate('start', '=', $today)->take(4)->get();
-
-// Get recent requests
-$recentRequests = \App\Models\RequestProperty::latest()->take(5)->get();
-
-// Get properties for map
-$mapProperties = \App\Models\Property::whereNotNull('latitude')->whereNotNull('longitude')->take(20)->get();
-
-// Monthly stats for chart
-$monthlyStats = [];
-for ($i = 11; $i >= 0; $i--) {
-    $month = Carbon::now()->subMonths($i);
-    $monthlyStats[] = [
-        'month' => $month->translatedFormat('M'),
-        'properties' => \App\Models\Property::whereYear('created_at', $month->year)
-            ->whereMonth('created_at', $month->month)
-            ->count(),
-        'requests' => \App\Models\RequestProperty::whereYear('created_at', $month->year)
-            ->whereMonth('created_at', $month->month)
-            ->count()
-    ];
-}
-@endphp
-
 <div class="col-12">
-    <!-- Stats Cards Row -->
-    <div class="row">
-        <!-- Properties Count -->
-        <div class="col-lg-3 col-md-6 col-sm-6">
-            <div class="stat-card">
-                <div class="d-flex justify-content-between align-items-start">
-                    <div>
-                        <div class="stat-icon green">
-                            <i class="fas fa-building"></i>
-                        </div>
-                        <div class="stat-value">{{ $propertyCount }}</div>
-                        <div class="stat-label">مقتابع مفعلة</div>
-                    </div>
-                    <div class="stat-change positive">
-                        <i class="fas fa-arrow-up"></i>
-                        <span>+{{ $latestPropertyCount }} جديد</span>
+
+    <!-- ══════════════════════════════════════════════
+         ROW 1 — KPI CARDS
+    ══════════════════════════════════════════════ -->
+    <div class="row mb-4">
+
+        <!-- Total Properties -->
+        <div class="col-xl-3 col-md-6 mb-3">
+            <div class="kpi-card">
+                <div class="kpi-icon kpi-green"><i class="fas fa-building"></i></div>
+                <div class="kpi-body">
+                    <div class="kpi-value">{{ number_format($propertyCount) }}</div>
+                    <div class="kpi-label">إجمالي العقارات</div>
+                    <div class="kpi-sub">
+                        <span class="text-success"><i class="fas fa-circle" style="font-size:8px;"></i> {{ $availableCount }} متاح</span>
+                        <span class="text-danger mr-2"><i class="fas fa-circle" style="font-size:8px;"></i> {{ $soldCount }} مباع</span>
+                        <span class="text-warning mr-2"><i class="fas fa-circle" style="font-size:8px;"></i> {{ $reservedCount }} محجوز</span>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Revenue -->
-        <div class="col-lg-3 col-md-6 col-sm-6">
-            <div class="stat-card">
-                <div class="d-flex justify-content-between align-items-start">
-                    <div>
-                        <div class="stat-icon blue">
-                            <i class="fas fa-dollar-sign"></i>
-                        </div>
-                        <div class="stat-value">84,500</div>
-                        <div class="stat-label">ريال إجمالي السيارة</div>
-                    </div>
-                    <div class="stat-change positive">
-                        <i class="fas fa-chart-line"></i>
-                        <span>7318.5k</span>
-                    </div>
+        <!-- Portfolio Value -->
+        <div class="col-xl-3 col-md-6 mb-3">
+            <div class="kpi-card">
+                <div class="kpi-icon kpi-blue"><i class="fas fa-wallet"></i></div>
+                <div class="kpi-body">
+                    <div class="kpi-value">{{ $totalValue >= 1000000 ? number_format($totalValue/1000000, 1).'M' : number_format($totalValue) }}</div>
+                    <div class="kpi-label">إجمالي قيمة المحفظة (ريال)</div>
+                    <div class="kpi-sub">متوسط السعر: <strong>{{ number_format($avgPrice) }}</strong> ريال</div>
                 </div>
             </div>
         </div>
 
         <!-- Requests -->
-        <div class="col-lg-3 col-md-6 col-sm-6">
-            <div class="stat-card">
-                <div class="d-flex justify-content-between align-items-start">
-                    <div>
-                        <div class="stat-icon red">
-                            <i class="fas fa-clipboard-list"></i>
-                        </div>
-                        <div class="stat-value">{{ $requestCount }}</div>
-                        <div class="stat-label">طلبات</div>
-                    </div>
-                    <div class="stat-change positive">
-                        <i class="fas fa-arrow-up"></i>
-                        <span>+{{ $latestRequestCount }}</span>
+        <div class="col-xl-3 col-md-6 mb-3">
+            <div class="kpi-card">
+                <div class="kpi-icon kpi-orange"><i class="fas fa-clipboard-list"></i></div>
+                <div class="kpi-body">
+                    <div class="kpi-value">{{ number_format($requestCount) }}</div>
+                    <div class="kpi-label">إجمالي الطلبات</div>
+                    <div class="kpi-sub">
+                        @if($newRequestsToday > 0)
+                            <span class="badge badge-success">+{{ $newRequestsToday }} اليوم</span>
+                        @else
+                            <span class="text-muted">لا طلبات جديدة اليوم</span>
+                        @endif
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Today Tasks -->
-        <div class="col-lg-3 col-md-6 col-sm-6">
-            <div class="stat-card">
-                <div class="d-flex justify-content-between align-items-start">
-                    <div>
-                        <div class="stat-icon yellow">
-                            <i class="fas fa-tasks"></i>
-                        </div>
-                        <div class="stat-value">{{ $remindersTodayCount }}</div>
-                        <div class="stat-label">مهام اليوم</div>
-                    </div>
-                    <div class="stat-change positive">
-                        <i class="fas fa-clock"></i>
-                        <span>{{ $allreminders }} الكل</span>
+        <!-- Today Events -->
+        <div class="col-xl-3 col-md-6 mb-3">
+            <div class="kpi-card">
+                <div class="kpi-icon kpi-purple"><i class="fas fa-calendar-check"></i></div>
+                <div class="kpi-body">
+                    <div class="kpi-value">{{ $todayEvents }}</div>
+                    <div class="kpi-label">مواعيد اليوم</div>
+                    <div class="kpi-sub">
+                        @if($unreadEvents > 0)
+                            <span class="badge badge-warning">{{ $unreadEvents }} غير مقروء</span>
+                        @else
+                            <span class="text-success"><i class="fas fa-check-circle"></i> كل شيء مقروء</span>
+                        @endif
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Second Row: Chart & Top Performer -->
-    <div class="row mt-4">
-        <!-- Sales Chart -->
-        <div class="col-lg-8">
-            <div class="chart-card card">
+    <!-- ══════════════════════════════════════════════
+         ROW 2 — STATUS BREAKDOWN + CHART
+    ══════════════════════════════════════════════ -->
+    <div class="row mb-4">
+
+        <!-- Status breakdown + donut -->
+        <div class="col-xl-4 mb-3">
+            <div class="card h-100">
+                <div class="card-header border-0">
+                    <h3 class="card-title"><i class="fas fa-chart-pie text-primary ml-2"></i>توزيع العقارات</h3>
+                </div>
+                <div class="card-body">
+                    <canvas id="statusChart" height="200"></canvas>
+
+                    @php $total = max($propertyCount, 1); @endphp
+                    <div class="mt-3">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <span class="small"><i class="fas fa-circle text-success"></i> متاح ({{ $availableCount }})</span>
+                            <span class="small font-weight-bold">{{ round($availableCount/$total*100) }}%</span>
+                        </div>
+                        <div class="progress mb-3" style="height:6px;">
+                            <div class="progress-bar bg-success" style="width:{{ round($availableCount/$total*100) }}%"></div>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <span class="small"><i class="fas fa-circle text-danger"></i> مباع ({{ $soldCount }})</span>
+                            <span class="small font-weight-bold">{{ round($soldCount/$total*100) }}%</span>
+                        </div>
+                        <div class="progress mb-3" style="height:6px;">
+                            <div class="progress-bar bg-danger" style="width:{{ round($soldCount/$total*100) }}%"></div>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <span class="small"><i class="fas fa-circle text-warning"></i> محجوز ({{ $reservedCount }})</span>
+                            <span class="small font-weight-bold">{{ round($reservedCount/$total*100) }}%</span>
+                        </div>
+                        <div class="progress" style="height:6px;">
+                            <div class="progress-bar bg-warning" style="width:{{ round($reservedCount/$total*100) }}%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 12-month bar chart -->
+        <div class="col-xl-8 mb-3">
+            <div class="card h-100">
                 <div class="card-header border-0">
                     <div class="d-flex justify-content-between align-items-center">
-                        <h3 class="card-title">إحصائيات المبيعات</h3>
-                        <div class="chart-tabs">
-                            <button class="tab active">اليوم</button>
-                            <button class="tab">أسبوع</button>
-                            <button class="tab">شهر</button>
+                        <h3 class="card-title"><i class="fas fa-chart-bar text-success ml-2"></i>نشاط آخر 12 شهر</h3>
+                        <div class="d-flex align-items-center" style="gap:12px; font-size:12px;">
+                            <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#0F302E;margin-left:4px;"></span>عقارات</span>
+                            <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#1B8A8A;margin-left:4px;"></span>طلبات</span>
                         </div>
                     </div>
                 </div>
                 <div class="card-body">
-                    <canvas id="salesChart" height="300"></canvas>
-                </div>
-            </div>
-        </div>
-
-        <!-- Top Performer -->
-        <div class="col-lg-4">
-            <div class="performer-card card">
-                <div class="card-header border-0">
-                    <h3 class="card-title">أفضل المسوقين</h3>
-                </div>
-                <div class="card-body text-center">
-                    <div class="performer-image">
-                        <img src="{{ asset('dist/img/user2-160x160.jpg') }}" alt="Top Performer">
-                    </div>
-                    <h4 class="performer-name">أحمد محمد</h4>
-                    <p class="performer-role">مسوق عقاري</p>
-                    <div class="performer-stats">
-                        <div class="performer-stat">
-                            <div class="value">{{ $propertyCount }}</div>
-                            <div class="label">عقار</div>
-                        </div>
-                        <div class="performer-stat">
-                            <div class="value">{{ $requestCount }}</div>
-                            <div class="label">طلب</div>
-                        </div>
-                        <div class="performer-stat">
-                            <div class="value">{{ $totalMediators }}</div>
-                            <div class="label">صفقة</div>
-                        </div>
-                    </div>
+                    <canvas id="activityChart" height="200"></canvas>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Third Row: Map & Tasks -->
-    <div class="row mt-4">
-        <!-- Map -->
-        <div class="col-lg-8">
-            <div class="map-card card">
+    <!-- ══════════════════════════════════════════════
+         ROW 3 — MAP + TODAY TASKS
+    ══════════════════════════════════════════════ -->
+    <div class="row mb-4">
+
+        <!-- Mini Map -->
+        <div class="col-xl-8 mb-3">
+            <div class="card h-100">
                 <div class="card-header border-0">
                     <div class="d-flex justify-content-between align-items-center">
-                        <h3 class="card-title"><i class="fas fa-search ml-2"></i> أحدث العقارات</h3>
-                        <div class="map-legend">
-                            <div class="map-legend-item">
-                                <span class="dot green"></span>
-                                <span>المدن</span>
-                            </div>
-                            <div class="map-legend-item">
-                                <span class="dot blue"></span>
-                                <span>مكتمل</span>
-                            </div>
-                            <div class="map-legend-item">
-                                <span class="dot yellow"></span>
-                                <span>متقدمين</span>
-                            </div>
-                            <div class="map-legend-item">
-                                <span class="dot red"></span>
-                                <span>رجال</span>
-                            </div>
-                        </div>
+                        <h3 class="card-title"><i class="fas fa-map-marked-alt text-danger ml-2"></i>مواقع العقارات</h3>
+                        <a href="{{ route('property.map') }}" class="btn btn-sm btn-outline-primary">
+                            <i class="fas fa-expand ml-1"></i> خريطة كاملة
+                        </a>
                     </div>
                 </div>
                 <div class="card-body p-0">
-                    <div id="propertiesMap" class="map-container"></div>
+                    <div id="dashMap" style="height:320px; border-radius:0 0 10px 10px;"></div>
                 </div>
             </div>
         </div>
 
         <!-- Today's Tasks -->
-        <div class="col-lg-4">
-            <div class="todo-card card">
+        <div class="col-xl-4 mb-3">
+            <div class="card h-100">
                 <div class="card-header border-0">
                     <div class="d-flex justify-content-between align-items-center">
-                        <h3 class="card-title">مهام اليوم</h3>
-                        <div class="d-flex gap-2">
-                            <span class="badge bg-success-light text-success rounded-pill px-3">{{ $todayTasks->count() }}</span>
-                            <button class="btn btn-sm btn-icon btn-outline-primary">
-                                <i class="fas fa-ellipsis-h"></i>
-                            </button>
-                        </div>
+                        <h3 class="card-title"><i class="fas fa-tasks text-warning ml-2"></i>مواعيد اليوم</h3>
+                        <a href="{{ route('calender.index') }}" class="btn btn-sm btn-outline-secondary">
+                            <i class="fas fa-calendar-alt"></i>
+                        </a>
                     </div>
                 </div>
-                <div class="card-body">
+                <div class="card-body p-0">
                     @forelse($todayTasks as $task)
-                    <div class="todo-item {{ $task->read ? 'completed' : '' }}">
-                        <div class="todo-checkbox {{ $task->read ? 'checked' : '' }}">
-                            @if($task->read)
-                            <i class="fas fa-check"></i>
-                            @endif
+                    <div class="task-row {{ $task->read ? 'task-done' : '' }}">
+                        <div class="task-check {{ $task->read ? 'checked' : '' }}">
+                            @if($task->read)<i class="fas fa-check"></i>@endif
                         </div>
-                        <span class="todo-text">{{ $task->title }}</span>
-                        <span class="todo-status {{ $task->read ? 'completed' : 'pending' }}">
+                        <div class="task-info flex-grow-1">
+                            <div class="task-title">{{ $task->title }}</div>
+                            <div class="task-time text-muted small">
+                                <i class="far fa-clock ml-1"></i>
+                                {{ \Carbon\Carbon::parse($task->start)->format('h:i A') }}
+                            </div>
+                        </div>
+                        <span class="badge {{ $task->read ? 'badge-success' : 'badge-warning' }}">
                             {{ $task->read ? 'مكتمل' : 'قيد التنفيذ' }}
                         </span>
                     </div>
                     @empty
-                    <div class="text-center text-muted py-4">
-                        <i class="fas fa-check-circle fa-3x mb-3"></i>
-                        <p>لا توجد مهام لهذا اليوم</p>
+                    <div class="text-center text-muted py-5">
+                        <i class="fas fa-calendar-check fa-3x mb-3 text-success"></i>
+                        <p class="mb-0">لا توجد مواعيد اليوم</p>
                     </div>
                     @endforelse
                 </div>
-            </div>
-
-            <!-- Reminders -->
-            <div class="reminder-card card mt-4">
-                <div class="card-header border-0">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <h3 class="card-title">تنبيهات</h3>
-                        <button class="btn btn-sm btn-success">
-                            <i class="fas fa-plus"></i>
-                        </button>
-                    </div>
+                @if($todayTasks->count() > 0)
+                <div class="card-footer bg-transparent text-center border-0 pt-0">
+                    <a href="{{ route('calender.index') }}" class="btn btn-sm btn-light btn-block">
+                        عرض جميع المواعيد
+                    </a>
                 </div>
-                <div class="card-body">
-                    <div class="reminder-item">
-                        <div class="reminder-icon warning">
-                            <i class="fas fa-exclamation-triangle"></i>
-                        </div>
-                        <div class="reminder-content">
-                            <div class="reminder-title">تجديد عقد العمل مالا طاري</div>
-                            <div class="reminder-time">منذ ساعة</div>
-                        </div>
-                        <div class="reminder-action">
-                            <button class="btn-icon check"><i class="fas fa-check"></i></button>
-                            <button class="btn-icon add"><i class="fas fa-plus"></i></button>
-                        </div>
-                    </div>
-                    <div class="reminder-item">
-                        <div class="reminder-icon success">
-                            <i class="fas fa-home"></i>
-                        </div>
-                        <div class="reminder-content">
-                            <div class="reminder-title">رهن جديد فيلا في الرياض</div>
-                            <div class="reminder-time">منذ 3 ساعات</div>
-                        </div>
-                        <div class="reminder-action">
-                            <button class="btn-icon check"><i class="fas fa-check"></i></button>
-                            <button class="btn-icon add"><i class="fas fa-plus"></i></button>
-                        </div>
-                    </div>
-                </div>
+                @endif
             </div>
         </div>
     </div>
 
-    <!-- Fourth Row: Recent Tables -->
-    <div class="row mt-4">
-        <!-- Recent Properties Today -->
-        <div class="col-lg-6">
-            <div class="card table-card">
+    <!-- ══════════════════════════════════════════════
+         ROW 4 — RECENT PROPERTIES + REQUESTS
+    ══════════════════════════════════════════════ -->
+    <div class="row mb-4">
+
+        <!-- Recent Properties -->
+        <div class="col-xl-7 mb-3">
+            <div class="card">
                 <div class="card-header border-0">
                     <div class="d-flex justify-content-between align-items-center">
-                        <h3 class="card-title">حضر المتأخل مجدد اليوم</h3>
-                        <div class="d-flex gap-2">
-                            <span class="badge bg-success rounded-circle" style="width: 24px; height: 24px;"></span>
-                            <span class="badge bg-warning rounded-circle" style="width: 24px; height: 24px;"></span>
-                        </div>
+                        <h3 class="card-title"><i class="fas fa-building text-success ml-2"></i>أحدث العقارات</h3>
+                        <a href="{{ route('properties.page') }}" class="btn btn-sm btn-outline-success">عرض الكل</a>
                     </div>
                 </div>
                 <div class="card-body p-0">
-                    <table class="table">
-                        <tbody>
-                            @forelse($recentProperties->take(3) as $property)
+                    <table class="table table-hover mb-0">
+                        <thead class="thead-light">
                             <tr>
-                                <td>
-                                    <div class="d-flex align-items-center">
-                                        <span class="badge bg-{{ $loop->iteration == 1 ? 'danger' : ($loop->iteration == 2 ? 'success' : 'info') }} rounded-circle ml-2" style="width: 10px; height: 10px;"></span>
-                                        <span>{{ $property->name ?? 'عقار جديد' }}</span>
-                                    </div>
-                                </td>
-                                <td class="text-muted">{{ $property->city ?? 'الرياض' }}</td>
-                                <td>
-                                    <img src="{{ asset('dist/img/user1-128x128.jpg') }}" class="img-circle" style="width: 30px; height: 30px;">
-                                </td>
-                            </tr>
-                            @empty
-                            <tr>
-                                <td colspan="3" class="text-center text-muted">لا توجد عقارات</td>
-                            </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <!-- Recent Requests Today -->
-        <div class="col-lg-6">
-            <div class="card table-card">
-                <div class="card-header border-0">
-                    <h3 class="card-title">أخر الطلبات اليوم</h3>
-                </div>
-                <div class="card-body p-0">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>الإسم والإيجي</th>
-                                <th>للحجوزة</th>
-                                <th>تأش</th>
-                                <th>الاطلاع الجانبي</th>
+                                <th>العقار</th>
+                                <th>النوع</th>
+                                <th>المدينة</th>
+                                <th>السعر</th>
+                                <th>الحالة</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse($recentRequests->take(3) as $request)
-                            <tr>
+                            @forelse($recentProperties as $p)
+                            @php
+                                $img = $p->multiImages->first();
+                                $imgSrc = $img ? asset('upload/property/multi_img/'.$img->images) : asset('placholder.png');
+                            @endphp
+                            <tr onclick="window.location='{{ route('property.show', $p->id) }}'" style="cursor:pointer;">
                                 <td>
-                                    <span class="badge bg-{{ $loop->iteration == 1 ? 'danger' : 'warning' }} rounded-circle ml-2" style="width: 8px; height: 8px;"></span>
-                                    {{ $request->city ?? 'طلب جديد' }}
-                                </td>
-                                <td>{{ $request->price ?? '0' }}</td>
-                                <td>{{ $request->created_at ? $request->created_at->format('H:i') : '--' }}</td>
-                                <td>
-                                    <div class="table-user">
-                                        <img src="{{ asset('dist/img/user3-128x128.jpg') }}" alt="User">
+                                    <div class="d-flex align-items-center" style="gap:10px;">
+                                        <img src="{{ $imgSrc }}" style="width:40px;height:40px;object-fit:cover;border-radius:8px;" onerror="this.src='{{ asset('placholder.png') }}'">
+                                        <div>
+                                            <div class="font-weight-bold" style="font-size:13px;">{{ Str::limit($p->name, 22) }}</div>
+                                            <div class="text-muted" style="font-size:11px;">{{ $p->area ? $p->area.' م²' : '' }}</div>
+                                        </div>
                                     </div>
+                                </td>
+                                <td><span class="small">{{ $p->property_type ?: '—' }}</span></td>
+                                <td><span class="small">{{ $p->city ?: '—' }}</span></td>
+                                <td><span class="font-weight-bold text-success small">{{ number_format($p->price) }}</span></td>
+                                <td>
+                                    @if($p->status === 'Available')
+                                        <span class="badge badge-success">متاح</span>
+                                    @elseif($p->status === 'Sold')
+                                        <span class="badge badge-danger">مباع</span>
+                                    @else
+                                        <span class="badge badge-warning">محجوز</span>
+                                    @endif
                                 </td>
                             </tr>
                             @empty
-                            <tr>
-                                <td colspan="4" class="text-center text-muted">لا توجد طلبات</td>
-                            </tr>
+                            <tr><td colspan="5" class="text-center text-muted py-4">لا توجد عقارات بعد</td></tr>
                             @endforelse
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- Fifth Row: Properties & Communications -->
-    <div class="row mt-4">
-        <!-- Today's Properties -->
-        <div class="col-lg-6">
-            <div class="card table-card">
+        <!-- Recent Requests -->
+        <div class="col-xl-5 mb-3">
+            <div class="card">
                 <div class="card-header border-0">
                     <div class="d-flex justify-content-between align-items-center">
-                        <h3 class="card-title">عروضات عقار موم اليوم</h3>
-                        <button class="btn btn-sm btn-info">
-                            <i class="fas fa-times"></i>
-                        </button>
+                        <h3 class="card-title"><i class="fas fa-clipboard-list text-primary ml-2"></i>أحدث الطلبات</h3>
+                        <a href="{{ route('requests.index') }}" class="btn btn-sm btn-outline-primary">عرض الكل</a>
                     </div>
                 </div>
                 <div class="card-body p-0">
-                    <table class="table">
-                        <thead>
+                    <table class="table table-hover mb-0">
+                        <thead class="thead-light">
                             <tr>
-                                <th>المندوب - المباحث</th>
-                                <th>اقرار</th>
-                                <th>ذلربهجة</th>
+                                <th>العميل</th>
+                                <th>المدينة</th>
+                                <th>نوع العميل</th>
+                                <th>التاريخ</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse($recentProperties->take(2) as $property)
-                            <tr>
-                                <td>{{ $property->name ?? 'عقار' }}</td>
-                                <td>{{ $property->price ?? '0' }}</td>
-                                <td>{{ $property->created_at ? $property->created_at->format('d/m') : '--' }}</td>
+                            @forelse($recentRequests as $req)
+                            <tr onclick="window.location='{{ route('requests.show', $req->id) }}'" style="cursor:pointer;">
+                                <td>
+                                    <div class="d-flex align-items-center" style="gap:8px;">
+                                        <div class="req-avatar">{{ mb_substr($req->client_name ?? 'ع', 0, 1) }}</div>
+                                        <span class="small font-weight-bold">{{ Str::limit($req->client_name ?? 'غير محدد', 18) }}</span>
+                                    </div>
+                                </td>
+                                <td><span class="small">{{ $req->city ?: '—' }}</span></td>
+                                <td>
+                                    @php
+                                        $typeMap = ['buyer'=>'مشتري','seller'=>'بائع','renter'=>'مستأجر','owner'=>'مالك'];
+                                        $typeLabel = $typeMap[$req->client_type] ?? $req->client_type ?? '—';
+                                    @endphp
+                                    <span class="badge badge-light">{{ $typeLabel }}</span>
+                                </td>
+                                <td><span class="text-muted small">{{ $req->created_at->format('d/m') }}</span></td>
                             </tr>
                             @empty
-                            <tr>
-                                <td colspan="3" class="text-center text-muted">لا توجد عقارات</td>
-                            </tr>
+                            <tr><td colspan="4" class="text-center text-muted py-4">لا توجد طلبات بعد</td></tr>
                             @endforelse
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
+    </div>
 
-        <!-- Recent Communications -->
-        <div class="col-lg-6">
-            <div class="card table-card">
+    <!-- ══════════════════════════════════════════════
+         ROW 5 — QUICK ACTIONS
+    ══════════════════════════════════════════════ -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
                 <div class="card-header border-0">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <h3 class="card-title">أخر الطلبات والمخاطبيات</h3>
-                        <button class="btn btn-sm btn-primary">
-                            <i class="fas fa-plus"></i>
-                        </button>
-                    </div>
+                    <h3 class="card-title"><i class="fas fa-bolt text-warning ml-2"></i>إجراءات سريعة</h3>
                 </div>
                 <div class="card-body">
-                    <div class="activity-item">
-                        <div class="activity-icon green">
-                            <i class="fas fa-check"></i>
+                    <div class="row text-center">
+                        <div class="col-6 col-md-2 mb-3">
+                            <a href="{{ route('property.create.page') }}" class="quick-action">
+                                <div class="qa-icon" style="background:#e8f5e9;color:#11760E;"><i class="fas fa-plus-circle"></i></div>
+                                <div class="qa-label">إضافة عقار</div>
+                            </a>
                         </div>
-                        <div class="activity-content">
-                            <div class="activity-title">تسجيد عقد السيجان - اتخطية - متوضعة ماتقز</div>
+                        <div class="col-6 col-md-2 mb-3">
+                            <a href="{{ route('requests.create') }}" class="quick-action">
+                                <div class="qa-icon" style="background:#e3f2fd;color:#1E85EE;"><i class="fas fa-file-alt"></i></div>
+                                <div class="qa-label">طلب جديد</div>
+                            </a>
                         </div>
-                        <span class="badge bg-danger-light text-danger">جديد</span>
-                    </div>
-                    <div class="activity-item">
-                        <div class="activity-icon blue">
-                            <i class="fas fa-check"></i>
+                        <div class="col-6 col-md-2 mb-3">
+                            <a href="{{ route('property.map') }}" class="quick-action">
+                                <div class="qa-icon" style="background:#fff3e0;color:#F9AB00;"><i class="fas fa-map-marked-alt"></i></div>
+                                <div class="qa-label">الخريطة</div>
+                            </a>
                         </div>
-                        <div class="activity-content">
-                            <div class="activity-title">كرم مجيد تلقهار - كواش المجاد في</div>
+                        <div class="col-6 col-md-2 mb-3">
+                            <a href="{{ route('calender.index') }}" class="quick-action">
+                                <div class="qa-icon" style="background:#f3e5f5;color:#9c27b0;"><i class="fas fa-calendar-alt"></i></div>
+                                <div class="qa-label">التقويم</div>
+                            </a>
                         </div>
-                        <span class="badge bg-success-light text-success">مكتمل</span>
+                        <div class="col-6 col-md-2 mb-3">
+                            <a href="{{ route('files.index') }}" class="quick-action">
+                                <div class="qa-icon" style="background:#fce4ec;color:#e91e63;"><i class="fas fa-folder-open"></i></div>
+                                <div class="qa-label">الملفات</div>
+                            </a>
+                        </div>
+                        <div class="col-6 col-md-2 mb-3">
+                            <a href="{{ route('contacts.index') }}" class="quick-action">
+                                <div class="qa-icon" style="background:#e0f7fa;color:#00bcd4;"><i class="fas fa-address-book"></i></div>
+                                <div class="qa-label">جهات الاتصال</div>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
 </div>
 
 @endsection
 
-@push('scripts')
-<script src="https://maps.googleapis.com/maps/api/js?key={{ env('GOOGLE_MAPS_API_KEY') }}&callback=initMap" async defer></script>
+@push('styles')
+<style>
+/* ── KPI Cards ── */
+.kpi-card {
+    background: #fff;
+    border-radius: 14px;
+    padding: 20px;
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    box-shadow: 0 2px 12px rgba(0,0,0,.06);
+    border: 1px solid #f0f0f0;
+    height: 100%;
+    transition: box-shadow .2s;
+}
+.kpi-card:hover { box-shadow: 0 6px 20px rgba(0,0,0,.1); }
+.kpi-icon {
+    width: 52px; height: 52px;
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; flex-shrink: 0;
+}
+.kpi-green  { background: #e8f5e9; color: #11760E; }
+.kpi-blue   { background: #e3f2fd; color: #1E85EE; }
+.kpi-orange { background: #fff3e0; color: #ef6c00; }
+.kpi-purple { background: #ede7f6; color: #6a1b9a; }
+.kpi-body { flex: 1; min-width: 0; }
+.kpi-value { font-size: 2rem; font-weight: 800; color: #0F302E; line-height: 1.1; }
+.kpi-label { font-size: 13px; color: #888; margin: 3px 0 6px; }
+.kpi-sub   { font-size: 12px; color: #666; }
 
+/* ── Task rows ── */
+.task-row {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 16px;
+    border-bottom: 1px solid #f5f5f5;
+    transition: background .15s;
+}
+.task-row:last-child { border-bottom: none; }
+.task-row:hover { background: #fafafa; }
+.task-row.task-done { opacity: .6; }
+.task-check {
+    width: 26px; height: 26px; border-radius: 50%;
+    border: 2px solid #dee2e6;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; flex-shrink: 0; color: transparent;
+}
+.task-check.checked { background: #11760E; border-color: #11760E; color: #fff; }
+.task-title { font-size: 13px; font-weight: 600; color: #0F302E; }
+.task-time { font-size: 11px; }
+
+/* ── Request avatar ── */
+.req-avatar {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: linear-gradient(135deg, #0F302E, #1B8A8A);
+    color: #fff; font-weight: 700; font-size: 14px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+}
+
+/* ── Quick actions ── */
+.quick-action { text-decoration: none; display: block; }
+.quick-action:hover .qa-icon { transform: translateY(-4px); }
+.qa-icon {
+    width: 60px; height: 60px; border-radius: 16px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; margin: 0 auto 8px;
+    transition: transform .2s;
+}
+.qa-label { font-size: 12px; color: #555; font-weight: 600; }
+
+/* ── Table hover rows ── */
+.table tbody tr:hover { background: #f8fff8; }
+
+/* ── Chart tabs ── */
+.chart-tabs .tab {
+    border: 1px solid #dee2e6; background: #fff;
+    padding: 4px 14px; font-size: 13px; border-radius: 20px;
+    cursor: pointer; font-family: 'Cairo', sans-serif;
+    transition: all .2s;
+}
+.chart-tabs .tab.active { background: #0F302E; color: #fff; border-color: #0F302E; }
+</style>
+@endpush
+
+@push('scripts')
+<script src="https://maps.googleapis.com/maps/api/js?key={{ env('GOOGLE_MAPS_API_KEY') }}&callback=initDashMap" async defer></script>
 <script>
-// Sales Chart
+// ── Status Donut ──────────────────────────────────
 document.addEventListener('DOMContentLoaded', function() {
-    const ctx = document.getElementById('salesChart').getContext('2d');
-    const salesChart = new Chart(ctx, {
+    var statusCtx = document.getElementById('statusChart').getContext('2d');
+    new Chart(statusCtx, {
+        type: 'doughnut',
+        data: {
+            labels: ['متاح', 'مباع', 'محجوز'],
+            datasets: [{
+                data: [{{ $availableCount }}, {{ $soldCount }}, {{ $reservedCount }}],
+                backgroundColor: ['#11760E', '#dc3545', '#F9AB00'],
+                borderWidth: 0,
+                hoverOffset: 6
+            }]
+        },
+        options: {
+            cutout: '70%',
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        label: function(c) { return ' ' + c.label + ': ' + c.raw; }
+                    }
+                }
+            }
+        }
+    });
+
+    // ── Activity Bar Chart ────────────────────────
+    var actCtx = document.getElementById('activityChart').getContext('2d');
+    new Chart(actCtx, {
         type: 'bar',
         data: {
             labels: {!! json_encode(array_column($monthlyStats, 'month')) !!},
-            datasets: [{
-                label: 'العقارات',
-                data: {!! json_encode(array_column($monthlyStats, 'properties')) !!},
-                backgroundColor: '#11760E',
-                borderRadius: 5,
-                barThickness: 20,
-            }, {
-                label: 'الطلبات',
-                data: {!! json_encode(array_column($monthlyStats, 'requests')) !!},
-                backgroundColor: '#1E85EE',
-                borderRadius: 5,
-                barThickness: 20,
-            }]
+            datasets: [
+                {
+                    label: 'عقارات',
+                    data: {!! json_encode(array_column($monthlyStats, 'properties')) !!},
+                    backgroundColor: '#0F302E',
+                    borderRadius: 6,
+                    barThickness: 14,
+                },
+                {
+                    label: 'طلبات',
+                    data: {!! json_encode(array_column($monthlyStats, 'requests')) !!},
+                    backgroundColor: '#1B8A8A',
+                    borderRadius: 6,
+                    barThickness: 14,
+                }
+            ]
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    position: 'top',
-                    align: 'end',
-                    labels: {
-                        usePointStyle: true,
-                        pointStyle: 'circle',
-                        font: {
-                            family: 'Cairo'
-                        }
-                    }
-                }
-            },
+            plugins: { legend: { display: false } },
             scales: {
-                x: {
-                    grid: {
-                        display: false
-                    },
-                    ticks: {
-                        font: {
-                            family: 'Cairo'
-                        }
-                    }
-                },
-                y: {
-                    beginAtZero: true,
-                    grid: {
-                        color: '#f0f0f0'
-                    },
-                    ticks: {
-                        font: {
-                            family: 'Cairo'
-                        }
-                    }
-                }
+                x: { grid: { display: false }, ticks: { font: { family: 'Cairo', size: 11 } } },
+                y: { beginAtZero: true, grid: { color: '#f0f0f0' }, ticks: { font: { family: 'Cairo', size: 11 }, stepSize: 1 } }
             }
         }
     });
 });
 
-// Google Maps
-function initMap() {
-    const mapElement = document.getElementById('propertiesMap');
-    if (!mapElement) return;
+// ── Mini Map ──────────────────────────────────────
+function initDashMap() {
+    var el = document.getElementById('dashMap');
+    if (!el) return;
 
-    const map = new google.maps.Map(mapElement, {
-        center: { lat: 24.7136, lng: 46.6753 }, // Riyadh
+    var map = new google.maps.Map(el, {
+        center: { lat: 24.7136, lng: 46.6753 },
         zoom: 10,
-        styles: [
-            {
-                "featureType": "all",
-                "elementType": "geometry.fill",
-                "stylers": [{"weight": "2.00"}]
-            },
-            {
-                "featureType": "all",
-                "elementType": "geometry.stroke",
-                "stylers": [{"color": "#9c9c9c"}]
-            },
-            {
-                "featureType": "all",
-                "elementType": "labels.text",
-                "stylers": [{"visibility": "on"}]
-            },
-            {
-                "featureType": "water",
-                "elementType": "all",
-                "stylers": [{"color": "#aadaff"}]
+        mapTypeControl: false,
+        streetViewControl: false,
+        fullscreenControl: false,
+        zoomControlOptions: { position: google.maps.ControlPosition.LEFT_BOTTOM },
+        styles: [{ featureType: 'poi', elementType: 'labels', stylers: [{ visibility: 'off' }] }]
+    });
+
+    var properties = @json($mapProperties);
+    var infoWindow = new google.maps.InfoWindow();
+    var bounds = new google.maps.LatLngBounds();
+    var hasMarkers = false;
+
+    properties.forEach(function(p) {
+        if (!p.latitude || !p.longitude) return;
+        var color = p.status === 'Sold' ? '#dc3545' : p.status === 'Reserved' ? '#F9AB00' : '#11760E';
+        var pos = { lat: parseFloat(p.latitude), lng: parseFloat(p.longitude) };
+
+        var marker = new google.maps.Marker({
+            position: pos,
+            map: map,
+            title: p.name,
+            icon: {
+                path: google.maps.SymbolPath.CIRCLE,
+                scale: 9,
+                fillColor: color,
+                fillOpacity: 0.95,
+                strokeWeight: 2,
+                strokeColor: '#fff'
             }
-        ]
+        });
+
+        marker.addListener('click', function() {
+            infoWindow.setContent(
+                '<div style="font-family:Cairo;padding:6px;direction:rtl;">' +
+                '<strong style="color:#0F302E;">' + p.name + '</strong>' +
+                (p.city ? '<br><small style="color:#888;">' + p.city + '</small>' : '') +
+                '<br><a href="/'+p.id+'/property" style="color:#1B8A8A;font-size:12px;">عرض التفاصيل ←</a>' +
+                '</div>'
+            );
+            infoWindow.open(map, marker);
+        });
+
+        bounds.extend(pos);
+        hasMarkers = true;
     });
 
-    // Add markers for properties
-    const properties = @json($mapProperties);
-    const bounds = new google.maps.LatLngBounds();
-
-    properties.forEach(function(property, index) {
-        if (property.latitude && property.longitude) {
-            const position = { lat: parseFloat(property.latitude), lng: parseFloat(property.longitude) };
-
-            const marker = new google.maps.Marker({
-                position: position,
-                map: map,
-                title: property.name || 'عقار',
-                icon: {
-                    path: google.maps.SymbolPath.CIRCLE,
-                    scale: 10,
-                    fillColor: index % 4 === 0 ? '#11760E' : (index % 4 === 1 ? '#1E85EE' : (index % 4 === 2 ? '#F9AB00' : '#F54F68')),
-                    fillOpacity: 0.9,
-                    strokeWeight: 2,
-                    strokeColor: '#ffffff'
-                }
-            });
-
-            bounds.extend(position);
-
-            const infoWindow = new google.maps.InfoWindow({
-                content: `
-                    <div style="padding: 10px; font-family: Cairo;">
-                        <h5 style="margin: 0 0 5px;">${property.name || 'عقار'}</h5>
-                        <p style="margin: 0; color: #666;">${property.city || ''}</p>
-                    </div>
-                `
-            });
-
-            marker.addListener('click', function() {
-                infoWindow.open(map, marker);
-            });
-        }
-    });
-
-    if (properties.length > 0) {
+    if (hasMarkers) {
         map.fitBounds(bounds);
+        google.maps.event.addListenerOnce(map, 'idle', function() {
+            if (map.getZoom() > 14) map.setZoom(14);
+        });
     }
 }
 </script>

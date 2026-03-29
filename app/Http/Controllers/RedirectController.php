@@ -13,15 +13,51 @@ class RedirectController extends Controller
 {
     
     public function dashboard() {
-        $requests = RequestProperty::latest()->paginate(4);
-    
-        // Retrieve events separately for each request
-        $events = [];
-        foreach ($requests as $request) {
-            $events[$request->id] = Event::where('request_id', $request->id)->get();
+        $now   = \Carbon\Carbon::now();
+        $today = $now->copy()->startOfDay();
+
+        // ── Stats ──────────────────────────────────────────────
+        $propertyCount   = Property::count();
+        $availableCount  = Property::where('status', 'Available')->count();
+        $soldCount       = Property::where('status', 'Sold')->count();
+        $reservedCount   = Property::where('status', 'Reserved')->count();
+        $totalValue      = Property::sum('price');
+        $avgPrice        = $propertyCount ? round($totalValue / $propertyCount) : 0;
+
+        $requestCount     = RequestProperty::count();
+        $newRequestsToday = RequestProperty::whereDate('created_at', $today)->count();
+
+        $todayEvents    = Event::whereDate('start', $today)->count();
+        $unreadEvents   = Event::where('read', false)->count();
+
+        // ── Recent data ────────────────────────────────────────
+        $recentProperties = Property::with('multiImages')->latest()->take(6)->get();
+        $recentRequests   = RequestProperty::latest()->take(6)->get();
+        $todayTasks       = Event::whereDate('start', $today)->latest()->take(5)->get();
+
+        // ── Monthly chart (12 months) ──────────────────────────
+        $monthlyStats = [];
+        for ($i = 11; $i >= 0; $i--) {
+            $month = $now->copy()->subMonths($i);
+            $monthlyStats[] = [
+                'month'      => $month->translatedFormat('M'),
+                'properties' => Property::whereYear('created_at', $month->year)->whereMonth('created_at', $month->month)->count(),
+                'requests'   => RequestProperty::whereYear('created_at', $month->year)->whereMonth('created_at', $month->month)->count(),
+                'sold'       => Property::where('status', 'Sold')->whereYear('updated_at', $month->year)->whereMonth('updated_at', $month->month)->count(),
+            ];
         }
 
-        return  view('admin.dashboard.index',compact('requests','events'));
+        // ── Map properties ─────────────────────────────────────
+        $mapProperties = Property::whereNotNull('latitude')->whereNotNull('longitude')->take(30)->get();
+
+        return view('admin.dashboard.index', compact(
+            'propertyCount', 'availableCount', 'soldCount', 'reservedCount',
+            'totalValue', 'avgPrice',
+            'requestCount', 'newRequestsToday',
+            'todayEvents', 'unreadEvents',
+            'recentProperties', 'recentRequests', 'todayTasks',
+            'monthlyStats', 'mapProperties'
+        ));
     }
 
 
