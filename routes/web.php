@@ -40,6 +40,8 @@ Route::get('/thank_you/client', [ClientController::class ,'thank_you'])->name('c
 
 Route::post('/store/client', [ClientController::class ,'store'])->name('client.store');
 
+Route::get('/property/{id}', [PropertyController::class, 'publicShow'])->name('property.public.show');
+
 Route::get('/', function () {
     try {
         $propertyCount = \Illuminate\Support\Facades\Cache::remember('property_count', 300, fn() => \App\Models\Property::count());
@@ -84,7 +86,6 @@ Route::get('/create',[PropertyController::class ,'create'])->name('property.crea
 Route::get('/createdraw',[PropertyController::class ,'createdraw'])->name('property.createdraw');
 
 Route::get('/{id}/property',[PropertyController::class ,'show'])->name('property.show');
-Route::get('/property/{id}',[PropertyController::class ,'publicShow'])->name('property.public.show');
 
 Route::post('/store',[PropertyController::class ,'store'])->name('property.store'); 
 Route::post('/storeDraw',[PropertyController::class ,'storeDraw'])->name('property.store.draw'); 
