@@ -45,7 +45,7 @@ Route::get('/', function () {
         $propertyCount = \Illuminate\Support\Facades\Cache::remember('property_count', 300, fn() => \App\Models\Property::count());
         $requestCount = \Illuminate\Support\Facades\Cache::remember('request_count', 300, fn() => \App\Models\RequestProperty::count());
         $homeProperties = \App\Models\Property::with('multiImages')->latest()->take(9)->get();
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
         $propertyCount = 0;
         $requestCount = 0;
         $homeProperties = collect();
