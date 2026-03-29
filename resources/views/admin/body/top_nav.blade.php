@@ -447,7 +447,7 @@
     var d = document.getElementById('nav-date');
     if (!t) return;
     function tick() {
-        var now = new Date();
+        var now = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Riyadh' }));
         var hh = String(now.getHours()).padStart(2,'0');
         var mm = String(now.getMinutes()).padStart(2,'0');
         var ss = String(now.getSeconds()).padStart(2,'0');
