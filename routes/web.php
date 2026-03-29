@@ -44,11 +44,13 @@ Route::get('/', function () {
     try {
         $propertyCount = \Illuminate\Support\Facades\Cache::remember('property_count', 300, fn() => \App\Models\Property::count());
         $requestCount = \Illuminate\Support\Facades\Cache::remember('request_count', 300, fn() => \App\Models\RequestProperty::count());
+        $homeProperties = \App\Models\Property::with('multiImages')->latest()->take(9)->get();
     } catch (\Exception $e) {
         $propertyCount = 0;
         $requestCount = 0;
+        $homeProperties = collect();
     }
-    return view('home', compact('propertyCount', 'requestCount'));
+    return view('home', compact('propertyCount', 'requestCount', 'homeProperties'));
 });
 
 // Language Switcher
@@ -82,6 +84,7 @@ Route::get('/create',[PropertyController::class ,'create'])->name('property.crea
 Route::get('/createdraw',[PropertyController::class ,'createdraw'])->name('property.createdraw');
 
 Route::get('/{id}/property',[PropertyController::class ,'show'])->name('property.show');
+Route::get('/property/{id}',[PropertyController::class ,'publicShow'])->name('property.public.show');
 
 Route::post('/store',[PropertyController::class ,'store'])->name('property.store'); 
 Route::post('/storeDraw',[PropertyController::class ,'storeDraw'])->name('property.store.draw'); 

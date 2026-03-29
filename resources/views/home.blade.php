@@ -756,6 +756,160 @@
         .author-info h4 { color: var(--primary-dark); font-size: 15px; font-weight: 700; margin-bottom: 3px; }
         .author-info span { color: var(--text-gray); font-size: 13px; }
 
+        /* ==================== PROPERTIES SECTION ==================== */
+        .properties-section {
+            background: var(--light-bg);
+            padding: 90px 5%;
+        }
+
+        .prop-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 28px;
+            max-width: 1200px;
+            margin: 0 auto 48px;
+        }
+
+        .prop-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,.06);
+            border: 1px solid transparent;
+            transition: transform .3s, box-shadow .3s, border-color .3s;
+            text-decoration: none;
+            display: block;
+            color: inherit;
+        }
+
+        .prop-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 16px 48px rgba(0,0,0,.12);
+            border-color: var(--primary-teal);
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .prop-img-wrap {
+            position: relative;
+            height: 200px;
+            overflow: hidden;
+        }
+
+        .prop-img-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform .4s;
+        }
+
+        .prop-card:hover .prop-img-wrap img {
+            transform: scale(1.06);
+        }
+
+        .prop-status-badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .prop-status-available { background: #22c55e; color: white; }
+        .prop-status-sold      { background: #ef4444; color: white; }
+        .prop-status-reserved  { background: #f59e0b; color: white; }
+
+        .prop-type-badge {
+            position: absolute;
+            bottom: 12px;
+            left: 12px;
+            background: rgba(15,48,46,.75);
+            backdrop-filter: blur(4px);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .prop-body {
+            padding: 20px;
+        }
+
+        .prop-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--primary-dark);
+            margin-bottom: 8px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .prop-location {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--text-gray);
+            font-size: 13px;
+            margin-bottom: 14px;
+        }
+
+        .prop-location i { color: var(--primary-teal); font-size: 12px; }
+
+        .prop-meta {
+            display: flex;
+            gap: 14px;
+            padding-top: 14px;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        .prop-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: var(--text-gray);
+        }
+
+        .prop-meta-item i {
+            color: var(--primary-teal);
+            font-size: 12px;
+        }
+
+        .prop-view-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 14px;
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary-teal));
+            color: white;
+            padding: 9px 20px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 600;
+            transition: opacity .2s, transform .2s;
+            text-decoration: none;
+        }
+
+        .prop-view-btn:hover { opacity: .88; transform: translateX(-3px); color: white; text-decoration: none; }
+
+        .prop-empty {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-gray);
+            grid-column: 1 / -1;
+        }
+
+        .prop-empty i { font-size: 3rem; margin-bottom: 16px; display: block; opacity: .4; }
+
+        .prop-show-all {
+            display: flex;
+            justify-content: center;
+        }
+
         /* ==================== SCROLL REVEAL ==================== */
         .reveal {
             opacity: 0;
@@ -1163,6 +1317,7 @@
                 <i class="fas fa-times"></i>
             </button>
             <a href="#features">المميزات</a>
+            <a href="#properties">العقارات</a>
             <a href="#about">من نحن</a>
             <a href="#contact">تواصل معنا</a>
             @auth
@@ -1445,6 +1600,91 @@
                 </div>
             </div>
         </div>
+    </section>
+
+    <!-- Properties Section -->
+    <section class="properties-section" id="properties">
+        <div class="section-header reveal">
+            <span class="section-tag" style="color:var(--primary-teal);font-size:13px;font-weight:700;letter-spacing:3px;display:block;margin-bottom:10px;">عقاراتنا المتاحة</span>
+            <h2>استعرض أحدث العقارات</h2>
+            <p>مجموعة مختارة من أفضل العقارات السكنية والتجارية في المملكة</p>
+        </div>
+
+        <div class="prop-grid">
+            @forelse($homeProperties as $prop)
+            @php
+                $img = $prop->multiImages->first();
+                $imgSrc = $img
+                    ? asset('upload/property/multi_img/' . $img->images)
+                    : asset('placholder.png');
+                $statusClass = match($prop->status) {
+                    'Sold'     => 'prop-status-sold',
+                    'Reserved' => 'prop-status-reserved',
+                    default    => 'prop-status-available',
+                };
+                $statusLabel = match($prop->status) {
+                    'Sold'     => 'مباع',
+                    'Reserved' => 'محجوز',
+                    default    => 'متاح',
+                };
+            @endphp
+            <a href="{{ route('property.public.show', $prop->id) }}" class="prop-card reveal">
+                <div class="prop-img-wrap">
+                    <img src="{{ $imgSrc }}"
+                         alt="{{ $prop->name }}"
+                         onerror="this.src='{{ asset('placholder.png') }}'">
+                    <span class="prop-status-badge {{ $statusClass }}">{{ $statusLabel }}</span>
+                    @if($prop->property_type)
+                        <span class="prop-type-badge">{{ $prop->property_type }}</span>
+                    @endif
+                </div>
+                <div class="prop-body">
+                    <div class="prop-title">{{ $prop->name }}</div>
+                    @if($prop->city || $prop->location)
+                    <div class="prop-location">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>{{ $prop->city ?: $prop->location }}</span>
+                    </div>
+                    @endif
+                    <div class="prop-meta">
+                        @if($prop->area)
+                        <div class="prop-meta-item">
+                            <i class="fas fa-vector-square"></i>
+                            <span>{{ number_format($prop->area) }} م²</span>
+                        </div>
+                        @endif
+                        @if($prop->number)
+                        <div class="prop-meta-item">
+                            <i class="fas fa-hashtag"></i>
+                            <span>{{ $prop->number }}</span>
+                        </div>
+                        @endif
+                        <div class="prop-meta-item mr-auto">
+                            <i class="fas fa-calendar-alt"></i>
+                            <span>{{ $prop->created_at->format('Y') }}</span>
+                        </div>
+                    </div>
+                    <span class="prop-view-btn">
+                        <i class="fas fa-eye"></i> عرض التفاصيل
+                    </span>
+                </div>
+            </a>
+            @empty
+            <div class="prop-empty">
+                <i class="fas fa-building"></i>
+                <p>لا توجد عقارات متاحة حالياً</p>
+            </div>
+            @endforelse
+        </div>
+
+        @if($homeProperties->count() >= 9)
+        <div class="prop-show-all reveal">
+            <a href="{{ route('property.map') }}" class="btn-primary">
+                <i class="fas fa-th-large"></i>
+                عرض جميع العقارات على الخريطة
+            </a>
+        </div>
+        @endif
     </section>
 
     <!-- CTA Section -->

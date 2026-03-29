@@ -50,6 +50,24 @@ class PropertyController extends Controller
 
         return view('admin.property.show', compact('property', 'multiImage', 'propertyFiles'));
     }
+
+    public function publicShow($id)
+    {
+        $property = Property::findOrFail($id);
+        $multiImage = MultiImages::where('propery_id', $id)->get();
+
+        $relatedProperties = Property::with('multiImages')
+            ->where('id', '!=', $id)
+            ->where(function($q) use ($property) {
+                $q->where('property_type', $property->property_type)
+                  ->orWhere('city', $property->city);
+            })
+            ->latest()
+            ->take(4)
+            ->get();
+
+        return view('property.show', compact('property', 'multiImage', 'relatedProperties'));
+    }
     
     public function storeDraw(Request $request)
     {
