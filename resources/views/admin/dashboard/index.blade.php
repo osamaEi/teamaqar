@@ -9,7 +9,7 @@
     <div class="row mb-4">
 
         <!-- Total Properties -->
-        <div class="col-xl-3 col-md-6 mb-3">
+        <div class="col-xl-4 col-md-6 mb-3">
             <div class="kpi-card">
                 <div class="kpi-icon kpi-green"><i class="fas fa-building"></i></div>
                 <div class="kpi-body">
@@ -24,20 +24,8 @@
             </div>
         </div>
 
-        <!-- Portfolio Value -->
-        <div class="col-xl-3 col-md-6 mb-3">
-            <div class="kpi-card">
-                <div class="kpi-icon kpi-blue"><i class="fas fa-wallet"></i></div>
-                <div class="kpi-body">
-                    <div class="kpi-value">{{ $totalValue >= 1000000 ? number_format($totalValue/1000000, 1).'M' : number_format($totalValue) }}</div>
-                    <div class="kpi-label">إجمالي قيمة المحفظة (ريال)</div>
-                    <div class="kpi-sub">متوسط السعر: <strong>{{ number_format($avgPrice) }}</strong> ريال</div>
-                </div>
-            </div>
-        </div>
-
         <!-- Requests -->
-        <div class="col-xl-3 col-md-6 mb-3">
+        <div class="col-xl-4 col-md-6 mb-3">
             <div class="kpi-card">
                 <div class="kpi-icon kpi-orange"><i class="fas fa-clipboard-list"></i></div>
                 <div class="kpi-body">
@@ -55,7 +43,7 @@
         </div>
 
         <!-- Today Events -->
-        <div class="col-xl-3 col-md-6 mb-3">
+        <div class="col-xl-4 col-md-6 mb-3">
             <div class="kpi-card">
                 <div class="kpi-icon kpi-purple"><i class="fas fa-calendar-check"></i></div>
                 <div class="kpi-body">
@@ -74,70 +62,7 @@
     </div>
 
     <!-- ══════════════════════════════════════════════
-         ROW 2 — STATUS BREAKDOWN + CHART
-    ══════════════════════════════════════════════ -->
-    <div class="row mb-4">
-
-        <!-- Status breakdown + donut -->
-        <div class="col-xl-4 mb-3">
-            <div class="card h-100">
-                <div class="card-header border-0">
-                    <h3 class="card-title"><i class="fas fa-chart-pie text-primary ml-2"></i>توزيع العقارات</h3>
-                </div>
-                <div class="card-body">
-                    <canvas id="statusChart" height="200"></canvas>
-
-                    @php $total = max($propertyCount, 1); @endphp
-                    <div class="mt-3">
-                        <div class="d-flex justify-content-between align-items-center mb-1">
-                            <span class="small"><i class="fas fa-circle text-success"></i> متاح ({{ $availableCount }})</span>
-                            <span class="small font-weight-bold">{{ round($availableCount/$total*100) }}%</span>
-                        </div>
-                        <div class="progress mb-3" style="height:6px;">
-                            <div class="progress-bar bg-success" style="width:{{ round($availableCount/$total*100) }}%"></div>
-                        </div>
-
-                        <div class="d-flex justify-content-between align-items-center mb-1">
-                            <span class="small"><i class="fas fa-circle text-danger"></i> مباع ({{ $soldCount }})</span>
-                            <span class="small font-weight-bold">{{ round($soldCount/$total*100) }}%</span>
-                        </div>
-                        <div class="progress mb-3" style="height:6px;">
-                            <div class="progress-bar bg-danger" style="width:{{ round($soldCount/$total*100) }}%"></div>
-                        </div>
-
-                        <div class="d-flex justify-content-between align-items-center mb-1">
-                            <span class="small"><i class="fas fa-circle text-warning"></i> محجوز ({{ $reservedCount }})</span>
-                            <span class="small font-weight-bold">{{ round($reservedCount/$total*100) }}%</span>
-                        </div>
-                        <div class="progress" style="height:6px;">
-                            <div class="progress-bar bg-warning" style="width:{{ round($reservedCount/$total*100) }}%"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- 12-month bar chart -->
-        <div class="col-xl-8 mb-3">
-            <div class="card h-100">
-                <div class="card-header border-0">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <h3 class="card-title"><i class="fas fa-chart-bar text-success ml-2"></i>نشاط آخر 12 شهر</h3>
-                        <div class="d-flex align-items-center" style="gap:12px; font-size:12px;">
-                            <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#0F302E;margin-left:4px;"></span>عقارات</span>
-                            <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#1B8A8A;margin-left:4px;"></span>طلبات</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <canvas id="activityChart" height="200"></canvas>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- ══════════════════════════════════════════════
-         ROW 3 — MAP + TODAY TASKS
+         ROW 2 — MAP + TODAY TASKS
     ══════════════════════════════════════════════ -->
     <div class="row mb-4">
 
@@ -153,7 +78,7 @@
                     </div>
                 </div>
                 <div class="card-body p-0">
-                    <div id="dashMap" style="height:320px; border-radius:0 0 10px 10px;"></div>
+                    <div id="dashMap" style="height:340px; border-radius:0 0 10px 10px;"></div>
                 </div>
             </div>
         </div>
@@ -205,7 +130,7 @@
     </div>
 
     <!-- ══════════════════════════════════════════════
-         ROW 4 — RECENT PROPERTIES + REQUESTS
+         ROW 3 — RECENT PROPERTIES + REQUESTS
     ══════════════════════════════════════════════ -->
     <div class="row mb-4">
 
@@ -225,7 +150,6 @@
                                 <th>العقار</th>
                                 <th>النوع</th>
                                 <th>المدينة</th>
-                                <th>السعر</th>
                                 <th>الحالة</th>
                             </tr>
                         </thead>
@@ -247,7 +171,6 @@
                                 </td>
                                 <td><span class="small">{{ $p->property_type ?: '—' }}</span></td>
                                 <td><span class="small">{{ $p->city ?: '—' }}</span></td>
-                                <td><span class="font-weight-bold text-success small">{{ number_format($p->price) }}</span></td>
                                 <td>
                                     @if($p->status === 'Available')
                                         <span class="badge badge-success">متاح</span>
@@ -259,7 +182,7 @@
                                 </td>
                             </tr>
                             @empty
-                            <tr><td colspan="5" class="text-center text-muted py-4">لا توجد عقارات بعد</td></tr>
+                            <tr><td colspan="4" class="text-center text-muted py-4">لا توجد عقارات بعد</td></tr>
                             @endforelse
                         </tbody>
                     </table>
@@ -316,7 +239,7 @@
     </div>
 
     <!-- ══════════════════════════════════════════════
-         ROW 5 — QUICK ACTIONS
+         ROW 4 — QUICK ACTIONS
     ══════════════════════════════════════════════ -->
     <div class="row mb-4">
         <div class="col-12">
@@ -395,7 +318,6 @@
     font-size: 22px; flex-shrink: 0;
 }
 .kpi-green  { background: #e8f5e9; color: #11760E; }
-.kpi-blue   { background: #e3f2fd; color: #1E85EE; }
 .kpi-orange { background: #fff3e0; color: #ef6c00; }
 .kpi-purple { background: #ede7f6; color: #6a1b9a; }
 .kpi-body { flex: 1; min-width: 0; }
@@ -445,86 +367,12 @@
 
 /* ── Table hover rows ── */
 .table tbody tr:hover { background: #f8fff8; }
-
-/* ── Chart tabs ── */
-.chart-tabs .tab {
-    border: 1px solid #dee2e6; background: #fff;
-    padding: 4px 14px; font-size: 13px; border-radius: 20px;
-    cursor: pointer; font-family: 'Cairo', sans-serif;
-    transition: all .2s;
-}
-.chart-tabs .tab.active { background: #0F302E; color: #fff; border-color: #0F302E; }
 </style>
 @endpush
 
 @push('scripts')
 <script src="https://maps.googleapis.com/maps/api/js?key={{ env('GOOGLE_MAPS_API_KEY') }}&callback=initDashMap" async defer></script>
 <script>
-// ── Status Donut ──────────────────────────────────
-document.addEventListener('DOMContentLoaded', function() {
-    var statusCtx = document.getElementById('statusChart').getContext('2d');
-    new Chart(statusCtx, {
-        type: 'doughnut',
-        data: {
-            labels: ['متاح', 'مباع', 'محجوز'],
-            datasets: [{
-                data: [{{ $availableCount }}, {{ $soldCount }}, {{ $reservedCount }}],
-                backgroundColor: ['#11760E', '#dc3545', '#F9AB00'],
-                borderWidth: 0,
-                hoverOffset: 6
-            }]
-        },
-        options: {
-            cutout: '70%',
-            responsive: true,
-            maintainAspectRatio: true,
-            plugins: {
-                legend: { display: false },
-                tooltip: {
-                    callbacks: {
-                        label: function(c) { return ' ' + c.label + ': ' + c.raw; }
-                    }
-                }
-            }
-        }
-    });
-
-    // ── Activity Bar Chart ────────────────────────
-    var actCtx = document.getElementById('activityChart').getContext('2d');
-    new Chart(actCtx, {
-        type: 'bar',
-        data: {
-            labels: {!! json_encode(array_column($monthlyStats, 'month')) !!},
-            datasets: [
-                {
-                    label: 'عقارات',
-                    data: {!! json_encode(array_column($monthlyStats, 'properties')) !!},
-                    backgroundColor: '#0F302E',
-                    borderRadius: 6,
-                    barThickness: 14,
-                },
-                {
-                    label: 'طلبات',
-                    data: {!! json_encode(array_column($monthlyStats, 'requests')) !!},
-                    backgroundColor: '#1B8A8A',
-                    borderRadius: 6,
-                    barThickness: 14,
-                }
-            ]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: { legend: { display: false } },
-            scales: {
-                x: { grid: { display: false }, ticks: { font: { family: 'Cairo', size: 11 } } },
-                y: { beginAtZero: true, grid: { color: '#f0f0f0' }, ticks: { font: { family: 'Cairo', size: 11 }, stepSize: 1 } }
-            }
-        }
-    });
-});
-
-// ── Mini Map ──────────────────────────────────────
 function initDashMap() {
     var el = document.getElementById('dashMap');
     if (!el) return;

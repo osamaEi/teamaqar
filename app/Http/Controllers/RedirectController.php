@@ -21,9 +21,6 @@ class RedirectController extends Controller
         $availableCount  = Property::where('status', 'Available')->count();
         $soldCount       = Property::where('status', 'Sold')->count();
         $reservedCount   = Property::where('status', 'Reserved')->count();
-        $totalValue      = Property::sum('price');
-        $avgPrice        = $propertyCount ? round($totalValue / $propertyCount) : 0;
-
         $requestCount     = RequestProperty::count();
         $newRequestsToday = RequestProperty::whereDate('created_at', $today)->count();
 
@@ -35,28 +32,15 @@ class RedirectController extends Controller
         $recentRequests   = RequestProperty::latest()->take(6)->get();
         $todayTasks       = Event::whereDate('start', $today)->latest()->take(5)->get();
 
-        // ── Monthly chart (12 months) ──────────────────────────
-        $monthlyStats = [];
-        for ($i = 11; $i >= 0; $i--) {
-            $month = $now->copy()->subMonths($i);
-            $monthlyStats[] = [
-                'month'      => $month->translatedFormat('M'),
-                'properties' => Property::whereYear('created_at', $month->year)->whereMonth('created_at', $month->month)->count(),
-                'requests'   => RequestProperty::whereYear('created_at', $month->year)->whereMonth('created_at', $month->month)->count(),
-                'sold'       => Property::where('status', 'Sold')->whereYear('updated_at', $month->year)->whereMonth('updated_at', $month->month)->count(),
-            ];
-        }
-
         // ── Map properties ─────────────────────────────────────
         $mapProperties = Property::whereNotNull('latitude')->whereNotNull('longitude')->take(30)->get();
 
         return view('admin.dashboard.index', compact(
             'propertyCount', 'availableCount', 'soldCount', 'reservedCount',
-            'totalValue', 'avgPrice',
             'requestCount', 'newRequestsToday',
             'todayEvents', 'unreadEvents',
             'recentProperties', 'recentRequests', 'todayTasks',
-            'monthlyStats', 'mapProperties'
+            'mapProperties'
         ));
     }
 
